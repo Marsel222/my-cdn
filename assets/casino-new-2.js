@@ -775,8 +775,8 @@
       .casino-new__tab:active{ transform: scale(.98); }
       .casino-new__tab img{ width:20px; height:20px; flex: 0 0 20px; }
       .casino-new__tab.is-active{
-        background: rgb(81 156 115);
-        box-shadow: 0 0 0 1px rgb(36 77 79) inset;
+        background:rgba(255,208,0,.16);
+        box-shadow:0 0 0 1px rgba(255,208,0,.35) inset;
       }
 
       /* ✅ provider seçiliyken tablar disabled
@@ -1091,7 +1091,7 @@
 .casino-new__topbar img {
   width: 100%;
   height: 100%;
-  display: none;
+  display: block;
   object-fit: cover;
 }
 
