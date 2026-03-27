@@ -775,8 +775,8 @@
       .casino-new__tab:active{ transform: scale(.98); }
       .casino-new__tab img{ width:20px; height:20px; flex: 0 0 20px; }
       .casino-new__tab.is-active{
-        background:rgba(255,208,0,.16);
-        box-shadow:0 0 0 1px rgba(255,208,0,.35) inset;
+      background: rgb(93 174 125);
+      box-shadow: 0 0 0 1px rgb(89 167 120) inset;
       }
 
       /* ✅ provider seçiliyken tablar disabled
@@ -903,9 +903,9 @@
         display:block;
       }
       .casino-new__provider.is-selected{
-        background: rgba(255,208,0,.12);
-        border-color: rgba(255,208,0,.25);
-        box-shadow: 0 0 0 1px rgba(255,208,0,.18) inset;
+        background: rgb(82 157 116);
+    border-color: rgb(22 54 69);
+    box-shadow: 0 0 0 1px rgb(67 132 105) inset;
       }
       .casino-new__providers-skel{
         display:grid;
@@ -1696,20 +1696,20 @@
 <div class="casino-new__topbar">
   <picture>
     <source media="(max-width: 767px)"
-            srcset="https://cdn.betpirmedia.com/casino_top/410x140.png">
+            srcset="https://marsel222.github.io/my-cdn/assets/images/1700x150.png">
     <source media="(max-width: 991px)"
-            srcset="https://cdn.betpirmedia.com/casino_top/664x140.png">
+            srcset="https://marsel222.github.io/my-cdn/assets/images/1700x150.png">
     <source media="(max-width: 1023px)"
-            srcset="https://cdn.betpirmedia.com/casino_top/859x140.png">
+            srcset="https://marsel222.github.io/my-cdn/assets/images/1700x150.png">
     <source media="(max-width: 1199px)"
-            srcset="https://cdn.betpirmedia.com/casino_top/891x140.png">
+            srcset="https://marsel222.github.io/my-cdn/assets/images/1700x150.png">
     <source media="(max-width: 1443px)"
-            srcset="https://cdn.betpirmedia.com/casino_top/1073x140.png">
+            srcset="https://marsel222.github.io/my-cdn/assets/images/1700x150.png">
     <source media="(max-width: 1535px)"
-            srcset="https://cdn.betpirmedia.com/casino_top/1313x140.png">
+            srcset="https://marsel222.github.io/my-cdn/assets/images/1700x150.png">
     <source media="(max-width: 1919px)"
-            srcset="https://cdn.betpirmedia.com/casino_top/1405x140.png">
-    <img src="https://cdn.betpirmedia.com/casino_top/1789x140.png"
+            srcset="https://marsel222.github.io/my-cdn/assets/images/1700x150.png">
+    <img src="https://marsel222.github.io/my-cdn/assets/images/1700x150.png"
          alt="Casino Banner" loading="lazy">
   </picture>
 </div>
