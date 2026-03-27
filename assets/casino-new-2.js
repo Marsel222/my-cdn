@@ -1007,7 +1007,7 @@
       @media (min-width: 769px){
         .casino-container .games-container{
           display: grid;
-          grid-template-columns: repeat(6, minmax(0, 1fr));
+          grid-template-columns: repeat(8, minmax(0, 1fr));
           gap: 12px;
         }
         .casino-container .game-card{
@@ -1021,13 +1021,15 @@
         .casino-container .game-card .game-image{
           position: relative;
           width: 100%;
-          aspect-ratio: 3 / 2;
+          spect-ratio: 1.5 / 1.5;
           overflow: hidden;
+          
         }
         .casino-container .game-card .game-image img{
           width: 100%;
           height: 100%;
           display:block;
+          object-fit:cover;
         }
 
         .provider-dropdown,
