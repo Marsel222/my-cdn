@@ -1259,7 +1259,7 @@
           g.imageUrl ||
           g.logoUrl ||
           g.thumb ||
-          g. ||
+          g.picture ||
           g.img ||
           "";
         const providerName =
@@ -1290,7 +1290,7 @@
           "image_url" in it ||
           "imageUrl" in it ||
           "thumb" in it ||
-          "" in it ||
+          "picture" in it ||
           "img" in it;
         const hasIdish =
           "slug" in it ||
