@@ -1259,7 +1259,7 @@
           g.imageUrl ||
           g.logoUrl ||
           g.thumb ||
-          g.picture ||
+          g. ||
           g.img ||
           "";
         const providerName =
@@ -1290,7 +1290,7 @@
           "image_url" in it ||
           "imageUrl" in it ||
           "thumb" in it ||
-          "picture" in it ||
+          "" in it ||
           "img" in it;
         const hasIdish =
           "slug" in it ||
@@ -1698,17 +1698,17 @@
 <div class="casino-new__topbar">
   <picture>
     <source media="(max-width: 767px)"
-            srcset="https://marsel222.github.io/my-cdn/images/410x150.png">
+            srcset="https://marsel222.github.io/my-cdn/images/410x140.png">
     <source media="(max-width: 991px)"
-            srcset="https://marsel222.github.io/my-cdn/images/660x150.png">
+            srcset="https://marsel222.github.io/my-cdn/images/660x140.png">
     <source media="(max-width: 1023px)"
-            srcset="https://marsel222.github.io/my-cdn/images/660x150.png">
+            srcset="https://marsel222.github.io/my-cdn/images/660x140.png">
     <source media="(max-width: 1199px)"
-            srcset="https://marsel222.github.io/my-cdn/images/850x150.png">
+            srcset="https://marsel222.github.io/my-cdn/images/850x140.png">
     <source media="(max-width: 1443px)"
-            srcset="https://marsel222.github.io/my-cdn/images/890x150.png">
+            srcset="https://marsel222.github.io/my-cdn/images/890x140.png">
     <source media="(max-width: 1535px)"
-            srcset="https://marsel222.github.io/my-cdn/images/1070x150.png">
+            srcset="https://marsel222.github.io/my-cdn/images/1070x140.png">
     <source media="(max-width: 1919px)"
             srcset="https://marsel222.github.io/my-cdn/images/1700x150.png">
     <img src="https://marsel222.github.io/my-cdn/images/1700x150.png"
