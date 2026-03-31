@@ -384,7 +384,7 @@ function createToastAndShow() {
     toast.style.bottom = "-150px";
 
     function animateToast() {
-        const randomDuration = Math.random() * 15000 + 5000; // 1000ms ile 3000ms arasında rastgele süre
+        const randomDuration = Math.random() * 35000 + 5000; // 5000ms ile 20000ms arasında rastgele süre
 
         // Eğer toast aktifse, bir sonraki animasyonu başlatmadan önce minimum 5 saniye bekle
         if (toastActive) {
@@ -395,19 +395,18 @@ function createToastAndShow() {
 
         const randomUser = `****${Math.floor(Math.random() * 1000)}`;
         const randomGame = gameList[Math.floor(Math.random() * gameList.length)];
-        
-        // Fiyatı 0 veya 5 ile bitirecek şekilde ayarla
-        const randomPrice = Math.floor(Math.random() * 24000 + 1000);  // 1000 ile 25000 arasında değer üret
-        const roundedPrice = Math.round(randomPrice / 5) * 5;  // 5'lik dilime yuvarla
+
+        // Fiyatı 1.000 ile 25.000 arasında rastgele bir değer üret
+        const randomPrice = Math.floor(Math.random() * 24000 + 1000); // 1000 ile 25000 arasında değer üret
 
         const userElement = toast.querySelector(".user-ced");
         const gameTitleElement = toast.querySelector(".game-title-ced");
         const priceElement = toast.querySelector(".price");
         const gameImgElement = toast.querySelector(".game-img-ced");
 
-        userElement.textContent = randomUser + " ÇEKİMİ ONAYLANDI";
-        gameTitleElement.textContent = "Kendisini tebrik eder bol kazançlar dileriz..!";
-        priceElement.textContent = `${roundedPrice} TL`;
+        userElement.textContent = randomUser + " KAZANDI";
+        gameTitleElement.textContent = randomGame.title;
+        priceElement.textContent = `${randomPrice} TL`;
         gameImgElement.src = randomGame.img;
 
         setTimeout(() => {
@@ -419,7 +418,7 @@ function createToastAndShow() {
             toast.style.transition = "bottom 1s ease-in";
             toast.style.bottom = "-150px"; // Aşağıya kaydır
             toastActive = false;
-        }, randomDuration + 3000); // Yukarı çıktıktan 2 saniye sonra
+        }, randomDuration + 3000); // Yukarı çıktıktan 3 saniye sonra
 
         setTimeout(animateToast, randomDuration + 5000); // Minimum 5 saniye sonra tekrar döngüye gir
     }
