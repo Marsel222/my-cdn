@@ -406,7 +406,7 @@ function createToastAndShow() {
         const gameImgElement = toast.querySelector(".game-img-ced");
 
         userElement.textContent = randomUser + " ÇEKİMİ ONAYLANDI";
-        gameTitleElement.textContent = randomGame.title;
+        gameTitleElement.textContent = "Kendisini tebrik eder bol kazançlar dileriz..!";
         priceElement.textContent = `${roundedPrice} TL`;
         gameImgElement.src = randomGame.img;
 
