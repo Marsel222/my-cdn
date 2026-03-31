@@ -216,9 +216,9 @@ function addMenuItemsWithAuth() {
             svg: `
                 <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
                      xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2V16" stroke="#00a8ff" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M6 10L12 16L18 10" stroke="#00a8ff" stroke-width="2" stroke-linecap="round"/>
-                    <rect x="2" y="18" width="20" height="4" rx="1" fill="#00a8ff"/>
+                    <path d="M12 2V16" stroke="#26a777" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M6 10L12 16L18 10" stroke="#26a777" stroke-width="2" stroke-linecap="round"/>
+                    <rect x="2" y="18" width="20" height="4" rx="1" fill="#26a777"/>
                 </svg>
             `
         },
@@ -228,9 +228,9 @@ function addMenuItemsWithAuth() {
             svg: `
                 <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
                      xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 22V8" stroke="#00a8ff" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M6 14L12 8L18 14" stroke="#00a8ff" stroke-width="2" stroke-linecap="round"/>
-                    <rect x="2" y="2" width="20" height="4" rx="1" fill="#00a8ff"/>
+                    <path d="M12 22V8" stroke="#26a777" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M6 14L12 8L18 14" stroke="#26a777" stroke-width="2" stroke-linecap="round"/>
+                    <rect x="2" y="2" width="20" height="4" rx="1" fill="#26a777"/>
                 </svg>
             `
         }
