@@ -12,6 +12,8 @@ document.head.appendChild(link);
 			addMenuItemsWithAuth();
           bonusTabCustomReplace();
 addScrollingTextWithNextUrl();
+			    createToastSliderInWrapper(games);
+
 		setTimeout(addRandomUserPlaying, 2000); 
 			createToastAndShow(); 
             var sportspath = window.location.pathname;
@@ -158,10 +160,10 @@ function addScrollingText(text) {
 }
 
 function clearDynamicContent() {
-    const idsToRemove = ["", "custom-section-7", "league-wrapper", "custom-section-landing", "telegram-section" , "whatsapp-badge","led-wrapper","toast-container-ced"];
+    const idsToRemove = ["toast-slider-ced", "custom-section-7", "league-wrapper", "custom-section-landing", "telegram-section" , "whatsapp-badge","led-wrapper","toast-container-ced"];
 
     const styleIdsToRemove = [
-        "big-wins-style",
+        "toast-slider-style",
         "telegram-style",
         "mini-games-style",
 		"_wa-badge-style",
@@ -346,7 +348,7 @@ function addRandomUserPlaying() {
                     <img class="game-img-ced" src="" alt="Game Image">
                 </div>
                 <div class="info-ced">
-                    <p class="user-ced">BG*** KAZANDI</p>
+                    <p class="user-ced">BG*** ÇEKİMİ ONAYLANDI</p>
                     <p class="game-title-ced">EGT INTERACTIVE MORE DICE ROLL</p>
                     <div class="win-value-ced">
                         <span class="live-icon-ced"></span>
@@ -422,4 +424,248 @@ function addRandomUserPlaying() {
         animateToast();
     }
 
+function initializeWebsiteFeatures() {
+    // Dil menüsünde yalnızca aktif dillerin gösterilmesi
+    const langMenu = document.querySelector('.dropdown-menu.sidebar__lang-menu');
+    const langItems = langMenu.querySelectorAll('li');
+    const activeLangs = ['EN', 'TR'];
+
+    langItems.forEach(item => {
+        const span = item.querySelector('span');
+        if (!activeLangs.includes(span.textContent.trim())) {
+            item.remove(); // Diğerlerini kaldır
+        }
+    });
+
+    // Random kullanıcı adı oluşturma fonksiyonu
+    function generateRandomUsername() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const length = Math.floor(Math.random() * 10) + 6;  // Yıldız kısmı 6 ile 15 arasında olacak
+        let username = '';
+
+        // İlk 2 harfi ekle
+        username += chars.charAt(Math.floor(Math.random() * chars.length));
+
+        // Yıldızları ekle
+        for (let i = 0; i < length - 2; i++) {
+            username += '*';
+        }
+
+        // Son 2 harfi ekle
+        username += chars.charAt(Math.floor(Math.random() * chars.length));
+
+        return username;
+    }
+
+    // Dinamik Toast Slider Fonksiyonu (mini-slider-wrapper kontrolü ile)
+    function createToastSliderInWrapper(gameList, options = {}) {
+        const wrapperId = options.wrapperId || 'main-slider';
+        const initialCount = 50; // Başlangıçta 50 toast öğesi olacak
+
+        // Wrapper div var mı kontrol et
+        const wrapper = document.getElementById(wrapperId);
+        if (!wrapper) {
+            console.warn(`Div id="${wrapperId}" bulunamadı!`);
+            return;
+        }
+
+        // Eğer slider zaten eklenmişse tekrar ekleme
+        if (wrapper.querySelector('#toast-slider-ced')) {
+            console.log('Toast slider zaten mevcut.');
+            return;
+        }
+
+        // 1. Stil ekle (sadece bir kez eklenir)
+        if (!document.getElementById('toast-slider-style')) {
+            const style = document.createElement('style');
+            style.id = 'toast-slider-style';
+            style.textContent = `
+            /* Container ve track */
+            #toast-slider-ced {
+                width: 100%;
+                overflow: hidden;
+                z-index: 1000000;
+                background-color: #09223c;
+                margin-top: 41px;
+                margin-bottom: 19px;
+            }
+            .toast-track-ced {
+                display: flex;
+                gap: 12px;
+                animation: slide-left 100s linear infinite; /* Sürekli kayma animasyonu */
+            }
+            .toast-item-ced {
+                display: flex;
+                align-items: center;
+                min-width: 310px;
+                background: rgba(9, 34, 60, 0.95);
+                border: 1px solid #0ec096;
+                border-radius: 12px;
+                padding: 12px;
+                box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+                font-family: 'Poppins', sans-serif;
+                backdrop-filter: blur(10px);
+            }
+            .image-box-ced {
+                width: 60px;
+                height: 60px;
+                flex-shrink: 0;
+            }
+            .image-box-ced img {
+                width: 100%;
+                height: 100%;
+                border-radius: 8px;
+                object-fit: cover;
+                border: 1px solid #0ec096;
+            }
+            .info-ced {
+                flex: 1;
+                margin-left: 14px;
+                overflow: hidden;
+            }
+            .user-ced {
+                font-size: 11px;
+                color: #0ec096;
+                font-weight: 600;
+                margin: 0;
+                text-transform: uppercase;
+            }
+            .game-title-ced {
+                font-size: 14px;
+                color: #ffffff;
+                font-weight: 700;
+                margin: 2px 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .win-value-ced {
+                font-size: 17px;
+                color: #0ec096;
+                font-weight: 900;
+                margin: 0;
+                display: flex;
+                align-items: center;
+            }
+            .live-icon-ced {
+                width: 8px;
+                height: 8px;
+                background: #0ec096;
+                border-radius: 50%;
+                margin-right: 8px;
+                box-shadow: 0 0 8px #0ec096;
+                animation: flash 1.5s infinite;
+            }
+            @keyframes flash {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.4; }
+            }
+            @keyframes slide-left {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-1600%); }
+            }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // 2. Slider container oluştur
+        const slider = document.createElement('div');
+        slider.id = 'toast-slider-ced';
+
+        const track = document.createElement('div');
+        track.className = 'toast-track-ced';
+
+        slider.appendChild(track);
+        wrapper.appendChild(slider);
+
+        // 3. Toast ekleme fonksiyonu
+        function updateToastContent(toastElement) {
+            const randomGame = gameList[Math.floor(Math.random() * gameList.length)];
+            const randomUser = generateRandomUsername();  // Yeni random kullanıcı adı
+
+            // Oranlı kazanç hesaplama
+            let randomPrice;
+
+            // %75 oranında 1K ile 5K arasında
+            if (Math.random() < 0.75) {
+                randomPrice = Math.floor(Math.random() * 4001 + 1000); // 1K ile 5K arasında
+            }
+            // %10 oranında 5K ile 15K arasında
+            else if (Math.random() < 0.10) {
+                randomPrice = Math.floor(Math.random() * 10001 + 5000); // 5K ile 15K arasında
+            }
+            // %10 oranında 15K ile 25K arasında
+            else if (Math.random() < 0.10) {
+                randomPrice = Math.floor(Math.random() * 10001 + 15000); // 15K ile 25K arasında
+            }
+            // %5 oranında 50K ile 150K arasında
+            else {
+                randomPrice = Math.floor(Math.random() * 100001 + 50000); // 50K ile 150K arasında
+            }
+
+            // Toast item içeriğini güncelle
+            toastElement.querySelector('.user-ced').innerText = `${randomUser} KAZANDI`;
+            toastElement.querySelector('.game-title-ced').innerText = randomGame.title;
+            toastElement.querySelector('.price').innerText = `${randomPrice} TL`;
+            toastElement.querySelector('.image-box-ced img').src = randomGame.img;
+        }
+
+        // 4. Başlangıçta 50 toast öğesi oluştur
+        let toastElements = [];
+        function createInitialToasts() {
+            for (let i = 0; i < initialCount; i++) {
+                const toastItem = document.createElement('div');
+                toastItem.className = 'toast-item-ced';
+                toastItem.innerHTML = `
+                    <div class="image-box-ced">
+                        <img src="" alt="Game Image">
+                    </div>
+                    <div class="info-ced">
+                        <p class="user-ced"></p>
+                        <p class="game-title-ced"></p>
+                        <div class="win-value-ced">
+                            <span class="live-icon-ced"></span>
+                            <span class="price"></span>
+                        </div>
+                    </div>
+                `;
+                track.appendChild(toastItem);
+                toastElements.push(toastItem);  // Eklenen öğeyi tut
+            }
+            // 5. Başlangıçta ilk içeriği yükle
+            toastElements.forEach((toastElement) => {
+                updateToastContent(toastElement);  // İlk içerik yükle
+            });
+        }
+
+        createInitialToasts(); // İlk slider öğelerini oluştur
+
+        // 6. Her 100 saniyede bir yeni toast öğeleri ekle
+        setInterval(() => {
+            toastElements.forEach((toast) => toast.remove()); // Eski öğeleri sil
+            toastElements = []; // Eski öğeleri temizle
+            createInitialToasts(); // Yeni öğeleri oluştur
+        }, 50000); // 50 saniye (100000 ms)
+    }
+
+    // Örnek oyun listesi
+    const games = [
+        { title: "BIG BASS BONANZA 1000", img: "https://vendor-provider.fra1.cdn.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/GN8mlG5kFJ18n1oZfaMGGZ5ECn99RB26L2F7fQyZ.png" },
+        { title: "GATES OF OLYMPUS DICE", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/qVrgf2qkZ44apoCdNlS47ivKbn7xQbOkgQ6lRIyc.avif" },
+        { title: "20 SUPER HOT", img: "https://vendor-provider.fra1.cdn.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/9TtOVGFJcH8UBsSGl3Ce58lhMFn2TmFp9JD1ZeqR.png" },
+        { title: "VAMPIRE NIGHT VIP BELL LINK", img: "https://vendor-provider.fra1.cdn.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/mNO1iaNhi8Q5JZg4B35dbPsleKYCwZdazS9a1kN4.png" },
+        { title: "SHINING CROWN", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/q5ImhlA8QQNhoCWIrrCkuNxTivRdi8tOwZBl4DCb.png" },
+        { title: "40 BURNING HOT", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/IIul50QRjUNZcojMhN5oocCMbJ1wzJBJTrotr3Yz.png" },
+        { title: "SUGAR RUSH SUPER SCATTER", img: "https://d3psi4rj7mv4u4.cloudfront.net/games/pragmaticplay/sugar_rush_super_scatter.jpg" },
+        { title: "WISDOM OF ATHENA 1000", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/ZDD52QUSLUJM4NWSdYEwNNxw4cWoHrBXYNUxAsCg.png" },
+        { title: "SUGAR RUSH 1000", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/y0C8hNvNSkcQIPZkqnR4gbePs7YU4tkZtluv0OBy.png" },
+        { title: "SWEET BONANZA SUPER SCATTER", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/l1JYlUIe4z4BP9fpGIKnc9JD9m3AHxBcwGNzQncs.png" },
+        { title: "THE DOG HOUSE MEGAWAYS", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/WI9EeOXR3EIhOSyPgUCosUNT18FYeOgvz4Dlbaxm.png" },
+        { title: "SWEET BONANZA 1000", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/NuZ9UYNGezQHMpj2rE8uJR13wrZWYzlEuzflSHEb.png" },
+        { title: "ROULETTE", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/b9uylQsVqYbSG3xTXLmQuslENtjeOFzfjWyq6BTK.png" },
+        { title: "BLACKJACK", img: "https://vendor-provider.fra1.cdn.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/b3KPqV9UyOixpMNKS7A2Lnd4YYqUxFn64dR6LDp2.png" }
+    ];
+
+    // Slider'ı başlat
+}
  
