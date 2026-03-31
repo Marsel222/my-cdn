@@ -135,7 +135,27 @@ function addScrollingTextWithNextUrl() {
         console.error("Geçerli bir URL formatı bulunamadı.");
     }
 }
+function addScrollingText(text) {
+  const existing = document.querySelector(".scrolling-text");
+  if (existing) {
+    const currentText = existing.querySelector("span")?.textContent;
+    if (currentText === text) return; // Eğer metin aynıysa hiçbir şey yapma
+    // Metin farklıysa güncelle
+    existing.querySelector("span").textContent = text;
+    return;
+  }
+  
+  // Yeni kayan metin divi oluştur
+  const scrollingDiv = document.createElement("div");
+  scrollingDiv.className = "scrolling-text";
+  const span = document.createElement("span");
+  span.textContent = text;
+  scrollingDiv.appendChild(span);
 
+  // Header'dan sonra ekle
+  const header = document.querySelector("header");
+  header.insertAdjacentElement("afterend", scrollingDiv);
+}
 
 function clearDynamicContent() {
     const idsToRemove = ["", "custom-section-7", "league-wrapper", "custom-section-landing", "telegram-section" , "whatsapp-badge","led-wrapper","toast-container-ced"];
