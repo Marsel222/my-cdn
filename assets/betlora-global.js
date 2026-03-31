@@ -11,9 +11,9 @@ document.head.appendChild(link);
         setTimeout(function () { 
 			addMenuItemsWithAuth();
           bonusTabCustomReplace();
-             addScrollingText("BİR SONRAKİ GÜNCEL ADRESİMİZ betlora204.com'dur. LÜTFEN SAHTE SİTELERE İTİBAR ETMEYİNİZ.");
-          addRandomUserPlaying();
-             createToastAndShow(); 
+addScrollingTextWithNextUrl();
+		setTimeout(addRandomUserPlaying, 2000); 
+			createToastAndShow(); 
             var sportspath = window.location.pathname;
             if (sportspath === "/tr/sportsbook") {
               clearDynamicContent();
@@ -51,7 +51,7 @@ document.head.appendChild(link);
          
             bonusTabCustomReplace(); 
             if (path === "/tr/" || path === "/tr") {
-				addRandomUserPlaying();
+				setTimeout(addRandomUserPlaying, 2000); 
 		
                  createToastAndShow(); 
             } else if (path === "/tr/vip") {
@@ -59,7 +59,7 @@ document.head.appendChild(link);
         
             } else if (path === "/tr/casino") {
                 clearDynamicContent();
-				addRandomUserPlaying();
+			
             } else if (path === "/tr/sportsbook") {
                 clearDynamicContent();
             } else if (path === "/tr/trade") {
@@ -68,9 +68,7 @@ document.head.appendChild(link);
                 clearDynamicContent();
             } else if (path === "/tr/challenges") {
                 clearDynamicContent();
-            } else if (path === "/tr/latest-big-wins") {
-                LandingPage();
-            } 
+            }
 			else if (path === "/tr/promotions") {
 
                 clearDynamicContent();
@@ -78,7 +76,7 @@ document.head.appendChild(link);
             }
 			else {
                 clearDynamicContent();
-               removeGlobalModal();
+           
             }
         }, 400);
     }
@@ -117,30 +115,25 @@ function checkModal() {
     }
 }
 
-function addScrollingText(text) {
-    const existing = document.querySelector(".scrolling-text");
+function getNextUrlNumber() {
+    const currentUrl = window.location.href;
+    const match = currentUrl.match(/betlora(\d+)/); // betlora sonrası gelen sayıyı alıyoruz
 
-    if (existing) {
-        const currentText = existing.querySelector("span")?.textContent;
-        if (currentText === text) return; // Do nothing if the text is the same
-
-        // Update the text if different
-        existing.querySelector("span").textContent = text;
-        return;
+    if (match && match[1]) {
+        const currentNumber = parseInt(match[1], 10); // Mevcut sayıyı al
+        return currentNumber + 1; // Sayıyı 1 artır
     }
+    return null; // URL'de uygun sayı yoksa
+}
 
-    // Create the scrolling text div
-    const scrollingDiv = document.createElement("div");
-    scrollingDiv.className = "scrolling-text";
-
-    const span = document.createElement("span");
-    span.textContent = text;
-
-    scrollingDiv.appendChild(span);
-
-    // Insert after header
-    const header = document.querySelector("header");
-    header.insertAdjacentElement("afterend", scrollingDiv);
+function addScrollingTextWithNextUrl() {
+    const nextNumber = getNextUrlNumber();
+    if (nextNumber !== null) {
+        const text = `BİR SONRAKİ GÜNCEL ADRESİMİZ betlora${nextNumber}.com'dur. LÜTFEN SAHTE SİTELERE İTİBAR ETMEYİNİZ.`;
+        addScrollingText(text);
+    } else {
+        console.error("Geçerli bir URL formatı bulunamadı.");
+    }
 }
 
 
