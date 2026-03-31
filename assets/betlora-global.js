@@ -12,10 +12,10 @@ document.head.appendChild(link);
 			addMenuItemsWithAuth();
           bonusTabCustomReplace();
 addScrollingTextWithNextUrl();
-			    createToastSliderInWrapper(games);
-
+initializeWebsiteFeatures()
 		setTimeout(addRandomUserPlaying, 2000); 
 			createToastAndShow(); 
+			filterActiveLanguages()
             var sportspath = window.location.pathname;
             if (sportspath === "/tr/sportsbook") {
               clearDynamicContent();
@@ -50,11 +50,11 @@ addScrollingTextWithNextUrl();
     function handlePageScripts(path) {
         setTimeout(function () {
             addMenuItemsWithAuth();
-         
+         filterActiveLanguages()
             bonusTabCustomReplace(); 
             if (path === "/tr/" || path === "/tr") {
 				setTimeout(addRandomUserPlaying, 2000); 
-		
+		initializeWebsiteFeatures()
                  createToastAndShow(); 
             } else if (path === "/tr/vip") {
                 clearDynamicContent();
@@ -423,12 +423,10 @@ function addRandomUserPlaying() {
 
         animateToast();
     }
-
-function initializeWebsiteFeatures() {
-    // Dil menüsünde yalnızca aktif dillerin gösterilmesi
+function filterActiveLanguages() {
     const langMenu = document.querySelector('.dropdown-menu.sidebar__lang-menu');
     const langItems = langMenu.querySelectorAll('li');
-    const activeLangs = ['EN', 'TR'];
+    const activeLangs = ['EN', 'TR'];  // Aktif diller
 
     langItems.forEach(item => {
         const span = item.querySelector('span');
@@ -436,6 +434,9 @@ function initializeWebsiteFeatures() {
             item.remove(); // Diğerlerini kaldır
         }
     });
+}
+function initializeWebsiteFeatures() {
+
 
     // Random kullanıcı adı oluşturma fonksiyonu
     function generateRandomUsername() {
@@ -667,5 +668,7 @@ function initializeWebsiteFeatures() {
     ];
 
     // Slider'ı başlat
+	 createToastSliderInWrapper(games);
+
 }
  
