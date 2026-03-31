@@ -397,7 +397,7 @@ function createToastAndShow() {
         const randomGame = gameList[Math.floor(Math.random() * gameList.length)];
         
         // Fiyatı 0 veya 5 ile bitirecek şekilde ayarla
-        const randomPrice = Math.floor(Math.random() * 60 + 100);  // 100 ile 160 arasında değer üret
+        const randomPrice = Math.floor(Math.random() * 24000 + 1000);  // 1000 ile 25000 arasında değer üret
         const roundedPrice = Math.round(randomPrice / 5) * 5;  // 5'lik dilime yuvarla
 
         const userElement = toast.querySelector(".user-ced");
