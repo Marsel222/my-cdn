@@ -168,11 +168,7 @@ function removeTabsNav() {
     }
 }
 
-// Kullanmak için
-// removeTabsNav();
 
-observer.observe(document.body, { childList: true, subtree: true });
-}
 
 
 function getNextUrlNumber() {
