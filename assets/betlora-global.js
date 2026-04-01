@@ -33,7 +33,7 @@ initializeWebsiteFeatures();
             }
               else if (sportspath === "/tr/promotions") {
                 clearDynamicContent();   
-				setTimeout(removeTabsNav, 3000);          
+					removeTabsNav();         
 			  }
 			else if (sportspath !== "/tr/" && sportspath !== "/tr") {
                clearDynamicContent();
