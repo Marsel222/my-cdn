@@ -193,6 +193,7 @@ function addScrollingText(text) {
   // Yeni kayan metin divi oluştur
   const scrollingDiv = document.createElement("div");
   scrollingDiv.className = "scrolling-text";
+  scrollingDiv.id = "scrolling-text";
   const span = document.createElement("span");
   span.textContent = text;
   scrollingDiv.appendChild(span);
@@ -203,7 +204,7 @@ function addScrollingText(text) {
 }
 
 function clearDynamicContent() {
-    const idsToRemove = ["toast-slider-ced", "custom-section-7", "league-wrapper", "custom-section-landing", "telegram-section" , "whatsapp-badge","led-wrapper","toast-container-ced"];
+    const idsToRemove = ["toast-slider-ced", "scrolling-text", "league-wrapper", "custom-section-landing", "telegram-section" , "whatsapp-badge","led-wrapper","toast-container-ced"];
 
     const styleIdsToRemove = [
         "toast-slider-style",
