@@ -32,8 +32,8 @@ initializeWebsiteFeatures();
             }
               else if (sportspath === "/tr/promotions") {
                 clearDynamicContent();   
-				  removeTabsNav();
-            }
+				setTimeout(removeTabsNav, 3000);          
+			  }
 			else if (sportspath !== "/tr/" && sportspath !== "/tr") {
                clearDynamicContent();
    
@@ -78,7 +78,7 @@ initializeWebsiteFeatures();
 			else if (path === "/tr/promotions") {
 
                 clearDynamicContent();
-              removeTabsNav();
+             setTimeout(removeTabsNav, 3000); 
             }
 			else {
                 clearDynamicContent();
@@ -146,29 +146,21 @@ function cleanCasinoAndPoker() {
 }
 
 function removeTabsNav() {
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach(mutation => {
-            mutation.addedNodes.forEach(node => {
-                if (node.nodeType === 1 && node.id === 'tabs-nav') {
-                    node.remove();
-                    console.log('✅ #tabs-nav element removed dynamically.');
-                }
-            });
-        });
-    });
-
-    // Body üzerinde tüm DOM değişikliklerini gözlemle
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // Eğer element sayfa yüklendiğinde zaten varsa, hemen kaldır
-    const tabsNav = document.getElementById('tabs-nav');
-    if (tabsNav) {
-        tabsNav.remove();
-        console.log('✅ #tabs-nav element removed on page load.');
+    try {
+        const tabsNav = document.getElementById('tabs-nav');
+        if (tabsNav) {
+            tabsNav.remove();
+            console.log('✅ #tabs-nav element has been removed from the DOM.');
+        } else {
+            console.error('⚠️ #tabs-nav element not found.');
+        }
+    } catch (err) {
+        console.error('❌ Error removing #tabs-nav:', err);
     }
 }
 
-
+// Kullanmak için
+// removeTabsNav();
 
 
 function getNextUrlNumber() {
