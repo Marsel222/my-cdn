@@ -984,7 +984,7 @@
         .casino-container .game-card .game-image{
           position: relative;
           width: 100%;
-          aspect-ratio: 1 / 1;
+        
           overflow: hidden;
         }
         .casino-container .game-card .game-image img{
