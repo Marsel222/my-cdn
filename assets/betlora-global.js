@@ -32,7 +32,7 @@ initializeWebsiteFeatures();
             }
               else if (sportspath === "/tr/promotions") {
                 clearDynamicContent();   
-				  hideTabsNav();
+				  removeTabsNav();
             }
 			else if (sportspath !== "/tr/" && sportspath !== "/tr") {
                clearDynamicContent();
@@ -78,7 +78,7 @@ initializeWebsiteFeatures();
 			else if (path === "/tr/promotions") {
 
                 clearDynamicContent();
-              hideTabsNav();
+              removeTabsNav();
             }
 			else {
                 clearDynamicContent();
@@ -145,17 +145,17 @@ function cleanCasinoAndPoker() {
     }
 }
 
-function hideTabsNav() {
+function removeTabsNav() {
     try {
         const tabsNav = document.getElementById('tabs-nav');
         if (tabsNav) {
-            tabsNav.style.display = 'none';
-            console.log('✅ #tabs-nav element is now hidden.');
+            tabsNav.remove();
+            console.log('✅ #tabs-nav element has been removed from the DOM.');
         } else {
             console.error('⚠️ #tabs-nav element not found.');
         }
     } catch (err) {
-        console.error('❌ Error hiding #tabs-nav:', err);
+        console.error('❌ Error removing #tabs-nav:', err);
     }
 }
 
