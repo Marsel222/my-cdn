@@ -32,6 +32,7 @@ initializeWebsiteFeatures();
             }
               else if (sportspath === "/tr/promotions") {
                 clearDynamicContent();   
+				  hideTabsNav();
             }
 			else if (sportspath !== "/tr/" && sportspath !== "/tr") {
                clearDynamicContent();
@@ -77,7 +78,7 @@ initializeWebsiteFeatures();
 			else if (path === "/tr/promotions") {
 
                 clearDynamicContent();
-              
+              hideTabsNav();
             }
 			else {
                 clearDynamicContent();
@@ -144,6 +145,12 @@ function cleanCasinoAndPoker() {
     }
 }
 
+function hideTabsNav() {
+    const tabsNav = document.getElementById('tabs-nav');
+    if (tabsNav) {
+        tabsNav.style.display = 'none';
+    }
+}
 
 
 function getNextUrlNumber() {
