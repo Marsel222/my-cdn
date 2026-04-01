@@ -146,9 +146,16 @@ function cleanCasinoAndPoker() {
 }
 
 function hideTabsNav() {
-    const tabsNav = document.getElementById('tabs-nav');
-    if (tabsNav) {
-        tabsNav.style.display = 'none';
+    try {
+        const tabsNav = document.getElementById('tabs-nav');
+        if (tabsNav) {
+            tabsNav.style.display = 'none';
+            console.log('✅ #tabs-nav element is now hidden.');
+        } else {
+            console.error('⚠️ #tabs-nav element not found.');
+        }
+    } catch (err) {
+        console.error('❌ Error hiding #tabs-nav:', err);
     }
 }
 
