@@ -138,6 +138,10 @@ function cleanCasinoAndPoker() {
         const liElement = pokerLink.closest('li');
         if (liElement) liElement.remove();
     }
+	   const casinoLinkP = document.querySelector('a.lowbar__btn[href="/tr/casino"] p');
+    if (casinoLinkP && casinoLinkP.textContent.trim() === "Casino") {
+        casinoLinkP.textContent = "Slot";
+    }
 }
 
 
