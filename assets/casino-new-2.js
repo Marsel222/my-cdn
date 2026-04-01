@@ -1,176 +1,83 @@
-/* casino-new.js — CLEAN STARTER + ALL / MOST LIKED / MOST POPULAR / HIGH RTP / JACKPOT / BUY BONUS / FISH & HUNTING / MEGAWAYS / DROPS & WINS GAMES (IMAGE ONLY GRID)Fırst
- */
-(function () {
-  ("use strict");
 
-  // -----------------------------
-  // Config
-  // -----------------------------
+<script>
+(function () {
+  "use strict";
+
+  /* Config */
   const CONFIG = {
-    casinoPaths: ["/casino"],
+    casinoPaths: ["/casino", "/casino/group/lobby", "/casino/group/live-lobby", "/live-casino"],
     rootClass: "casino-new-root",
     mountSelector: "#main__content",
 
+    rt: () => Math.floor(Date.now() / 1000),
+
     api: {
-      url: "https://api1.jukd049944jdjdh333ikslisspoelerss44shh334opodjd4ssd.com/api/player/public/games/group/casino",
-      payload: { language: "tr" },
+      casino: {
+        url: "https://api1.jukd049944jdjdh333ikslisspoelerss44shh334opodjd4ssd.com/api/player/public/games/group/casino",
+        payload: () => ({ language: "tr", rt: CONFIG.rt() }),
+      },
+      /*
+      live: {
+        url: "https://api1.jukd049944jdjdh333ikslisspoelerss44shh334opodjd4ssd.com/api/player/public/games/group/live",
+        payload: () => ({ language: "tr", rt: CONFIG.rt() }),
+      },
+      */
     },
 
     providersApi: {
-      url: "https://api1.jukd049944jdjdh333ikslisspoelerss44shh334opodjd4ssd.com/api/player/public/providers/index",
-      payload: { type: null },
+      casino: {
+        url: "https://api1.jukd049944jdjdh333ikslisspoelerss44shh334opodjd4ssd.com/api/player/public/providers/group/lobby",
+        payload: () => ({ type: "lobby", rt: CONFIG.rt() }),
+      },
+      live: {
+        url: "https://api1.jukd049944jdjdh333ikslisspoelerss44shh334opodjd4ssd.com/api/player/public/providers/group/live-lobby",
+        payload: () => ({ type: "live-lobby", rt: CONFIG.rt() }),
+      },
     },
 
-    games2Base:
-      "https://api1.jukdkdjruf33434hhdshh334opodjd4ssd.com/api/player/public",
+    games2Base: "https://api1.jukdkdjruf33434hhdshh334opodjd4ssd.com/api/player/public",
+
+    games2LiveLobby: {
+      url: "https://api1.jukd049944jdjdh333ikslisspoelerss44shh334opodjd4ssd.com/api/player/public/games2/group/live-lobby",
+      payload: () => ({ type: "live-lobby", page: 1, limit: 5000, sortBy: "sort", direction: "desc", rt: CONFIG.rt() }),
+    },
 
     searchApi: {
-      url: "https://api1.jukdkdjruf33434hhdshh334opodjd4ssd.com/api/player/public/games2/search",
-      rt: "1744988812",
+      url: "https://api1.jukd049944jdjdh333ikslisspoelerss44shh334opodjd4ssd.com/api/player/public/games2/search",
     },
   };
 
+  /* State */
   const AppState = {
-    currentRoute: null,
-    activeTab: "all",
-    lastTabBeforeProvider: "all",
-    isRendered: false,
+    activeTab: null,
+    lastTabBeforeProvider: null,
 
-    allGames: null,
-    allLoading: false,
+    tabs: [],
+    tabsLoading: false,
 
-    likedGames: null,
-    likedLoading: false,
+    _categoriesCache: null,
+    _categoriesFetching: null,
 
-    popularGames: null,
-    popularLoading: false,
+    gamesCache: Object.create(null),
+    gamesLoading: Object.create(null),
 
-    rtpGames: null,
-    rtpLoading: false,
-
-    jackpotGames: null,
-    jackpotLoading: false,
-
-    buyBonusGames: null,
-    buyBonusLoading: false,
-
-    fishGames: null,
-    fishLoading: false,
-
-    megawaysGames: null,
-    megawaysLoading: false,
-
-    dropsWinsGames: null,
-    dropsWinsLoading: false,
-
-    // Search
     searchQuery: "",
     searchDebounce: null,
 
-    // Providers
     providers: null,
     providersLoading: false,
-    selectedProvider: null, // {id, identifier, name, image}
+    selectedProvider: null,
     providerSearchQuery: "",
+    providerGamesCache: Object.create(null),
 
-    // yarış engeli
     requestId: 0,
     providersRequestId: 0,
+    _stateGen: 0,
 
-    // ✅ provider oyun cache + promise (aynı anda 2 fetch olmasın)
-    providerGamesCache: Object.create(null), // key: provId -> { games, keys, promise }
-
-    pragmaticGroupGames: null,
-    pragmaticGroupLoading: false,
-
-    vipBellGames: null,
-    vipBellLoading: false,
+    _onDocClick: null,
   };
 
-  // -----------------------------
-  // Tabs
-  // -----------------------------
-  const TABS = [
-    {
-      key: "all",
-      label: "Tüm Oyunlar",
-      icon: "https://cdn.betpirmedia.com/casino/all/slot.png",
-      slug: "all-games",
-    },
-    {
-      key: "liked",
-      label: "En Beğenilen Oyunlar",
-      icon: "https://cdn.betpirmedia.com/casino/favorite/favorite.png",
-      slug: "most-liked-games",
-    },
-    {
-      key: "popular",
-      label: "En Popüler Oyunlar",
-      icon: "https://cdn.betpirmedia.com/casino/popular/popular.png",
-      slug: "most-popular-games",
-    },
-    {
-      key: "rtp",
-      label: "Yüksek RTP",
-      icon: "https://cdn.betpirmedia.com/casino/rtp/rtp.png",
-      slug: "high-rtp",
-    },
-    {
-      key: "vipBell",
-      label: "VIP Bell Link",
-      icon: "https://cdn.betpirmedia.com/casino/bell/bell.png",
-      // slug: "vi̇p-bell-li̇nk",
-      slug: "vip-bell-link",
-    },
-    {
-      key: "jackpot",
-      label: "Jackpot Oyunları",
-      icon: "https://cdn.betpirmedia.com/casino/jackpot/jackpot.png",
-      slug: "jackpot-games",
-    },
-    {
-      key: "buyBonus",
-      label: "Bonus Satın Al",
-      icon: "https://cdn.betpirmedia.com/casino/buy-bonus/buy-bonus.png",
-      slug: "bonus-buy-games",
-    },
-    {
-      key: "fish",
-      label: "Balık ve Av Oyunları",
-      icon: "https://cdn.betpirmedia.com/casino/fish/fish.png",
-      slug: "fish-and-hunting-games",
-    },
-    {
-      key: "megaways",
-      label: "Megaways Oyunları",
-      icon: "https://cdn.betpirmedia.com/casino/megaways/megaways.png",
-      slug: "megaways-games",
-    },
-    {
-      key: "dropsWins",
-      label: "Drops & Wins",
-      icon: "https://cdn.betpirmedia.com/casino/drops-and-wins/bomb.png",
-      slug: "drops-wins-games",
-    },
-  ];
-
-  // -----------------------------
-  // Helpers
-  // -----------------------------
-  // ✅ provider.identifier -> group slug mapping (senin verdiğin kesin değerler)
-  // ✅ Casino desktop'ta sidebar'ı site'nin kendi mekanizmasıyla açtır
-
-  const PROVIDER_IMAGE_OVERRIDE = {
-    relaxgaming: "https://cdn.betpirmedia.com/casino/providers/relaxgaming.png",
-    rubyplay: "https://cdn.betpirmedia.com/casino/providers/rubyplay.png",
-    urgentgames: "https://cdn.betpirmedia.com/casino/providers/urgentgames.png",
-    victoryark: "https://cdn.betpirmedia.com/casino/providers/victoryark.png",
-    ebetlab: "https://cdn.betpirmedia.com/casino/providers/ebetlab.png",
-    pgsoft: "https://cdn.betpirmedia.com/casino/providers/pgsoft.png",
-    hacksaw: "https://cdn.betpirmedia.com/casino/providers/hacksaw.png",
-    fbastards: "https://cdn.betpirmedia.com/casino/providers/fbastards.png",
-  };
-
+  /* Helpers */
   function renderProviderDropdownContent() {
     return `
     <div class="casino-new__providers-search">
@@ -190,15 +97,14 @@
             AppState.selectedProvider &&
             String(AppState.selectedProvider.id) === String(p.id);
 
+          const img = resolveProviderImage(p);
           return `
             <div class="provider-dd-item ${isSel ? "is-selected" : ""}"
               data-provider="${safeAttr(p.id)}"
               data-identifier="${safeAttr(p.identifier || "")}"
-              data-name="${safeAttr(p.name || "")}"
-              data-image="${safeAttr(resolveProviderImage(p))}">
-              <img src="${safeAttr(resolveProviderImage(p))}" alt="${safeAttr(
-                p.name,
-              )}">
+              data-name="${safeAttr(p.name || "")}">
+              <img src="${safeAttr(img)}" alt="${safeAttr(p.name || "")}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display=''">
+              <span style="display:none">${safeAttr(p.name || p.identifier || "")}</span>
             </div>
           `;
         })
@@ -207,18 +113,126 @@
   `;
   }
 
+  const VENDOR_CDN = "https://vendor-provider.fra1.cdn.digitaloceanspaces.com/ebetlab/game-providers/light";
+  const VENDOR_CDN2 = "https://cdn.ebetlab.com/ebetlab/game-providers/light";
+
+  const VENDOR_IMAGE_MAP = {
+    "pushgaming":       { cdn: VENDOR_CDN2, file: "push_gaming" },
+    "gaming-corps":     { cdn: VENDOR_CDN2, file: "Gaming%20Corps%20Dark%20Logo%20SVG" },
+    "pragmaticplay":    "pragmaticplay",
+    "egtinteractive":   "egt",
+    "egt-interactive":  "amusnet",
+    "pgsoft":           "Pocket%20Games%20Soft",
+    "5men":             "5men",
+    "alg":              "alg",
+    "amatic":           "amatic",
+    "avatarux":         "avatarux",
+    "belatra":          "belatra",
+    "beterlive":        "beterlive",
+    "betsolutions":     "Betsolutions",
+    "bgaming":          "softswiss",
+    "booming":          "booming",
+    "endorphina":       "endorphina",
+    "evoplay":          "evoplay",
+    "ezugi":            "ezugi",
+    "fantasma":         "fantasma",
+    "fazi":             "fazi",
+    "gamebeat":         "gamebeat",
+    "gamzix":           "gamezix",
+    "hollegames":       "hollegames",
+    "playson":          "playson",
+    "jaderabbit":       "jaderabbit",
+    "kagaming":         "KAGa",
+    "kalamba":          "kalamba",
+    "lucky":            "lucky",
+    "mancala":          "mancala",
+    "mrslotty":         "mrslotty",
+    "mplay":            "m%20play",
+    "netgame":          "netgame",
+    "novomatic":        "novomatic",
+    "nucleus":          "nucleus",
+    "onlyplay":         "onlyplay",
+    "oryx":             "oryx",
+    "platipus":         "platipus",
+    "popiplay":         "popiplay",
+    "quickspin":        "quickspin",
+    "smartsoft":        "smartsoft",
+    "spadegaming":      "spadegaming",
+    "everymatrix":      "everymatrix",
+    "spinza":           "spinza",
+    "spribe":           "spribe",
+    "swintt":           "swintt",
+    "tomhornnative":    "tomhorn",
+    "truelab":          "truelab",
+    "turbogames":       "turbogames",
+    "wazdan":           "wazdan",
+    "zillion":          "zillion",
+    "aesexybaccarat":   "AE%20Sexy",
+    "asiagaming":       "Asia%20Gaming",
+    "beefee":           "BeeFee%20Games",
+    "betradarvs":       "Betradar%20Virtual%20sports",
+    "betsoft":          "betsoft",
+    "concept":          "Concept%20Gaming",
+    "cq9":              "CQ9",
+    "ctgaming":         "CT%20Gaming",
+    "evolution":        "Evolution%20Gaming",
+    "habanero":         "habanero",
+    "hogaming":         "HoGaming",
+    "igrosoft":         "Igrosoft",
+    "kiron":            "Kiron%20Interactive",
+    "leap":             "Leap",
+    "livegames":        "Live%20Games",
+    "luckystreak":      "luckystreak",
+    "mascotgaming":     "mascot",
+    "netent":           "netent",
+    "sagaming":         "SA%20Gaming",
+    "salsa":            "Salsa%20technology",
+    "spinomenal":       "spinomenal",
+    "vivogaming":       "Vivo%20Gaming",
+    "yggdrasil":        "yggdrasil",
+    "nolimitcity":      "NoLimitCity",
+    "redtiger":         "Red%20Tiger%20Gaming",
+    "jdb":              "JDB",
+    "gaming7777":       "Gaming%207777",
+    "gamomat":          "gamomat",
+    "givme":            "givme%20games",
+    "goldenhero":       "golden%20hero",
+    "atomic":           "atomic%20slot",
+    "fugaso":           "fugaso",
+    "tvbet":            "tv%20bet",
+    "7mojos":           "7%20mojos",
+    "pragmaticlive":    "pragmatic-live-light",
+    "hacksaw":          "hacksaw",
+    "ebetlab":          "originals",
+    "galaxys":          "galaxy%20gaming",
+    "imagine-live":     "imageinelive",
+    "imoon":            "imoon",
+    "inout":            "InOut",
+    "jiliasia":         "Jiliasia",
+    "royal-gaming":     "Royal%20Gaming",
+    "tada-gaming":      "Tada%20Gaming",
+    "zeus-play":        "Zeus%20Play",
+    "peter-and-sons":   "Peter%20And%20Sons",
+    "popok":            "Popok",
+    "ygrgames":         "YGR",
+    "fbastards":        "F_Bastards",
+    "victoryark":       "Victory%20Ark",
+    "urgentgames":      "Urgent%20games",
+    "rubyplay":         "ruby%20play",
+    "relaxgaming":      "relax%20gaming",
+  };
+
   function resolveProviderImage(provider) {
-    if (!provider) return "";
-
-    const identifier = normIdentifier(provider.identifier);
-    if (identifier && PROVIDER_IMAGE_OVERRIDE[identifier]) {
-      return PROVIDER_IMAGE_OVERRIDE[identifier];
-    }
-
-    return provider.image || "";
+    const idf = normIdentifier(provider?.identifier || "");
+    if (!idf) return "";
+    const entry = VENDOR_IMAGE_MAP[idf];
+    if (entry && typeof entry === "object") return `${entry.cdn}/${entry.file}.svg`;
+    const file = entry || idf;
+    return `${VENDOR_CDN}/${file}.svg`;
   }
 
   function filterProvidersByQuery(providers, query) {
+    if (!providers) return [];
     if (!query) return providers;
     const q = normStr(query);
     return providers.filter((p) => {
@@ -226,33 +240,42 @@
     });
   }
 
-  function ensureCasinoOnlyHideStyle() {
-    if (document.getElementById("casino-only-hide-style")) return;
-
+  function ensureCasinoGlobalStyle() {
+    if (document.getElementById("casino-global-style")) return;
     const style = document.createElement("style");
-    style.id = "casino-only-hide-style";
+    style.id = "casino-global-style";
     style.textContent = `
-    /* ✅ SADECE CASINO SAYFASI */
-    
-    /* ÜSTTEKİ tablo / bahis section */
-    .col-12.section--first {
-      display: none !important;
-    }
-
-    /* Sağlayıcılar (125) slider section */
-    .section.section--last {
-      display: none !important;
-    }
-  `;
+      body[data-casino] .casino-hidden,
+      body[data-casino] #main__content > .section:not(.section--first:has(.mini-slider)) {
+        display: none !important;
+      }
+    `;
     document.head.appendChild(style);
   }
 
-  function removeCasinoOnlyHideStyle() {
-    document.getElementById("casino-only-hide-style")?.remove();
+  function hideCasinoSections() {
+    if (!document.body.hasAttribute("data-casino")) return;
+
+    const norm = (s) =>
+      String(s || "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\u0131/g, "i");
+
+    const tabSlugs = new Set(AppState.tabs.map((t) => norm(t.label)));
+
+    document.querySelectorAll(".section__title, .section-title").forEach((t) => {
+      const txt = norm(t.textContent || "");
+      if (!txt || !tabSlugs.has(txt)) return;
+      const section = t.closest(".section");
+      if (section) section.classList.add("casino-hidden");
+    });
   }
 
   const __casinoSidebarAuto = {
-    lastRouteWasCasino: false,
     didOpenOnThisVisit: false,
   };
 
@@ -265,7 +288,6 @@
   }
 
   function getSidebarBtn() {
-    // çoğu temada tek olur; yoksa en yakını seçeriz
     return document.querySelector("button.sidebar__btn");
   }
 
@@ -278,14 +300,11 @@
     return sidebar.classList.contains("active");
   }
 
-  // 👇 sadece casino + desktop + sidebar active değilken => btn click
   async function maybeAutoOpenSidebarOnCasinoDesktop() {
     const casinoNow = isCasinoRoute(location.pathname);
     const desktopNow = isDesktop();
 
-    // casino değilse veya desktop değilse: bu otomasyona dokunma
     if (!casinoNow || !desktopNow) {
-      __casinoSidebarAuto.lastRouteWasCasino = casinoNow;
       __casinoSidebarAuto.didOpenOnThisVisit = false;
       return;
     }
@@ -293,82 +312,25 @@
     const sidebar = getSidebarEl();
     if (!sidebar) return;
 
-    // zaten active ise hiç elleme
     if (isSidebarActive(sidebar)) return;
-
-    // bu casino ziyaretinde 1 kere açmayı dene
     if (__casinoSidebarAuto.didOpenOnThisVisit) return;
 
-    // btn geç gelebiliyor → bekle
     let btn = getSidebarBtn();
-    if (!btn) {
-      btn = await waitForElement("button.sidebar__btn", 2500);
-    }
+    if (!btn) btn = await waitForElement("button.sidebar__btn", 2500);
     if (!btn) return;
 
-    // tekrar kontrol: sidebar bu arada açıldıysa tıklama
     if (isSidebarActive(getSidebarEl())) return;
 
-    // ✅ gerçek click
     btn.click();
 
     __casinoSidebarAuto.didOpenOnThisVisit = true;
-    __casinoSidebarAuto.lastRouteWasCasino = true;
   }
 
-  function toggleCasinoSidebarActive(isActive) {
-    const isDesktop = window.matchMedia("(min-width: 769px)").matches;
-    const el =
-      document.querySelector("#sidebar.sidebar") ||
-      document.querySelector("#sidebar") ||
-      document.querySelector(".sidebar");
-
-    if (!el) return;
-
-    // Mobilde asla active kalmasın
-    if (!isDesktop) {
-      el.classList.remove("active");
-      return;
-    }
-
-    el.classList.toggle("active", !!isActive);
-  }
-
-  const PROVIDER_GROUP_SLUG_BY_IDENTIFIER = {
-    evolution: "evolution-yeni",
-    hacksaw: "hacksaw-gaming-yeni", // ✅ düz ASCII
-    egtinteractive: "egt-digital-yeni",
-    "egt-interactive": "amusnet-yeni",
-    pgsoft: "pgsoft-yeni",
-    "3oaks": "3oaks-booongo-yeni",
-  };
-
-  // identifier normalize (case-insensitive)
   function normIdentifier(s) {
     return String(s || "")
       .trim()
-      .toLowerCase();
-  }
-
-  // bu provider özel group slug’a mı gitmeli?
-  function getSpecialGroupSlugByProvider(provider) {
-    const idf = normIdentifier(provider?.identifier);
-    if (!idf) return "";
-    return PROVIDER_GROUP_SLUG_BY_IDENTIFIER[idf] || "";
-  }
-
-  function isPragmaticProvider(p) {
-    if (!p) return false;
-    const idf = normStr(p.identifier || "");
-    const nm = toSlug(p.name || "");
-
-    if (idf.includes("pragmaticplay")) return true;
-
-    // name bazen: "Pragmatic Play"
-    if (nm.includes("pragmaticplay") && nm.includes("pragmaticplay"))
-      return true;
-
-    return false;
+      .toLowerCase()
+      .replace(/[\s_]/g, "-");
   }
 
   function waitForElement(selector, timeout = 6000) {
@@ -392,89 +354,6 @@
     return CONFIG.casinoPaths.includes(normalizePath(pathname));
   }
 
-  // ✅ /casino içinde belirli section başlıklarına sahip parent ".section" gizle
-  function hideCasinoSectionsByTitles() {
-    if (!isCasinoRoute(location.pathname)) return;
-
-    // Başlıkları normalize edip karşılaştıracağız
-    const TARGET_TITLES = [
-      "3oaks (booongo) yeni",
-      "hacksaw gaming yeni",
-      "vip bell link",
-      "en popüler oyunlar",
-      "vip bell link oyunlari",
-      "egt bell link",
-      "pragmatic play",
-      "jackpot oyunları",
-      "yüksek rtp",
-      "bonus satın alma oyunları",
-      "booming games",
-      "balık ve av oyunları",
-      "amusnet",
-      "megaways oyunları",
-      "pgsoft",
-      "evolution",
-      "drops & wins oyunları",
-      "hacksaw gaming",
-      "playson",
-      "ezugi",
-      "en beğenilen oyunlar",
-      "evolution yeni",
-      "pgsoft yeni",
-      "amusnet yeni",
-      "egt digital yeni",
-      "pragmatic play yeni",
-      "tüm oyunlar",
-    ];
-
-    // "İ/ı/Ğ/ş/ö/ü/ç" gibi karakterleri toleranslı eşleştirmek için:
-    const norm = (s) =>
-      String(s || "")
-        .replace(/\s+/g, " ")
-        .trim()
-        .toLowerCase()
-        // TR karakterleri normalize (NFD + diacritics remove)
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        // özel birkaç dönüşüm
-        .replace(/ı/g, "i")
-        .replace(/&amp;/g, "&");
-
-    const targetSet = new Set(TARGET_TITLES.map(norm));
-
-    const titles = document.querySelectorAll(".section__title");
-    titles.forEach((t) => {
-      const txt = norm(t.textContent || "");
-      if (!txt) return;
-
-      // birebir eşleşme (en güvenlisi)
-      if (!targetSet.has(txt)) return;
-
-      const section = t.closest(".section");
-      if (!section) return;
-
-      // tekrar tekrar işlem yapmayalım
-      if (section.dataset.__hiddenCasinoSection === "1") return;
-
-      section.style.display = "none";
-      section.dataset.__hiddenCasinoSection = "1";
-    });
-  }
-
-  function setup3oaksHideObserver() {
-    if (window.__hide3oaksObserverInstalled) return;
-    window.__hide3oaksObserverInstalled = true;
-
-    const obs = new MutationObserver(() => {
-      hideCasinoSectionsByTitles();
-    });
-
-    // casino içeriği genelde main content altında aktığı için body yeterli
-    obs.observe(document.body, { childList: true, subtree: true });
-
-    // referans sakla (istersen ileride disconnect edersin)
-    window.__hide3oaksObserver = obs;
-  }
 
   function qs(sel, root = document) {
     return root.querySelector(sel);
@@ -504,61 +383,6 @@
       .replace(/\s+/g, " ");
   }
 
-  function imgKey(url) {
-    const u = String(url || "");
-    const noQ = u.split("?")[0];
-    const last = noQ.split("/").pop() || "";
-    return normStr(last);
-  }
-
-  function gameKeys(g) {
-    const name = g?.name || g?.title || g?.gameName || g?.displayName || "";
-    const nameSlug = toSlug(name);
-
-    const rawIds = [
-      g?.slug,
-      g?.seo,
-      g?.code,
-      g?.id,
-      g?.gameId,
-      g?.game_id,
-      g?.externalId,
-      g?.external_id,
-      g?.tableId,
-      g?.table_id,
-    ]
-      .filter(Boolean)
-      .map((x) => normStr(x));
-
-    const keys = new Set(rawIds);
-    if (nameSlug) keys.add(normStr(nameSlug));
-
-    const image =
-      g?.image ||
-      g?.thumbnail ||
-      g?.cover ||
-      g?.logo ||
-      g?.icon ||
-      g?.img ||
-      "";
-    const ik = imgKey(image);
-    if (ik) keys.add(ik);
-
-    return keys;
-  }
-
-  function buildKeysIndex(games) {
-    const set = new Set();
-    for (const g of games || []) for (const k of gameKeys(g)) set.add(k);
-    return set;
-  }
-
-  function countIntersectKeys(game, keySet) {
-    let hit = 0;
-    for (const k of gameKeys(game)) if (keySet.has(k)) hit++;
-    return hit;
-  }
-
   function gameNameOf(g) {
     return String(g?.name || g?.title || g?.gameName || g?.displayName || "");
   }
@@ -579,123 +403,102 @@
     );
   }
 
-  // -----------------------------
-  // Styles
-  // -----------------------------
+  /* Styles */
   function ensureMobileCasinoStyles() {
     if (document.getElementById("casino-mobile-grid-style")) return;
     const style = document.createElement("style");
     style.id = "casino-mobile-grid-style";
     style.textContent = `
-      /* ✅ Seçili provider (mobil dropdown) */
-  .provider-dd-item.is-selected{
-    background: rgba(255,208,0,.12);
-    border-color: rgba(255,208,0,.35);
-    box-shadow: 0 0 0 1px rgba(255,208,0,.18) inset;
+  .provider-dd-item.is-selected {
+    background: var(--tf-hvr2);
+    border-color: rgba(255,255,255,.16);
   }
 
-    
-    /* Mobile Styles */
-    @media (max-width: 768px) {
-      .casino-new__searchwrap {
-        position: relative;
-        z-index: 30;
-      }
-      
-      .casino-new__left {
-          display: none;
-      }
-
-      .casino-new__searchwrap {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .casino-new__filter-btn {
-        background: rgba(255, 255, 255, 0.06);
-        padding: 8px 12px;
-        border-radius: 12px;
-        cursor: pointer;
-        color: #fff;
-        font-weight: 600;
-        transition: all 0.3s ease;
-      }
-
-      .casino-new__filter-btn:hover {
-        background: rgba(255, 208, 0, 0.16);
-      }
-
-      /* Mobile dropdown styles */
-      .provider-dropdown{
-        position: absolute;
-        top: calc(100% + 8px);
-        left: 0;
-        right: 0;
-
-        background: rgba(18,18,18,0.98);
-        backdrop-filter: blur(6px);
-
-        border-radius: 14px;
-        padding: 12px;
-
-        max-height: 65vh;
-        overflow-y: auto;
-
-        z-index: 9999;
-        box-shadow:
-          0 20px 40px rgba(0,0,0,.55),
-          0 0 0 1px rgba(255,255,255,.06) inset;
-      }
-
-      .provider-option {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px;
-        cursor: pointer;
-      }
-      .provider-option:hover {
-        background-color: rgba(255, 208, 0, 0.1);
-      }
-
-      .provider-dropdown-grid{
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0,1fr));
-    gap: 10px;
-  }
-
-  .provider-dd-item{
-    background: rgba(255,255,255,0.06);
-    border-radius: 12px;
-    height: 56px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    cursor: pointer;
-    transition: all .15s ease;
-    border: 1px solid rgba(255,255,255,0.06);
-  }
-
-  .provider-dd-item:active{
-    transform: scale(.97);
-  }
-
-  .provider-dd-item:hover{
-    background: rgba(255,208,0,.14);
-    border-color: rgba(255,208,0,.35);
-  }
-
-  .provider-dd-item img{
-    max-height: 40px;
-    max-width: 90%;
-    object-fit: contain;
-    pointer-events: none;
-  }
+  @media (max-width: 768px) {
+    .casino-new__searchwrap {
+      position: relative;
+      z-index: 30;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
     }
+
+    .casino-new__left {
+      display: none;
+    }
+
+    .casino-new__filter-btn {
+      background: var(--tf-hvr1);
+      border: 1px solid rgba(255,255,255,.06);
+      padding: 0 14px;
+      height: 40px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--tf-tc3);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+      flex-shrink: 0;
+    }
+
+    .casino-new__filter-btn:hover {
+      background: var(--tf-hvr2);
+    }
+
+    .provider-dropdown {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--tf-bg, #13151f);
+      backdrop-filter: blur(10px);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.06);
+      padding: 12px;
+      max-height: 60vh;
+      overflow-y: auto;
+      z-index: 9999;
+      box-shadow: 0 16px 40px rgba(0,0,0,.5);
+    }
+
+    .provider-dropdown-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 8px;
+    }
+
+    .provider-dd-item {
+      background: var(--tf-hvr1);
+      border-radius: 8px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .provider-dd-item:active {
+      transform: scale(.97);
+    }
+
+    .provider-dd-item:hover {
+      background: var(--tf-hvr2);
+      border-color: rgba(255,255,255,.12);
+    }
+
+    .provider-dd-item img {
+      max-height: 30px;
+      max-width: 80%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+  }
   `;
     document.head.appendChild(style);
   }
@@ -705,455 +508,504 @@
 
     const style = document.createElement("style");
     style.id = "casino-new-style";
-    style.textContent = `    
-    .casino-new__providers-search{
-  margin: 0 0 10px 0;
-}
-
-.casino-new__providers-search input{
-  width: 100%;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 10px;
-  padding: 10px 12px;
-  color: #fff;
-  font-weight: 600;
-  outline: none;
-}
-
-.casino-new__providers-search input::placeholder{
-  color: rgba(255,255,255,.55);
-}
-
-    
-      .${CONFIG.rootClass}{ padding-top:12px; }
-
-      .casino-new-root.casino-container.container {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 100% !important;
-        padding: 12px 24px !important;
-      }
-
-      /* TABS */
-      .casino-new__tabs{
-        position: relative;
-        display:flex;
-        flex-wrap: nowrap;
-        align-items:center;
-        gap: 8px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
-        scroll-padding: 10px;
-        padding: 0 10px 12px 10px;
-        margin: 0 -10px 0px -10px;
-        scrollbar-width: none;
-        backdrop-filter: blur(6px);
-      }
-      .casino-new__tabs::-webkit-scrollbar{ height: 0px; }
-
-      .casino-new__tab{
-        cursor:pointer;
-        border:none;
-        background:rgba(255,255,255,.06);
-        color:#fff;
-        padding:10px 14px;
-        border-radius:12px;
-        font-weight:700;
-        display:flex;
-        align-items:center;
-        gap:6px;
-        flex: 0 0 auto;
-        white-space: nowrap;
-        scroll-snap-align: start;
-        user-select: none;
-        -webkit-tap-highlight-color: transparent;
-        transition: transform .12s ease, background .12s ease, box-shadow .12s ease, opacity .12s ease;
-      }
-      .casino-new__tab:active{ transform: scale(.98); }
-      .casino-new__tab img{ width:20px; height:20px; flex: 0 0 20px; }
-      .casino-new__tab.is-active{
-      background: rgb(93 174 125);
-      box-shadow: 0 0 0 1px rgb(89 167 120) inset;
-      }
-
-      /* ✅ provider seçiliyken tablar disabled
-      .casino-new__tabs.is-disabled .casino-new__tab{
-        opacity: .45;
-        pointer-events: none;
-      }
-      */
-
-      /* SEARCH */
-      .casino-new__searchwrap{
-        padding: 0 10px 14px 10px;
-        margin: 0 -10px 6px -10px;
-      }
-      .casino-new__search{
-        width: 100%;
-        display:flex;
-        align-items:center;
-        gap: 10px;
-        background: rgba(255,255,255,.06);
-        border-radius: 12px;
-        padding: 12px 12px;
-        backdrop-filter: blur(4px);
-      }
-      .casino-new__search svg{
-        width:18px;height:18px;flex:0 0 18px;
-        opacity: .85;
-      }
-      .casino-new__search input{
-        width: 100%;
-        border: none;
-        outline: none;
-        background: transparent;
-        color: #fff;
-        font-weight: 600;
-        font-size: 14px;
-      }
-      .casino-new__search input::placeholder{
-        color: rgba(255,255,255,.65);
-        font-weight: 600;
-      }
-
-      /* CONTENT FLEX */
-      #casino-new-content.casino-new__content{
-        display:flex;
-        gap: 12px;
-        align-items:flex-start;
-        padding: 0 10px 0 10px;
-        margin: 0 -10px 0 -10px;
-      }
-      .casino-new__left{
-        width: 15%;
-        min-width: 220px;
-        height: 700px !important;
-        overflow-y: scroll !important;
-      }
-      .casino-new__right{
-        width: 85%;
-        min-width: 0;
-        height: 700px !important;
-        overflow-y: scroll !important;
-      }
-      @media (max-width: 768px){
-
-            .casino-new-root.casino-container.container {
-        padding: 12px 0px !important;
-      }
-      
-        #casino-new-content.casino-new__content{ display:block; }
-        .casino-new__left{ width:100%; min-width:0; margin-bottom: 12px; }
-        .casino-new__right{ width:100%; min-width:0; }
-      }
-
-      /* PROVIDERS */
-      .casino-new__providers{
-        background: rgba(255,255,255,0.03);
-        border-radius: 12px;
-        padding: 10px;
-      }
-      .casino-new__providers-head{
-        color: rgba(255,255,255,0.85);
-        font-weight: 800;
-        font-size: 16px;
-        margin: 0 0 10px 2px;
-        display:flex;
-        align-items:center;
-        justify-content: space-between;
-        gap: 10px;
-      }
-      .casino-new__providers-clear{
-        cursor:pointer;
-        border:none;
-        background: rgba(255,255,255,0.06);
-        color:#fff;
-        font-weight: 800;
-        font-size: 12px;
-        padding: 8px 10px;
-        border-radius: 10px;
-      }
-      .casino-new__providers-grid{
-        display:grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-      }
-      .casino-new__provider{
-        cursor: pointer;
-        border-radius: 12px;
-        background: rgba(255,255,255,0.06);
-        overflow: hidden;
-        border: 1px solid rgba(255,255,255,0.06);
-        transition: transform .12s ease, background .12s ease, box-shadow .12s ease, border-color .12s ease;
-        user-select: none;
-        -webkit-tap-highlight-color: transparent;
-        padding: 8px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        min-height: 46px;
-      }
-      .casino-new__provider:active{ transform: scale(.98); }
-      .casino-new__provider img{
-        max-width: 100%;
-        max-height: 28px;
-        display:block;
-      }
-      .casino-new__provider.is-selected{
-        background: rgb(82 157 116);
-    border-color: rgb(22 54 69);
-    box-shadow: 0 0 0 1px rgb(67 132 105) inset;
-      }
-      .casino-new__providers-skel{
-        display:grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-      }
-      .casino-new__provider-skel{
-        height: 46px;
-        border-radius: 12px;
-        background: rgba(255,255,255,0.06);
-        position: relative;
-        overflow:hidden;
-      }
-      .casino-new__provider-skel::after{
-        content:"";
-        position:absolute;
-        top:0; left:-60%;
-        width:60%;
-        height:100%;
-        background: linear-gradient(
-          90deg,
-          rgba(255,255,255,0),
-          rgba(255,255,255,0.12),
-          rgba(255,255,255,0)
-        );
-        animation: casinoSkel 1.1s ease-in-out infinite;
-      }
-
-      /* SKELETON (games) */
-      .casino-new__skeleton .game-card{ pointer-events:none; }
-      .casino-new__skeleton .game-image{ position: relative; width: 100%; overflow: hidden; }
-      .casino-new__skel-box{
-        width: 100%;
-        height: 100%;
-        border-radius: 10px;
-        background: rgba(255,255,255,0.06);
-        position: relative;
-        overflow:hidden;
-      }
-      .casino-new__skel-box::after{
-        content:"";
-        position:absolute;
-        top:0; left:-60%;
-        width:60%;
-        height:100%;
-        background: linear-gradient(
-          90deg,
-          rgba(255,255,255,0),
-          rgba(255,255,255,0.12),
-          rgba(255,255,255,0)
-        );
-        animation: casinoSkel 1.1s ease-in-out infinite;
-      }
-      @keyframes casinoSkel{
-        0%{ transform: translateX(0); }
-        100%{ transform: translateX(260%); }
-      }
-
-      /* GRID */
-      @media (max-width: 480px){
-        .game-card{    
-        border-radius: 0px !important; }
-        .casino-container .games-container{
-          display: grid !important;
-          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-          gap: 8px !important;
-        }
-        .casino-container .game-card{
-          display: flex;
-          flex-direction: column;
-          border-radius: 8px;
-          overflow: hidden;
-          background: rgba(255,255,255,0.02);
-          text-decoration: none;
-        }
-        .casino-container .game-card .game-image{
-          position: relative;
-          width: 100%;
-        
-          overflow: hidden;
-        }
-        .casino-container .game-card .game-image img{
-          width: 100%;
-          height: 100%;
-          display: block;
-          object-fit: cover;
-        }
-      }
-
-      @media (min-width: 481px) and (max-width: 768px){
-        .casino-container .games-container{
-          display: grid !important;
-          grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-          gap: 10px !important;
-        }
-        .casino-container .game-card .game-image{ aspect-ratio: 1.5 / 1.2; }
-        .casino-container .game-card .game-image img{ object-fit: cover; }
-      }
-
-      @media (min-width: 769px){
-        .casino-container .games-container{
-          display: grid;
-          grid-template-columns: repeat(8, minmax(0, 1fr));
-          gap: 12px;
-        }
-        .casino-container .game-card{
-          display:flex;
-          flex-direction:column;
-          border-radius: 12px;
-          overflow:hidden;
-          background: rgba(255,255,255,0.02);
-          text-decoration:none;
-        }
-        .casino-container .game-card .game-image{
-          position: relative;
-          width: 100%;
-          spect-ratio: 1.5 / 1.5;
-          overflow: hidden;
-          
-        }
-        .casino-container .game-card .game-image img{
-          width: 100%;
-          height: 100%;
-          display:block;
-          object-fit:cover;
-        }
-
-        .provider-dropdown,
-  #filter-btn{
-    display:none !important;
+    style.textContent = `
+  /* Root */
+  .casino-new-root.casino-container.container {
+    padding: 16px 24px !important;
   }
-      }
 
-      .casino-new__empty{ color: rgba(255,255,255,0.8); padding: 12px 2px; }
-      .game-card { margin-top: 0px !important; }
+  /* Tabs */
+  .casino-new__tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    padding: 0 0 12px 0;
+    scrollbar-width: none;
+  }
 
-      /* ✅ ONLY casino-new scrollbars (Chrome/Edge/Safari + Firefox) */
-.casino-new-root .casino-new__left,
-.casino-new-root .casino-new__right{
-  overflow-y: auto !important;
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: rgba(255,208,0,.55) rgba(255,255,255,.08); /* thumb track */
-}
+  .casino-new__tabs::-webkit-scrollbar {
+    display: none;
+  }
 
-/* Webkit scrollbars */
-.casino-new-root .casino-new__left::-webkit-scrollbar,
-.casino-new-root .casino-new__right::-webkit-scrollbar{
-  width: 10px;
-}
+  .casino-new__tab {
+    cursor: pointer;
+    border: none;
+    background: var(--tf-bg2);
+    color: var(--tf-tc3);
+    padding: 0 14px;
+    height: 40px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background .2s, color .2s;
+  }
 
-.casino-new-root .casino-new__left::-webkit-scrollbar-track,
-.casino-new-root .casino-new__right::-webkit-scrollbar-track{
-  background: rgba(255,255,255,.08);
-  border-radius: 999px;
-}
+  .casino-new__tab:hover {
+    background: var(--tf-hvr2);
+    color: #fff;
+  }
 
-.casino-new-root .casino-new__left::-webkit-scrollbar-thumb,
-.casino-new-root .casino-new__right::-webkit-scrollbar-thumb{
-  background: rgba(255,208,0,.55);
-  border-radius: 999px;
+  .casino-new__tab.is-active {
+    background: var(--tf-btn);
+    color: var(--tf-tc);
+  }
 
-  /* Track ile thumb birbirine karışmasın */
-  border: 2px solid rgba(0,0,0,0);
-  background-clip: padding-box;
-}
+  /* Search */
+  .casino-new__searchwrap {
+    padding: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
-.casino-new-root .casino-new__left::-webkit-scrollbar-thumb:hover,
-.casino-new-root .casino-new__right::-webkit-scrollbar-thumb:hover{
-  background: rgba(255,208,0,.75);
-}
+  .casino-new__search {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--tf-bg2);
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 8px;
+    padding: 0 14px;
+    height: 40px;
+    transition: border-color .2s;
+  }
 
+  .casino-new__search:focus-within {
+    border-color: rgba(255,255,255,.16);
+  }
 
+  .casino-new__search svg {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    color: var(--tf-tc3);
+  }
 
-/* ============================
-   TOP BAR (tek tam genişlik banner)
-   ============================ */
-.casino-new__topbar {
-  width: 100%;
-  height: 140px;
-  overflow: hidden;
-  border-radius: 12px;
-  margin-bottom: 16px;
-}
+  .casino-new__search input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #fff;
+    font-weight: 400;
+    font-size: 14px;
+  }
 
-.casino-new__topbar ,
-.casino-new__topbar img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-}
+  .casino-new__search input::placeholder {
+    color: var(--tf-tc3);
+  }
 
-    `;
+  /* Layout */
+  #casino-new-content.casino-new__content {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .casino-new__left {
+    width: 200px;
+    flex-shrink: 0;
+    height: 720px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.1) transparent;
+  }
+
+  .casino-new__left::-webkit-scrollbar { width: 3px; }
+  .casino-new__left::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.1);
+    border-radius: 999px;
+  }
+
+  .casino-new__right {
+    flex: 1;
+    min-width: 0;
+    height: 720px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.1) transparent;
+  }
+
+  .casino-new__right::-webkit-scrollbar { width: 3px; }
+  .casino-new__right::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.1);
+    border-radius: 999px;
+  }
+
+  /* Providers panel */
+  .casino-new__providers {
+    background: var(--tf-bg2);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,.06);
+    padding: 12px;
+  }
+
+  .casino-new__providers-clear {
+    cursor: pointer;
+    border: none;
+    background: var(--tf-hvr1);
+    color: var(--tf-tc3);
+    font-weight: 500;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: background .2s, color .2s;
+  }
+
+  .casino-new__providers-clear:hover {
+    background: var(--tf-hvr2);
+    color: #fff;
+  }
+
+  .casino-new__providers-search {
+    margin: 0 0 10px 0;
+  }
+
+  .casino-new__providers-search input {
+    width: 100%;
+    background: var(--tf-hvr1);
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 400;
+    outline: none;
+    transition: border-color .2s;
+  }
+
+  .casino-new__providers-search input:focus {
+    border-color: rgba(255,255,255,.16);
+  }
+
+  .casino-new__providers-search input::placeholder {
+    color: var(--tf-tc3);
+  }
+
+  .casino-new__providers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .casino-new__provider {
+    cursor: pointer;
+    border-radius: 8px;
+    background: var(--tf-hvr1);
+    border: 1px solid rgba(255,255,255,.06);
+    transition: background .15s, border-color .15s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    padding: 8px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 48px;
+  }
+
+  .casino-new__provider:hover {
+    background: var(--tf-hvr2);
+    border-color: rgba(255,255,255,.12);
+  }
+
+  .casino-new__provider:active {
+    transform: scale(.97);
+  }
+
+  .casino-new__provider img {
+    max-width: 88%;
+    max-height: 26px;
+    display: block;
+    object-fit: contain;
+    pointer-events: none;
+  }
+
+  .casino-new__provider span {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--tf-tc3);
+    text-align: center;
+    line-height: 1.2;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .casino-new__provider.is-selected {
+    background: var(--tf-btn);
+    border-color: rgba(255,255,255,.12);
+  }
+
+  /* Provider skeleton */
+  .casino-new__providers-skel {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .casino-new__provider-skel {
+    height: 48px;
+    border-radius: 8px;
+    background: var(--tf-hvr1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .casino-new__provider-skel::after,
+  .casino-new__skel-box::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
+    animation: casinoSkel 1.4s ease-in-out infinite;
+  }
+
+  .casino-new__skeleton .game-card {
+    pointer-events: none;
+  }
+
+  .casino-new__skeleton .game-image {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .casino-new__skel-box {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background: var(--tf-hvr1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  @keyframes casinoSkel {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(280%); }
+  }
+
+  /* Game cards */
+  .game-card {
+    margin-top: 0 !important;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255,255,255,.02);
+    text-decoration: none;
+  }
+
+  .game-card .game-image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+  }
+
+  .game-card .game-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: filter .4s, transform .5s;
+  }
+
+  .game-card .game-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--tf-bg, #13151f);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s;
+  }
+
+  @media (hover: hover) {
+    .game-card:hover .game-image img {
+      transform: scale(1.08);
+      filter: blur(2px);
+    }
+
+    .game-card:hover .game-image::after {
+      opacity: .75;
+    }
+
+    .game-card:hover .game-image::before {
+      opacity: 1;
+    }
+  }
+
+  .game-card .game-image::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: 36%;
+    aspect-ratio: 1 / 1;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 45%;
+    background-image: var(--play-icon);
+    background-color: var(--tf-active);
+    border-radius: 999px;
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s;
+  }
+
+  /* Game grid */
+  .games-container {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  @media (max-width: 768px) {
+    .casino-new-root.casino-container.container {
+      padding: 12px 12px !important;
+    }
+
+    #casino-new-content.casino-new__content {
+      display: block;
+    }
+
+    .casino-new__left {
+      width: 100%;
+      height: auto;
+      margin-bottom: 12px;
+    }
+
+    .casino-new__right {
+      width: 100%;
+      height: auto;
+    }
+
+    .games-container {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+  }
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    .games-container {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 769px) {
+    .provider-dropdown,
+    #filter-btn {
+      display: none !important;
+    }
+
+    .games-container {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .games-container {
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+  }
+
+  .casino-new__empty {
+    color: var(--tf-tc3);
+    padding: 16px 2px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  `;
     document.head.appendChild(style);
   }
 
-  // -----------------------------
-  // ✅ Global Search (casino.js gibi)
-  // -----------------------------
+  /* Search */
   async function searchGamesGlobal(query) {
     try {
       const res = await fetch(CONFIG.searchApi.url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: query, rt: CONFIG.searchApi.rt }),
+        body: JSON.stringify({ name: query, rt: CONFIG.rt() }),
       });
       if (!res.ok) throw new Error("Network response was not ok");
       const json = await res.json();
       const list = Array.isArray(json?.data) ? json.data : [];
       return list;
     } catch (e) {
-      console.error("[search] fetch error:", e);
       return [];
     }
   }
 
-  // -----------------------------
-  // Providers
-  // -----------------------------
+  /* Providers */
+  function isLiveCasinoPage() {
+    const path = window.location.pathname;
+    return path.includes("/live-casino") || path.includes("/live-lobby");
+  }
+
   async function fetchProviders() {
-    if (AppState.providers || AppState.providersLoading)
-      return AppState.providers || [];
+    if (AppState.providers) return AppState.providers;
+    if (AppState.providersLoading) {
+      return new Promise((resolve) => {
+        let elapsed = 0;
+        const poll = setInterval(() => {
+          elapsed += 50;
+          if (!AppState.providersLoading || elapsed > 15000) {
+            clearInterval(poll);
+            resolve(AppState.providers || []);
+          }
+        }, 50);
+      });
+    }
+    const gen = AppState._stateGen;
     AppState.providersLoading = true;
     try {
-      const res = await fetch(CONFIG.providersApi.url, {
+      const api = isLiveCasinoPage() ? CONFIG.providersApi.live : CONFIG.providersApi.casino;
+      const res = await fetch(api.url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(CONFIG.providersApi.payload),
+        body: JSON.stringify(api.payload()),
       });
+      if (!res.ok) throw new Error(`providers fetch failed: ${res.status}`);
       const json = await res.json();
+      if (gen !== AppState._stateGen) return [];
       const providers = Array.isArray(json?.data) ? json.data : [];
       AppState.providers = providers;
       return providers;
     } catch (e) {
-      console.error("[providers] fetch error:", e);
-      AppState.providers = [];
+      if (gen === AppState._stateGen) AppState.providers = [];
       return [];
     } finally {
-      AppState.providersLoading = false;
+      if (gen === AppState._stateGen) AppState.providersLoading = false;
     }
   }
 
   function renderProvidersSkeleton(count = 18) {
     return `
       <div class="casino-new__providers">
-        <div class="casino-new__providers-head">
-          <span>Sağlayıcılar</span>
-        </div>
         <div class="casino-new__providers-skel">
           ${Array.from({ length: count })
             .map(() => `<div class="casino-new__provider-skel"></div>`)
@@ -1175,9 +1027,6 @@
 
     return `
       <div class="casino-new__providers">
-        <div class="casino-new__providers-head">
-          <span>Sağlayıcılar</span>
-        </div>
         <div class="casino-new__providers-search">
           <input
             id="provider-search-input"
@@ -1193,9 +1042,8 @@
               const id = String(p?.id ?? "");
               const identifier = String(p?.identifier ?? "");
               const name = String(p?.name ?? "");
-              // const image = String(p?.image ?? "");
-              const image = resolveProviderImage(p);
               const isSelected = selectedId && id === selectedId;
+              const img = resolveProviderImage(p);
               return `
                 <div class="casino-new__provider ${
                   isSelected ? "is-selected" : ""
@@ -1204,11 +1052,9 @@
                      tabindex="0"
                      data-provider="${safeAttr(id)}"
                      data-identifier="${safeAttr(identifier)}"
-                     data-name="${safeAttr(name)}"
-                     data-image="${safeAttr(image)}">
-                  <img src="${safeAttr(image)}" alt="${safeAttr(
-                    name,
-                  )}" loading="lazy">
+                     data-name="${safeAttr(name)}">
+                  <img src="${safeAttr(img)}" alt="${safeAttr(name)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display=''">
+                  <span style="display:none">${safeAttr(name)}</span>
                 </div>
               `;
             })
@@ -1218,12 +1064,34 @@
     `;
   }
 
-  // -----------------------------
-  // Provider games fetch (eski mantık)
-  // -----------------------------
+  /* Provider games fetch */
   async function fetchGamesByProviderSlots(provider) {
     try {
-      const ts = Math.floor(Date.now() / 1000);
+      const ts = CONFIG.rt();
+      const provIdentifierRaw = (provider && provider.identifier) || "";
+
+      if (provIdentifierRaw) {
+        try {
+          const categories = await fetchAllCategories();
+          const allGames = [];
+          for (const cat of categories) {
+            if (Array.isArray(cat.group)) {
+              for (const g of cat.group) allGames.push(g);
+            }
+          }
+          const needle = provIdentifierRaw.toLowerCase();
+          const seen = new Set();
+          const filtered = allGames.filter((g) => {
+            const ps = (g.provider_slug || "").toLowerCase();
+            if (!ps.includes(needle) && !needle.includes(ps)) return false;
+            const key = g.slug || g.id;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          });
+          if (filtered.length) return filtered;
+        } catch (_) {}
+      }
 
       const provId = provider && (provider.id || provider);
       const provIdentifier = provider && provider.identifier;
@@ -1271,7 +1139,8 @@
           g.studio ||
           g.brand ||
           "";
-        return { slug, image, name, provider: providerName };
+        const providerSlug = g.provider_slug || g.providerSlug || "";
+        return { slug, image, name, provider: providerName, provider_slug: providerSlug };
       };
 
       const looksLikeGameObj = (it) => {
@@ -1338,18 +1207,26 @@
         return unwrap(json).map(normalizeGame);
       };
 
-      // 1) provider/{id}
       if (provId) {
         try {
           const byId = await postAndUnwrap(
             `${CONFIG.games2Base}/games2/provider/${provId}`,
             { page: 1, limit: 100, sortBy: "sort", direction: "desc", rt: ts },
           );
-          if (byId && byId.length) return byId;
+          if (byId && byId.length) {
+            if (provIdentifier) {
+              const needleId = provIdentifier.toLowerCase();
+              const filtered = byId.filter((g) => {
+                const gProvSlug = (g.provider_slug || "").toLowerCase();
+                return gProvSlug === needleId || gProvSlug.includes(needleId) || needleId.includes(gProvSlug);
+              });
+              if (filtered.length) return filtered;
+            }
+            return byId;
+          }
         } catch (_) {}
       }
 
-      // 2) fallback welcome/popular
       const attempts = [
         {
           url: `${CONFIG.games2Base}/games2/welcome/popular`,
@@ -1385,15 +1262,16 @@
           const list = await postAndUnwrap(a.url, a.body);
           if (list && list.length) {
             if (provIdentifier || provName) {
-              const needleA = (provIdentifier || "").toLowerCase();
-              const needleB = (provName || "").toLowerCase();
+              const needleId = (provIdentifier || "").toLowerCase();
+              const needleName = (provName || "").toLowerCase();
               const filtered = list.filter((g) => {
-                const p = (g.provider || "").toLowerCase();
-                return needleA
-                  ? p.includes(needleA)
-                  : needleB
-                    ? p.includes(needleB)
-                    : true;
+                const gProvider = (g.provider || "").toLowerCase();
+                const gProvSlug = (g.provider_slug || "").toLowerCase();
+                if (needleId) {
+                  return gProvSlug.includes(needleId) || gProvSlug === needleId ||
+                    needleId.includes(gProvSlug) || gProvider.includes(needleId);
+                }
+                return needleName ? gProvider.includes(needleName) : true;
               });
               if (filtered.length) return filtered;
             }
@@ -1404,197 +1282,147 @@
 
       return [];
     } catch (e) {
-      console.error("[provider-games] fetch error:", e);
       return [];
     }
   }
 
   async function getProviderGames(provider) {
     const provId = String(provider?.id || "");
-    if (!provId) return { games: [], keys: new Set() };
+    if (!provId) return { games: [] };
 
     let cached = AppState.providerGamesCache[provId];
-    if (cached?.games && cached?.keys) return cached;
-
-    // aynı provider için devam eden istek varsa onu bekle
+    if (cached?.games) return cached;
     if (cached?.promise) return cached.promise;
 
     const promise = (async () => {
       const games = (await fetchGamesByProviderSlots(provider)) || [];
-      const keys = buildKeysIndex(games);
-      const val = { games, keys };
-      AppState.providerGamesCache[provId] = val;
-      return val;
+      AppState.providerGamesCache[provId] = { games };
+      return { games };
     })();
 
     AppState.providerGamesCache[provId] = { promise };
     return promise;
   }
 
-  // -----------------------------
-  // Tab/group API
-  // -----------------------------
-  // ✅ Group API'den (sekme API'si) slug ile oyun getir — Pragmatic özel
-  async function fetchGroupGamesDirectBySlug(slug) {
-    if (!slug) return [];
+  /* Tab / group API */
+  async function fetchAllCategories() {
+    if (AppState._categoriesCache) return AppState._categoriesCache;
+    if (AppState._categoriesFetching) return AppState._categoriesFetching;
 
-    // Pragmatic cache
-    if (slug === "pragmatic-play-yeni") {
-      if (AppState.pragmaticGroupGames || AppState.pragmaticGroupLoading)
-        return AppState.pragmaticGroupGames || [];
-      AppState.pragmaticGroupLoading = true;
-    }
+    const gen = AppState._stateGen;
+    AppState._categoriesFetching = (async () => {
+      try {
+        const live = isLiveCasinoPage();
+        let data;
 
-    try {
-      const res = await fetch(CONFIG.api.url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(CONFIG.api.payload),
+        if (live) {
+          const res = await fetch(CONFIG.games2LiveLobby.url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(CONFIG.games2LiveLobby.payload()),
+          });
+          if (!res.ok) throw new Error(`live fetch failed: ${res.status}`);
+          const json = await res.json();
+          const allGames = Array.isArray(json?.data?.data) ? json.data.data : [];
+          data = [{ slug: "tumu", name: "Tümü", title: "Tümü", group: allGames }];
+        } else {
+          const api = CONFIG.api.casino;
+          const res = await fetch(api.url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(api.payload()),
+          });
+          if (!res.ok) throw new Error(`casino fetch failed: ${res.status}`);
+          const json = await res.json();
+          data = Array.isArray(json?.data) ? json.data : [];
+        }
+
+        if (gen !== AppState._stateGen) return [];
+        if (data.length) AppState._categoriesCache = data;
+        return data;
+      } finally {
+        if (gen === AppState._stateGen) AppState._categoriesFetching = null;
+      }
+    })();
+
+    return AppState._categoriesFetching;
+  }
+
+  async function fetchTabs() {
+    if (AppState.tabs.length) return AppState.tabs;
+    if (AppState.tabsLoading) {
+      return new Promise((resolve) => {
+        let elapsed = 0;
+        const poll = setInterval(() => {
+          elapsed += 50;
+          if (!AppState.tabsLoading || elapsed > 15000) {
+            clearInterval(poll);
+            resolve(AppState.tabs);
+          }
+        }, 50);
       });
-
-      const json = await res.json();
-      const categories = Array.isArray(json?.data) ? json.data : [];
-
-      const found = categories.find(
-        (c) => String(c?.slug || "") === String(slug),
-      );
-      const games = Array.isArray(found?.group) ? found.group : [];
-
-      if (slug === "pragmatic-play-yeni") AppState.pragmaticGroupGames = games;
-
-      return games;
+    }
+    const gen = AppState._stateGen;
+    AppState.tabsLoading = true;
+    try {
+      const categories = await fetchAllCategories();
+      if (gen !== AppState._stateGen) return [];
+      AppState.tabs = categories.map((c) => ({
+        slug: c.slug,
+        label: c.name || c.title || c.slug,
+      }));
+      if (!AppState.activeTab && AppState.tabs.length) {
+        AppState.activeTab = AppState.tabs[0].slug;
+        AppState.lastTabBeforeProvider = AppState.activeTab;
+      }
+      return AppState.tabs;
     } catch (err) {
-      console.error(`[group:${slug}] fetch error:`, err);
-      if (slug === "pragmatic-play-yeni") AppState.pragmaticGroupGames = [];
       return [];
     } finally {
-      if (slug === "pragmatic-play-yeni")
-        AppState.pragmaticGroupLoading = false;
+      if (gen === AppState._stateGen) AppState.tabsLoading = false;
     }
+  }
+
+  function extractGames(cat) {
+    if (!cat) return [];
+    const g = cat.group ?? cat.games ?? cat.items ?? cat.data ?? [];
+    return Array.isArray(g) ? g : [];
   }
 
   async function fetchGroupGamesBySlug(slug) {
-    const tab = TABS.find((t) => t.slug === slug);
-    if (!tab) return [];
+    if (!slug) return [];
 
-    const isAll = tab.key === "all";
-    const isLiked = tab.key === "liked";
-    const isPopular = tab.key === "popular";
-    const isRtp = tab.key === "rtp";
-    const isJackpot = tab.key === "jackpot";
-    const isBuyBonus = tab.key === "buyBonus";
-    const isFish = tab.key === "fish";
-    const isMegaways = tab.key === "megaways";
-    const isDropsWins = tab.key === "dropsWins";
-    const isVipBell = tab.key === "vipBell";
-
-    if (isAll) {
-      if (AppState.allGames || AppState.allLoading)
-        return AppState.allGames || [];
-      AppState.allLoading = true;
-    }
-    if (isLiked) {
-      if (AppState.likedGames || AppState.likedLoading)
-        return AppState.likedGames || [];
-      AppState.likedLoading = true;
-    }
-    if (isPopular) {
-      if (AppState.popularGames || AppState.popularLoading)
-        return AppState.popularGames || [];
-      AppState.popularLoading = true;
-    }
-    if (isRtp) {
-      if (AppState.rtpGames || AppState.rtpLoading)
-        return AppState.rtpGames || [];
-      AppState.rtpLoading = true;
-    }
-    if (isJackpot) {
-      if (AppState.jackpotGames || AppState.jackpotLoading)
-        return AppState.jackpotGames || [];
-      AppState.jackpotLoading = true;
-    }
-    if (isBuyBonus) {
-      if (AppState.buyBonusGames || AppState.buyBonusLoading)
-        return AppState.buyBonusGames || [];
-      AppState.buyBonusLoading = true;
-    }
-    if (isFish) {
-      if (AppState.fishGames || AppState.fishLoading)
-        return AppState.fishGames || [];
-      AppState.fishLoading = true;
-    }
-    if (isMegaways) {
-      if (AppState.megawaysGames || AppState.megawaysLoading)
-        return AppState.megawaysGames || [];
-      AppState.megawaysLoading = true;
-    }
-    if (isDropsWins) {
-      if (AppState.dropsWinsGames || AppState.dropsWinsLoading)
-        return AppState.dropsWinsGames || [];
-      AppState.dropsWinsLoading = true;
-    }
-
-    if (isVipBell) {
-      if (AppState.vipBellGames || AppState.vipBellLoading)
-        return AppState.vipBellGames || [];
-      AppState.vipBellLoading = true;
-    }
-
-    try {
-      const res = await fetch(CONFIG.api.url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(CONFIG.api.payload),
+    if (slug in AppState.gamesCache) return AppState.gamesCache[slug];
+    if (AppState.gamesLoading[slug]) {
+      return new Promise((resolve) => {
+        let elapsed = 0;
+        const poll = setInterval(() => {
+          elapsed += 50;
+          if (!AppState.gamesLoading[slug] || elapsed > 15000) {
+            clearInterval(poll);
+            resolve(AppState.gamesCache[slug] || []);
+          }
+        }, 50);
       });
+    }
 
-      const json = await res.json();
-      const categories = Array.isArray(json?.data) ? json.data : [];
-
+    const gen = AppState._stateGen;
+    AppState.gamesLoading[slug] = true;
+    try {
+      const categories = await fetchAllCategories();
+      if (gen !== AppState._stateGen) return [];
       const found = categories.find((c) => c.slug === slug);
-      const games = Array.isArray(found?.group) ? found.group : [];
-
-      if (isAll) AppState.allGames = games;
-      if (isLiked) AppState.likedGames = games;
-      if (isPopular) AppState.popularGames = games;
-      if (isRtp) AppState.rtpGames = games;
-      if (isJackpot) AppState.jackpotGames = games;
-      if (isBuyBonus) AppState.buyBonusGames = games;
-      if (isFish) AppState.fishGames = games;
-      if (isMegaways) AppState.megawaysGames = games;
-      if (isDropsWins) AppState.dropsWinsGames = games;
-      if (isVipBell) AppState.vipBellGames = games;
-
+      const games = extractGames(found);
+      AppState.gamesCache[slug] = games;
       return games;
     } catch (err) {
-      console.error(`[${slug}] fetch error:`, err);
-      if (isAll) AppState.allGames = [];
-      if (isLiked) AppState.likedGames = [];
-      if (isPopular) AppState.popularGames = [];
-      if (isRtp) AppState.rtpGames = [];
-      if (isJackpot) AppState.jackpotGames = [];
-      if (isBuyBonus) AppState.buyBonusGames = [];
-      if (isFish) AppState.fishGames = [];
-      if (isMegaways) AppState.megawaysGames = [];
-      if (isDropsWins) AppState.dropsWinsGames = [];
-      if (isVipBell) AppState.vipBellGames = [];
       return [];
     } finally {
-      if (isAll) AppState.allLoading = false;
-      if (isLiked) AppState.likedLoading = false;
-      if (isPopular) AppState.popularLoading = false;
-      if (isRtp) AppState.rtpLoading = false;
-      if (isJackpot) AppState.jackpotLoading = false;
-      if (isBuyBonus) AppState.buyBonusLoading = false;
-      if (isFish) AppState.fishLoading = false;
-      if (isMegaways) AppState.megawaysLoading = false;
-      if (isDropsWins) AppState.dropsWinsLoading = false;
-      if (isVipBell) AppState.vipBellLoading = false;
+      if (gen === AppState._stateGen) AppState.gamesLoading[slug] = false;
     }
   }
 
-  // -----------------------------
-  // Skeleton (games)
-  // -----------------------------
+  /* Skeleton */
   function renderSkeleton(count = 36) {
     const items = Array.from({ length: count })
       .map(
@@ -1615,9 +1443,7 @@
     `;
   }
 
-  // -----------------------------
-  // Render helpers
-  // -----------------------------
+  /* Render helpers */
   function renderGames(games) {
     if (!games || !games.length) {
       return `<div class="casino-new__empty"><p>Oyun bulunamadı</p></div>`;
@@ -1636,12 +1462,7 @@
               )}" class="game-card" data-game-slug="${safeAttr(
                 slug,
               )}" data-rr="true"
-                 onclick="event.preventDefault(); const path = document.documentElement.lang === 'tr'
-                   ? '/tr/casino/games/${safeAttr(slug)}'
-                   : '/en/casino/games/${safeAttr(slug)}';
-                   window.history.pushState('', '', path);
-                   window.history.pushState('', '', path);
-                   window.history.go(-1);">
+                 onclick="event.preventDefault(); const path = document.documentElement.lang === 'tr' ? '/tr/casino/games/${safeAttr(slug)}' : '/en/casino/games/${safeAttr(slug)}'; window.history.pushState('','',path); window.history.pushState('','',path); window.history.go(-1);">
                 <div class="game-image">
                   <img src="${safeAttr(image)}" alt="${safeAttr(name)}">
                 </div>
@@ -1656,13 +1477,12 @@
   function renderTabs() {
     return `
       <div class="casino-new__tabs" role="tablist" aria-label="Casino Sekmeleri">
-        ${TABS.map((t) => {
-          const a = AppState.activeTab === t.key ? "is-active" : "";
+        ${AppState.tabs.map((t) => {
+          const a = AppState.activeTab === t.slug ? "is-active" : "";
           return `
             <button class="casino-new__tab ${a}" data-tab="${safeAttr(
-              t.key,
+              t.slug,
             )}" role="tab" aria-selected="${a ? "true" : "false"}">
-              <img src="${safeAttr(t.icon)}" alt="">
               <span>${t.label}</span>
             </button>`;
         }).join("")}
@@ -1683,41 +1503,16 @@
         )}" />
       </div>
       <button class="casino-new__filter-btn" id="filter-btn">
-        <img src="https://cdn.betpirmedia.com/casino/filter.png" width="20" height="20">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
       </button>
     </div>
   `;
   }
 
   async function renderRootShell() {
-    ensureStyles();
-    ensureMobileCasinoStyles();
+    await fetchTabs();
     return `
       <div class="${CONFIG.rootClass} casino-container container">
-
-
-<div class="casino-new__topbar">
-  <picture>
-    <source media="(max-width: 767px)"
-            srcset="https://marsel222.github.io/my-cdn/images/410x140.png">
-    <source media="(max-width: 991px)"
-            srcset="https://marsel222.github.io/my-cdn/images/660x140.png">
-    <source media="(max-width: 1023px)"
-            srcset="https://marsel222.github.io/my-cdn/images/660x140.png">
-    <source media="(max-width: 1199px)"
-            srcset="https://marsel222.github.io/my-cdn/images/850x140.png">
-    <source media="(max-width: 1443px)"
-            srcset="https://marsel222.github.io/my-cdn/images/890x140.png">
-    <source media="(max-width: 1535px)"
-            srcset="https://marsel222.github.io/my-cdn/images/1070x140.png">
-    <source media="(max-width: 1919px)"
-            srcset="https://marsel222.github.io/my-cdn/images/1700x150.png">
-    <img src="https://marsel222.github.io/my-cdn/images/1700x150.png"
-         alt="Casino Banner" loading="lazy">
-  </picture>
-</div>
-      
-      
         ${renderTabs()}
         ${renderSearch()}
         <div id="casino-new-content" class="casino-new__content">
@@ -1732,15 +1527,14 @@
     `;
   }
 
-  function setActiveTabUI(root, key) {
+  function setActiveTabUI(root, slug) {
     qsa(".casino-new__tab", root).forEach((btn) => {
-      const isActive = btn.dataset.tab === key;
+      const isActive = btn.dataset.tab === slug;
       btn.classList.toggle("is-active", isActive);
       btn.setAttribute("aria-selected", isActive ? "true" : "false");
     });
   }
 
-  // ✅ provider seçilince tablar iptal: hepsinin active'ini kaldır
   function clearTabsUI(root) {
     qsa(".casino-new__tab", root).forEach((btn) => {
       btn.classList.remove("is-active");
@@ -1770,9 +1564,7 @@
     left.innerHTML = renderProvidersPanel(providers);
   }
 
-  // -----------------------------
-  // Main render flow
-  // -----------------------------
+  /* Main render flow */
   async function loadAndRenderActivePanel(root) {
     const right = qs("#casino-new-right", root);
     if (!right) return;
@@ -1784,19 +1576,9 @@
 
     const qRaw = (AppState.searchQuery || "").trim();
 
-    // ✅ GLOBAL SEARCH (2+ karakter): tab/provider bağımsız, casino.js gibi API search
     if (qRaw.length >= 2) {
-      // UI durumunu bozma: provider seçiliyse tablar disabled kalsın
-      if (AppState.selectedProvider) {
-        // setTabsDisabled(root, true);
-        // clearTabsUI(root);
-        setTabsDisabled(root, false);
-        setActiveTabUI(root, AppState.activeTab);
-      } else {
-        setTabsDisabled(root, false);
-        // aktif tab highlight kalsın (UI bozulmasın)
-        setActiveTabUI(root, AppState.activeTab);
-      }
+      setTabsDisabled(root, false);
+      setActiveTabUI(root, AppState.activeTab);
 
       const list = await searchGamesGlobal(qRaw);
       if (reqId !== AppState.requestId) return;
@@ -1810,26 +1592,56 @@
       clearTabsUI(root);
 
       const provider = AppState.selectedProvider;
+      const idfRaw = (provider.identifier || "").toLowerCase();
 
-      const specialSlug = getSpecialGroupSlugByProvider(provider);
+      if (isLiveCasinoPage()) {
+        let games = [];
+        try {
+          const cats = await fetchAllCategories();
+          const allCat = cats.find((c) => c.slug === "tumu");
+          const all = extractGames(allCat);
+          games = all.filter((g) => (g.provider_slug || "").toLowerCase() === idfRaw);
+        } catch (_) {}
+
+        if (reqId !== AppState.requestId) return;
+        right.innerHTML = renderGames(games);
+        return;
+      }
+
+      const IDENTIFIER_TO_GROUP_SLUG = {
+        "egt-interactive": "amusnet",
+        "egtinteractive": "egt",
+        "pragmaticplay": "pragmatic-play",
+        "hacksaw": "hacksaw-gaming",
+        "pgsoft": "pgsoft",
+        "evolution": "evolution",
+        "relaxgaming": "relax-gaming",
+        "bgaming": "bgaming",
+      };
+
+      const idf = idfRaw.replace(/-/g, "");
+      const specialSlug = IDENTIFIER_TO_GROUP_SLUG[idfRaw] || IDENTIFIER_TO_GROUP_SLUG[idf] || "";
+
       if (specialSlug) {
-        const games = await fetchGroupGamesDirectBySlug(specialSlug);
+        let games = [];
+        try {
+          const cats = await fetchAllCategories();
+          const found = cats.find((c) => c.slug === specialSlug);
+          games = extractGames(found);
+        } catch (_) {}
+
         if (reqId !== AppState.requestId) return;
 
-        right.innerHTML = renderGames(games || []);
+        if (!games || !games.length) {
+          const { games: fallback } = await getProviderGames(provider);
+          if (reqId !== AppState.requestId) return;
+          games = fallback || [];
+        }
+
+        right.innerHTML = renderGames(games);
         return;
       }
 
-      // ✅ SADECE PRAGMATIC PLAY: sekmelerle aynı group API'den slug "pragmatic-play-yeni" çek
-      if (isPragmaticProvider(provider)) {
-        const games = await fetchGroupGamesDirectBySlug("pragmatic-play-yeni");
-        if (reqId !== AppState.requestId) return;
-
-        right.innerHTML = renderGames(games || []);
-        return;
-      }
-
-      // ✅ Diğer provider'lar: mevcut provider endpoint mantığı
       const { games: providerGames } = await getProviderGames(provider);
       if (reqId !== AppState.requestId) return;
 
@@ -1837,54 +1649,47 @@
       return;
     }
 
-    // ✅ 2) TAB MODU (provider yok) — arama yokken
     setTabsDisabled(root, false);
 
-    const active = TABS.find((t) => t.key === AppState.activeTab) || TABS[0];
-    setActiveTabUI(root, active.key);
+    const activeSlug = AppState.activeTab || (AppState.tabs[0]?.slug ?? "");
+    setActiveTabUI(root, activeSlug);
 
-    const games = await fetchGroupGamesBySlug(active.slug);
+    const games = await fetchGroupGamesBySlug(activeSlug);
     if (reqId !== AppState.requestId) return;
 
     right.innerHTML = renderGames(games);
   }
 
   function bindEvents(root) {
-    // Provider search (desktop + mobile ortak)
-
     root.addEventListener("input", (e) => {
       const input = e.target.closest("[data-provider-search]");
       if (!input) return;
 
       AppState.providerSearchQuery = input.value || "";
+      const filtered = filterProvidersByQuery(AppState.providers, AppState.providerSearchQuery);
 
       if (window.matchMedia("(min-width: 769px)").matches) {
         const grid = qs("#desktop-provider-grid", root);
         if (grid && AppState.providers) {
-          grid.innerHTML = filterProvidersByQuery(
-            AppState.providers,
-            AppState.providerSearchQuery,
-          )
+          grid.innerHTML = filtered
             .map((p) => {
               const id = String(p?.id ?? "");
               const identifier = String(p?.identifier ?? "");
               const name = String(p?.name ?? "");
-              const image = resolveProviderImage(p);
               const isSelected =
                 AppState.selectedProvider &&
                 String(AppState.selectedProvider.id) === id;
 
+              const img2 = resolveProviderImage({ identifier });
               return `
             <div class="casino-new__provider ${isSelected ? "is-selected" : ""}"
               role="button"
               tabindex="0"
               data-provider="${safeAttr(id)}"
               data-identifier="${safeAttr(identifier)}"
-              data-name="${safeAttr(name)}"
-              data-image="${safeAttr(image)}">
-              <img src="${safeAttr(image)}" alt="${safeAttr(
-                name,
-              )}" loading="lazy">
+              data-name="${safeAttr(name)}">
+              <img src="${safeAttr(img2)}" alt="${safeAttr(name)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display=''">
+              <span style="display:none">${safeAttr(name)}</span>
             </div>
           `;
             })
@@ -1892,27 +1697,22 @@
         }
       }
 
-      // 🔥 MOBİL: SADECE GRID GÜNCELLE
       const grid = qs("#provider-dropdown-grid");
       if (grid && AppState.providers) {
-        grid.innerHTML = filterProvidersByQuery(
-          AppState.providers,
-          AppState.providerSearchQuery,
-        )
+        grid.innerHTML = filtered
           .map((p) => {
             const isSel =
               AppState.selectedProvider &&
               String(AppState.selectedProvider.id) === String(p.id);
 
+            const ddImg = resolveProviderImage(p);
             return `
             <div class="provider-dd-item ${isSel ? "is-selected" : ""}"
               data-provider="${safeAttr(p.id)}"
               data-identifier="${safeAttr(p.identifier || "")}"
-              data-name="${safeAttr(p.name || "")}"
-              data-image="${safeAttr(resolveProviderImage(p))}">
-              <img src="${safeAttr(resolveProviderImage(p))}" alt="${safeAttr(
-                p.name,
-              )}">
+              data-name="${safeAttr(p.name || "")}">
+              <img src="${safeAttr(ddImg)}" alt="${safeAttr(p.name || "")}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display=''">
+              <span style="display:none">${safeAttr(p.name || p.identifier || "")}</span>
             </div>
           `;
           })
@@ -1920,41 +1720,34 @@
       }
     });
 
-    // Tabs
     qsa(".casino-new__tab", root).forEach((btn) => {
       btn.onclick = () => {
-        const key = btn.dataset.tab;
-        if (!key) return;
+        const slug = btn.dataset.tab;
+        if (!slug) return;
 
         const hadProvider = !!AppState.selectedProvider;
 
-        // ✅ Eğer provider seçiliyse: önce iptal et
         if (hadProvider) {
           AppState.selectedProvider = null;
 
-          // Desktop sol panel refresh (seçili provider highlight kalksın)
           const left = qs("#casino-new-left", root);
           if (left && AppState.providers)
             left.innerHTML = renderProvidersPanel(AppState.providers);
 
-          // dropdown varsa kapat
           qs(".provider-dropdown")?.remove();
         }
 
-        // ✅ provider yokken ve aynı tab ise boşuna fetch etme
-        if (!hadProvider && key === AppState.activeTab) return;
+        if (!hadProvider && slug === AppState.activeTab) return;
 
-        AppState.activeTab = key;
+        AppState.activeTab = slug;
 
-        // tab UI
         setTabsDisabled(root, false);
-        setActiveTabUI(root, key);
+        setActiveTabUI(root, slug);
 
         loadAndRenderActivePanel(root);
       };
     });
 
-    // Search input
     const input = qs("#casino-new-search-input", root);
     if (input) {
       input.value = AppState.searchQuery || "";
@@ -1979,18 +1772,19 @@
       });
     }
 
-    // ❌ Mobilde dropdown auto-close YOK
-    document.addEventListener("click", (e) => {
+    const onDocClick = (e) => {
       if (window.matchMedia("(max-width: 768px)").matches) return;
 
       const dd = qs(".provider-dropdown");
       const btn = qs("#filter-btn");
       if (!dd) return;
       if (dd.contains(e.target)) return;
-      if (btn.contains(e.target)) return;
+      if (btn && btn.contains(e.target)) return;
 
       dd.remove();
-    });
+    };
+    document.addEventListener("click", onDocClick);
+    AppState._onDocClick = onDocClick;
 
     const filterBtn = qs("#filter-btn", root);
     if (filterBtn) {
@@ -2013,52 +1807,43 @@
 
         qs(".casino-new__searchwrap", root)?.appendChild(dropdown);
 
-        // 🔥 MOBİL KLAVYE SABİT KALSIN
         requestAnimationFrame(() => {
           qs("#provider-search-input", dropdown)?.focus();
         });
       });
     }
 
-    // Providers click (delegation) — ✅ hem dropdown hem desktop panel
     root.addEventListener("click", async (e) => {
-      // 1) ✅ MOBİL DROPDOWN ITEM seçimi
       const ddItem = e.target.closest(".provider-dd-item");
       if (ddItem) {
         const provider = {
           id: ddItem.dataset.provider,
           identifier: ddItem.dataset.identifier || "",
           name: ddItem.dataset.name || "",
-          image: ddItem.dataset.image || "",
         };
 
         const wasSelected =
           AppState.selectedProvider &&
           String(AppState.selectedProvider.id) === String(provider.id);
 
+        const firstSlug = AppState.tabs[0]?.slug ?? "";
+
         if (wasSelected) {
-          // 🔁 aynı sağlayıcıya tekrar basıldı → iptal et
           AppState.selectedProvider = null;
-          AppState.activeTab = AppState.lastTabBeforeProvider || "all";
+          AppState.activeTab = AppState.lastTabBeforeProvider || firstSlug;
 
           setTabsDisabled(root, false);
           setActiveTabUI(root, AppState.activeTab);
         } else {
-          // ✅ yeni sağlayıcı seçildi
-          AppState.lastTabBeforeProvider = AppState.activeTab || "all";
+          AppState.lastTabBeforeProvider = AppState.activeTab || firstSlug;
           AppState.selectedProvider = provider;
-
-          // clearTabsUI(root);
-          // setTabsDisabled(root, true);
 
           setTabsDisabled(root, false);
           setActiveTabUI(root, AppState.activeTab);
         }
 
-        // dropdown kapat
         qs(".provider-dropdown")?.remove();
 
-        // 🔥 Desktop paneli yeniden render et → is-selected görünür
         const left = qs("#casino-new-left", root);
         if (left && AppState.providers)
           left.innerHTML = renderProvidersPanel(AppState.providers);
@@ -2067,20 +1852,18 @@
         return;
       }
 
-      // 2) ✅ DESKTOP "Temizle" butonu (sol panel)
       const clearBtn = e.target.closest(".casino-new__providers-clear");
       if (clearBtn) {
         if (!AppState.selectedProvider) return;
 
+        const firstSlug = AppState.tabs[0]?.slug ?? "";
         AppState.selectedProvider = null;
-        AppState.activeTab = AppState.lastTabBeforeProvider || "all";
+        AppState.activeTab = AppState.lastTabBeforeProvider || firstSlug;
 
-        // Desktop sol panel refresh
         const left = qs("#casino-new-left", root);
         if (left && AppState.providers)
           left.innerHTML = renderProvidersPanel(AppState.providers);
 
-        // tabları yeniden aktif et
         setTabsDisabled(root, false);
         setActiveTabUI(root, AppState.activeTab);
 
@@ -2088,7 +1871,6 @@
         return;
       }
 
-      // 3) ✅ DESKTOP provider panel item seçimi (.casino-new__provider)
       const option = e.target.closest(".casino-new__provider");
       if (!option) return;
 
@@ -2096,32 +1878,29 @@
         id: option.dataset.provider,
         identifier: option.dataset.identifier || "",
         name: option.dataset.name || "",
-        image: option.dataset.image || "",
       };
 
       const wasSelected =
         AppState.selectedProvider &&
         String(AppState.selectedProvider.id) === String(provider.id);
 
+      const firstSlug2 = AppState.tabs[0]?.slug ?? "";
+
       if (wasSelected) {
         AppState.selectedProvider = null;
-        AppState.activeTab = AppState.lastTabBeforeProvider || "all";
+        AppState.activeTab = AppState.lastTabBeforeProvider || firstSlug2;
         setTabsDisabled(root, false);
         setActiveTabUI(root, AppState.activeTab);
       } else {
-        AppState.lastTabBeforeProvider = AppState.activeTab || "all";
+        AppState.lastTabBeforeProvider = AppState.activeTab || firstSlug2;
         AppState.selectedProvider = provider;
-        // clearTabsUI(root);
-        // setTabsDisabled(root, true);
 
         setTabsDisabled(root, false);
         setActiveTabUI(root, AppState.activeTab);
       }
 
-      // dropdown varsa kapat
       qs(".provider-dropdown")?.remove();
 
-      // Desktop sol panel refresh
       const left = qs("#casino-new-left", root);
       if (left && AppState.providers)
         left.innerHTML = renderProvidersPanel(AppState.providers);
@@ -2130,129 +1909,208 @@
     });
   }
 
-  async function render() {
-    const mount = await waitForElement(CONFIG.mountSelector, 6000);
-    if (!mount) return;
-
-    if (!isCasinoRoute(location.pathname)) return;
-
-    const existingRoot = qs(`.${CONFIG.rootClass}`);
-    if (existingRoot) {
-      await loadAndRenderActivePanel(existingRoot);
-      AppState.isRendered = true;
-
-      // ✅ casino sayfası tekrar açıldıysa bir daha kontrol
-      maybeAutoOpenSidebarOnCasinoDesktop();
-      return;
+  function closeSidebarIfOpen() {
+    const sidebar = document.querySelector(".sidebar");
+    if (sidebar && sidebar.classList.contains("active")) {
+      const btn = document.querySelector("button.sidebar__btn");
+      if (btn) btn.click();
     }
-
-    const wrap = document.createElement("div");
-    wrap.innerHTML = await renderRootShell();
-
-    const rootEl = wrap.firstElementChild;
-    if (!rootEl) return;
-
-    mount.prepend(rootEl);
-    bindEvents(rootEl);
-
-    AppState.isRendered = true;
-    await loadAndRenderActivePanel(rootEl);
-
-    // ✅ mount bitti, buton/Sidebar hazırsa aç
-    maybeAutoOpenSidebarOnCasinoDesktop();
   }
+
+  /* ── Navigation core ── */
+  let _navPath = null;
+  let _navLive = null;
+  let _navId = 0;
+  let _mountObs = null;
+  let _injecting = false;
 
   function cleanup() {
     qs(`.${CONFIG.rootClass}`)?.remove();
     qs(".provider-dropdown")?.remove();
 
-    AppState.isRendered = false;
+    document.querySelectorAll(".casino-hidden").forEach((s) => s.classList.remove("casino-hidden"));
+
+    if (AppState._onDocClick) {
+      document.removeEventListener("click", AppState._onDocClick);
+      AppState._onDocClick = null;
+    }
+
     AppState.requestId++;
+    AppState.providersRequestId++;
+    AppState._stateGen++;
 
     if (AppState.searchDebounce) {
       clearTimeout(AppState.searchDebounce);
       AppState.searchDebounce = null;
     }
 
-    AppState.providersRequestId++;
+    AppState._categoriesCache = null;
+    AppState._categoriesFetching = null;
+    AppState.tabs = [];
+    AppState.tabsLoading = false;
+    AppState.gamesCache = Object.create(null);
+    AppState.gamesLoading = Object.create(null);
+    AppState.activeTab = null;
+    AppState.lastTabBeforeProvider = null;
+    AppState.providers = null;
+    AppState.providersLoading = false;
+    AppState.selectedProvider = null;
+    AppState.providerSearchQuery = "";
+    AppState.providerGamesCache = Object.create(null);
+    AppState.searchQuery = "";
+    _injecting = false;
   }
 
-  // function handleRoute() {
-  //   if (isCasinoRoute(location.pathname)) render();
-  //   else cleanup();
-  // }
+  async function inject() {
+    if (_injecting) return;
+    const mount = qs(CONFIG.mountSelector);
+    const gen = AppState._stateGen;
+    if (!mount) return;
+    if (qs(`.${CONFIG.rootClass}`)) return;
+    if (!isCasinoRoute(location.pathname)) return;
 
-  // function handleRoute() {
-  //   const onCasino = isCasinoRoute(location.pathname);
+    _injecting = true;
+    try {
+      ensureStyles();
+      ensureMobileCasinoStyles();
 
-  //   // ✅ /casino'ya girince sidebar active, çıkınca kaldır
-  //   // toggleCasinoSidebarActive(onCasino);
+      const wrap = document.createElement("div");
+      wrap.innerHTML = await renderRootShell();
+      if (gen !== AppState._stateGen) return;
+      const rootEl = wrap.firstElementChild;
+      if (!rootEl) return;
 
-  //   if (onCasino) render();
-  //   else cleanup();
-  // }
+      if (!isCasinoRoute(location.pathname)) return;
+      if (qs(`.${CONFIG.rootClass}`)) return;
 
-  function handleRoute() {
-    const currentPath = location.pathname;
+      if (!_navPath) _navPath = normalizePath(location.pathname);
+      if (_navLive === null) _navLive = isLiveCasinoPage();
 
-    // ✅ SADECE /casino sayfasındaysa çalış (live-casino DEĞİL)
-    if (isCasinoRoute(currentPath) && !currentPath.includes("/live-casino")) {
-      ensureCasinoOnlyHideStyle();
-      render();
-      hideCasinoSectionsByTitles();
+      const slider = mount.querySelector(".section.section--first") || mount.querySelector(".section--first");
+      if (slider) {
+        slider.after(rootEl);
+      } else {
+        mount.prepend(rootEl);
+      }
+      bindEvents(rootEl);
+
+      hideCasinoSections();
+      closeSidebarIfOpen();
+      await loadAndRenderActivePanel(rootEl);
+      if (gen !== AppState._stateGen) { rootEl.remove(); return; }
       maybeAutoOpenSidebarOnCasinoDesktop();
-    } else {
-      // ✅ /casino'dan çıkıldı - temizlik yap
-      removeCasinoOnlyHideStyle();
-      cleanup();
+    } finally {
+      _injecting = false;
     }
   }
 
-  function patchHistoryEvents() {
-    // ✅ GLOBAL history patching - sadece 1 kez yapılmalı
-    if (window.__globalHistoryPatched) return;
-    window.__globalHistoryPatched = true;
-
-    const fire = () => {
-      window.dispatchEvent(new Event("locationchange"));
-    };
-
-    const _pushState = history.pushState;
-    history.pushState = function () {
-      const ret = _pushState.apply(this, arguments);
-      fire();
-      return ret;
-    };
-
-    const _replaceState = history.replaceState;
-    history.replaceState = function () {
-      const ret = _replaceState.apply(this, arguments);
-      fire();
-      return ret;
-    };
-
-    window.addEventListener("popstate", fire);
+  function stopMountObserver() {
+    if (_mountObs) { _mountObs.disconnect(); _mountObs = null; }
   }
 
-  function init() {
-    patchHistoryEvents();
+  function waitForMount(navId) {
+    stopMountObserver();
+    _mountObs = new MutationObserver(() => {
+      if (navId !== _navId) { stopMountObserver(); return; }
+      if (qs(CONFIG.mountSelector)) {
+        stopMountObserver();
+        inject().catch(() => {});
+      }
+    });
+    _mountObs.observe(document.documentElement, { childList: true, subtree: true });
+    setTimeout(() => stopMountObserver(), 15000);
+  }
 
-    // ✅ ilk açılış
-    handleRoute();
+  function onNavigate() {
+    const path = normalizePath(location.pathname);
+    const isCasino = isCasinoRoute(location.pathname);
+    const live = isLiveCasinoPage();
 
-    // ✅ SPA navigate (pushState/replaceState) + geri/ileri
-    window.addEventListener("locationchange", handleRoute);
+    if (!isCasino) {
+      document.body.removeAttribute("data-casino");
+      stopMountObserver();
+      cleanup();
+      _navPath = null;
+      _navLive = null;
+      return;
+    }
 
-    // ✅ bazı temalarda içerik geç basılıyor → bir kere daha dene
-    document.addEventListener("DOMContentLoaded", handleRoute, { once: true });
-    window.addEventListener("resize", () => {
+    document.body.setAttribute("data-casino", "1");
+
+    const contextChanged = _navPath !== path || _navLive !== live;
+
+    if (contextChanged) {
+      stopMountObserver();
+      cleanup();
+      _navPath = path;
+      _navLive = live;
+
+      const id = ++_navId;
+
+      const tryInject = (attempt) => {
+        if (id !== _navId) return;
+        if (!isCasinoRoute(location.pathname)) return;
+
+        const hasMount = !!qs(CONFIG.mountSelector);
+        if (hasMount) {
+          inject().catch(() => {});
+        } else if (attempt < 20) {
+          setTimeout(() => tryInject(attempt + 1), 150);
+        } else {
+          waitForMount(id);
+        }
+      };
+
+      tryInject(0);
+      return;
+    }
+
+    const existingRoot = qs(`.${CONFIG.rootClass}`);
+    if (existingRoot) {
+      loadAndRenderActivePanel(existingRoot).catch(() => {});
       maybeAutoOpenSidebarOnCasinoDesktop();
+    } else if (qs(CONFIG.mountSelector)) {
+      inject().catch(() => {});
+    } else {
+      waitForMount(++_navId);
+    }
+  }
+
+  /* ── Bootstrap ── */
+  function init() {
+    ensureCasinoGlobalStyle();
+
+    if (!window.__casinoHistoryPatched) {
+      window.__casinoHistoryPatched = true;
+      const _push = history.pushState;
+      const _replace = history.replaceState;
+      history.pushState = function () { _push.apply(this, arguments); onNavigate(); };
+      history.replaceState = function () { _replace.apply(this, arguments); onNavigate(); };
+      window.addEventListener("popstate", onNavigate);
+    }
+
+    let _lastHref = location.href;
+    setInterval(() => {
+      if (location.href !== _lastHref) {
+        _lastHref = location.href;
+        onNavigate();
+      }
+    }, 250);
+
+    let _resizeRaf = false;
+    window.addEventListener("resize", () => {
+      if (_resizeRaf) return;
+      _resizeRaf = true;
+      requestAnimationFrame(() => { _resizeRaf = false; maybeAutoOpenSidebarOnCasinoDesktop(); });
     });
 
-    // ✅ ilk açılış + dinamik yüklemeler için
-    setup3oaksHideObserver();
-    hideCasinoSectionsByTitles();
+    onNavigate();
   }
 
-  init();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 })();
+</script>
