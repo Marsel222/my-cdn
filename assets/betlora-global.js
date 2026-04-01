@@ -12,10 +12,11 @@ document.head.appendChild(link);
 			addMenuItemsWithAuth();
           bonusTabCustomReplace();
 addScrollingTextWithNextUrl();
-initializeWebsiteFeatures()
+initializeWebsiteFeatures();
 		setTimeout(addRandomUserPlaying, 2000); 
 			createToastAndShow(); 
-			filterActiveLanguages()
+			filterActiveLanguages();
+			cleanCasinoAndPoker();
             var sportspath = window.location.pathname;
             if (sportspath === "/tr/sportsbook") {
               clearDynamicContent();
@@ -52,10 +53,12 @@ initializeWebsiteFeatures()
             addMenuItemsWithAuth();
          filterActiveLanguages()
             bonusTabCustomReplace(); 
+			cleanCasinoAndPoker();
             if (path === "/tr/" || path === "/tr") {
 				setTimeout(addRandomUserPlaying, 2000); 
 		initializeWebsiteFeatures()
                  createToastAndShow(); 
+				
             } else if (path === "/tr/vip") {
                 clearDynamicContent();
         
@@ -116,6 +119,28 @@ function checkModal() {
         modal.style.display = "none"; // Modal'ı gizle
     }
 }
+
+function cleanCasinoAndPoker() {
+    // 1️⃣ Fazla casino container'larını temizle
+    const path = window.location.pathname;
+    if (/\/[a-z]{2}\/casino$|\/casino$|\/[a-z]{2}\/poker$|\/poker$/.test(path)) {
+        const containers = document.querySelectorAll('.casino-new-root.casino-container.container');
+        if (containers.length > 1) {
+            for (let i = 1; i < containers.length; i++) {
+                containers[i].remove();
+            }
+        }
+    }
+
+    // 2️⃣ Poker link <li> öğesini kaldır
+    const pokerLink = document.querySelector('li a[href="/tr/poker"]');
+    if (pokerLink) {
+        const liElement = pokerLink.closest('li');
+        if (liElement) liElement.remove();
+    }
+}
+
+
 
 function getNextUrlNumber() {
     const currentUrl = window.location.href;
