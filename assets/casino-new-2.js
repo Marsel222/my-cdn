@@ -966,7 +966,8 @@
 
       /* GRID */
       @media (max-width: 480px){
-        .game-card{ aspect-ratio: 1.5 / 1.2 !important; border-radius: 0px !important; }
+        .game-card{    
+        border-radius: 0px !important; }
         .casino-container .games-container{
           display: grid !important;
           grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
