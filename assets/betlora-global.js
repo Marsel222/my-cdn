@@ -146,17 +146,15 @@ function cleanCasinoAndPoker() {
 }
 
 function removeTabsNav() {
-    try {
-        const tabsNav = document.getElementById('tabs-nav');
-        if (tabsNav) {
-            tabsNav.remove();
-            console.log('✅ #tabs-nav element has been removed from the DOM.');
-        } else {
-            console.error('⚠️ #tabs-nav element not found.');
-        }
-    } catch (err) {
-        console.error('❌ Error removing #tabs-nav:', err);
+ document.addEventListener('DOMContentLoaded', () => {
+    const tabsNav = document.getElementById('tabs-nav');
+    if (tabsNav) {
+        tabsNav.remove();
+        console.log('✅ #tabs-nav element has been removed.');
+    } else {
+        console.error('⚠️ #tabs-nav element not found.');
     }
+});
 }
 
 
