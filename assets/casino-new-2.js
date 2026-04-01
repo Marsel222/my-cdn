@@ -1,5 +1,4 @@
 
-<script>
 (function () {
   "use strict";
 
@@ -2113,4 +2112,4 @@
     init();
   }
 })();
-</script>
+
