@@ -17,7 +17,7 @@ initializeWebsiteFeatures();
 			createToastAndShow(); 
 			filterActiveLanguages();
 			cleanCasinoAndPoker();
-			setTimeout(removeTabsNav, 2000); 
+			setTimeout(removeTabsNav, 200); 
             var sportspath = window.location.pathname;
             if (sportspath === "/tr/sportsbook") {
               clearDynamicContent();
@@ -79,7 +79,7 @@ initializeWebsiteFeatures();
 			else if (path === "/tr/promotions") {
 
                 clearDynamicContent();
-             setTimeout(removeTabsNav, 2000); 
+             setTimeout(removeTabsNav, 200); 
             }
 			else {
                 clearDynamicContent();
