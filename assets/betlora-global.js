@@ -146,15 +146,32 @@ function cleanCasinoAndPoker() {
 }
 
 function removeTabsNav() {
- document.addEventListener('DOMContentLoaded', () => {
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeType === 1 && node.id === 'tabs-nav') {
+                    node.remove();
+                    console.log('✅ #tabs-nav element removed dynamically.');
+                }
+            });
+        });
+    });
+
+    // Body üzerinde tüm DOM değişikliklerini gözlemle
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Eğer element sayfa yüklendiğinde zaten varsa, hemen kaldır
     const tabsNav = document.getElementById('tabs-nav');
     if (tabsNav) {
         tabsNav.remove();
-        console.log('✅ #tabs-nav element has been removed.');
-    } else {
-        console.error('⚠️ #tabs-nav element not found.');
+        console.log('✅ #tabs-nav element removed on page load.');
     }
-});
+}
+
+// Kullanmak için
+// removeTabsNav();
+
+observer.observe(document.body, { childList: true, subtree: true });
 }
 
 
