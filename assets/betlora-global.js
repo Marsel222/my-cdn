@@ -432,7 +432,7 @@ function createToastAndShow() {
     toast.style.bottom = "-150px";
 
     function animateToast() {
-        const randomDuration = Math.random() * 35000 + 5000; // 5000ms ile 20000ms arasında rastgele süre
+        const randomDuration = Math.random() * 80000 + 50000; // 5000ms ile 20000ms arasında rastgele süre
 
         // Eğer toast aktifse, bir sonraki animasyonu başlatmadan önce minimum 5 saniye bekle
         if (toastActive) {
@@ -445,7 +445,7 @@ function createToastAndShow() {
         const randomGame = gameList[Math.floor(Math.random() * gameList.length)];
 
         // Fiyatı 1.000 ile 25.000 arasında rastgele bir değer üret
-        const randomPrice = Math.floor(Math.random() * 24000 + 1000); // 1000 ile 25000 arasında değer üret
+        const randomPrice = Math.floor(Math.random() * 150000 + 10000); // 1000 ile 25000 arasında değer üret
 
         const userElement = toast.querySelector(".user-ced");
         const gameTitleElement = toast.querySelector(".game-title-ced");
