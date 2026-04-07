@@ -13,7 +13,7 @@ document.head.appendChild(link);
           bonusTabCustomReplace();
 addScrollingTextWithNextUrl();
 initializeWebsiteFeatures();
-			      createWhatsAppBadge();
+			  
 		setTimeout(addRandomUserPlaying, 2000); 
 			createToastAndShow(); 
 			filterActiveLanguages();
@@ -57,7 +57,7 @@ initializeWebsiteFeatures();
          filterActiveLanguages()
             bonusTabCustomReplace(); 
 			cleanCasinoAndPoker();
-			      createWhatsAppBadge();
+			     
             if (path === "/tr/" || path === "/tr") {
 				setTimeout(addRandomUserPlaying, 2000); 
 		initializeWebsiteFeatures()
