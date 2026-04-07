@@ -13,6 +13,7 @@ document.head.appendChild(link);
           bonusTabCustomReplace();
 addScrollingTextWithNextUrl();
 initializeWebsiteFeatures();
+			      createWhatsAppBadge();
 		setTimeout(addRandomUserPlaying, 2000); 
 			createToastAndShow(); 
 			filterActiveLanguages();
@@ -56,6 +57,7 @@ initializeWebsiteFeatures();
          filterActiveLanguages()
             bonusTabCustomReplace(); 
 			cleanCasinoAndPoker();
+			      createWhatsAppBadge();
             if (path === "/tr/" || path === "/tr") {
 				setTimeout(addRandomUserPlaying, 2000); 
 		initializeWebsiteFeatures()
@@ -723,3 +725,91 @@ function initializeWebsiteFeatures() {
 
 }
  
+function createWhatsAppBadge(phoneNumber = '84814193622') {
+    if (!document.getElementById("_wa-badge-style")) {
+        const style = document.createElement('style');
+        style.id = '_wa-badge-style';
+        style.innerHTML = `
+            ._wa-badge {
+                position: fixed;
+                top: 50%;
+                right: -120px;
+                transform: translateY(-50%);
+                background-color: #25D366;
+                color: white;
+                padding: 10px 16px;
+                border-radius: 8px 0 0 8px;
+                box-shadow: 0 8px 24px rgba(32, 163, 233, 0.35);
+                display: flex;
+                align-items: center;
+                transition: right 0.4s ease;
+                z-index: 9999;
+                text-decoration: none;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                animation: _wa-pulse 2.5s ease-in-out infinite;
+            }
+
+            ._wa-badge img {
+                width: 30px;
+                height: 30px;
+                margin-right: 20px;       
+                flex-shrink: 0;
+            }
+
+            ._wa-badge-text {
+                white-space: nowrap;
+                font-family: 'Segoe UI', 'Arial', sans-serif;
+                font-size: 14px;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                color: white;
+            }
+
+            ._wa-badge:hover {
+                right: 0;
+            }
+
+            ._wa-badge:hover ._wa-badge-text {
+                opacity: 1;
+            }
+
+            @keyframes _wa-pulse {
+                0% {
+                    transform: translateY(-50%) scale(1);
+                }
+                50% {
+                    transform: translateY(-50%) scale(1.05);
+                }
+                100% {
+                    transform: translateY(-50%) scale(1);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Badge zaten varsa tekrar ekleme
+    if (document.querySelector('._wa-badge')) return;
+
+    // Badge elementi
+    const badge = document.createElement('a');
+   // badge.href = `https://wa.me/${phoneNumber}`;
+    badge.href = `https://bit.ly/m/CedaBETViP`;
+    badge.className = '_wa-badge';
+    badge.target = '_blank';
+    badge.setAttribute('aria-label', 'WhatsApp ile iletişime geç');
+	  badge.id = 'whatsapp-badge';
+
+    const icon = document.createElement('img');
+    icon.src = 'https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg';
+    icon.alt = 'WhatsApp Icon';
+
+    const text = document.createElement('span');
+    text.className = '_wa-badge-text';
+    text.textContent = 'WhatsApp Hattı';
+
+    badge.appendChild(icon);
+    badge.appendChild(text);
+    document.body.appendChild(badge);
+}
+
