@@ -732,8 +732,8 @@ function createWhatsAppBadge(phoneNumber = '84814193622') {
         style.innerHTML = `
             ._wa-badge {
                 position: fixed;
-                top: 50%;
-                right: -120px;
+                top: 35%;
+                right: -135px;
                 transform: translateY(-50%);
                 background-color: #25D366;
                 color: white;
