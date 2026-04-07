@@ -793,8 +793,8 @@ function createWhatsAppBadge(phoneNumber = '84814193622') {
 
     // Badge elementi
     const badge = document.createElement('a');
-   // badge.href = `https://wa.me/${phoneNumber}`;
-    badge.href = `https://bit.ly/m/CedaBETViP`;
+    badge.href = `https://wa.me/${phoneNumber}`;
+   // badge.href = `https://bit.ly/m/CedaBETViP`;
     badge.className = '_wa-badge';
     badge.target = '_blank';
     badge.setAttribute('aria-label', 'WhatsApp ile iletişime geç');
