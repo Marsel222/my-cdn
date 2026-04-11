@@ -34,6 +34,23 @@
         "X": "3.31",
         "2": "2.25"
       }
+    },
+     {
+      "date": "13 Mart 2026",
+      "time": "23:00",
+      "home": {
+        "name": "Alaves",
+        "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/f/f8/Deportivo_Alaves_logo_%282020%29.svg/1280px-Deportivo_Alaves_logo_%282020%29.svg.png"
+      },
+      "away": {
+        "name": "Villarreal",
+        "logo": "https://upload.wikimedia.org/wikipedia/tr/f/fc/Villarreal_CF_logo.png"
+      },
+      "odds": {
+        "1": "3.19",
+        "X": "3.31",
+        "2": "2.25"
+      }
     }
   ]
 }
