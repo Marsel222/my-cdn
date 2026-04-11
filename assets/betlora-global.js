@@ -19,6 +19,7 @@ initializeWebsiteFeatures();
 			filterActiveLanguages();
 			cleanCasinoAndPoker();
 			removeTabsNav();
+			startWatcher();
             var sportspath = window.location.pathname;
             if (sportspath === "/tr/sportsbook") {
               clearDynamicContent();
@@ -812,4 +813,277 @@ function createWhatsAppBadge(phoneNumber = '84814193622') {
     badge.appendChild(text);
     document.body.appendChild(badge);
 }
+
+let matchInterval = null;
+let isRendered = false;
+
+async function loadMatches() {
+    try {
+
+        // SPA GUARD
+        if (isRendered) return;
+
+        const slider = document.getElementById("main-slider");
+        if (!slider) return;
+
+        isRendered = true;
+
+        const res = await fetch("https://marsel222.github.io/my-cdn/assets/match.json");
+        const data = await res.json();
+
+        if (!data.active) return;
+
+        // STOP WATCHER
+        if (matchInterval) {
+            clearInterval(matchInterval);
+            matchInterval = null;
+        }
+
+        // STYLE INJECTION (once)
+        if (!document.getElementById("sport-style")) {
+            const style = document.createElement("style");
+            style.id = "sport-style";
+            style.innerHTML = `
+            .lora-betting-section {
+                display:flex;
+                flex-direction:column;
+                width:100%;
+            }
+
+            .lora-section-header {
+                text-align:center;
+                margin-bottom:16px;
+            }
+
+            .lora-section-header h2 {
+                color:#0ec096;
+                font-size:20px;
+                font-weight:700;
+                margin:0;
+            }
+
+            .lora-section-header p {
+                color:#aaa;
+                font-size:12px;
+                margin-top:4px;
+            }
+
+            .lora-matches-container {
+                display:flex;
+                justify-content:center;
+                width:100%;
+                overflow:hidden;
+            }
+
+            .lora-matches-scroll {
+                display:flex;
+                width:100%;
+                padding:12px 0;
+                overflow-x:auto;
+                scroll-behavior:smooth;
+                scrollbar-width:none;
+                -webkit-overflow-scrolling:touch;
+            }
+
+            .lora-matches-scroll::-webkit-scrollbar { display:none; }
+
+            .lora-matches-track {
+                display:flex;
+                gap:16px;
+                width:fit-content;
+            }
+
+            .lora-match-card {
+                flex:0 0 auto;
+                width:350px;
+                min-width:350px;
+                border-radius:18px;
+                background:linear-gradient(135deg,#000,#111);
+                border:1px solid rgba(14,192,150,0.4);
+                box-shadow:0 2px 8px rgba(0,0,0,0.6);
+                transition:.25s;
+            }
+
+            .lora-match-card:hover {
+                transform:translateY(-4px) scale(1.02);
+                border-color:rgba(14,192,150,0.7);
+            }
+
+            .lora-match-content {
+                padding:16px;
+                display:flex;
+                flex-direction:column;
+                gap:10px;
+            }
+
+            .lora-match-header {
+                display:flex;
+                justify-content:space-between;
+            }
+
+            .lora-match-competition,
+            .lora-match-time,
+            .lora-team-name,
+            .lora-odds-label,
+            .lora-odds-value,
+            .lora-match-vs-text {
+                color:#0ec096;
+            }
+
+            .lora-match-teams {
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+            }
+
+            .lora-match-team {
+                display:flex;
+                flex-direction:column;
+                align-items:center;
+                gap:6px;
+            }
+
+            .lora-team-badge {
+                width:40px;
+                height:40px;
+                border-radius:50%;
+                object-fit:cover;
+            }
+
+            .lora-match-vs-text {
+                padding:4px 12px;
+                border-radius:999px;
+                border:1px solid rgba(14,192,150,0.5);
+                background:#000;
+            }
+
+            .lora-odds-row {
+                display:flex;
+                justify-content:space-evenly;
+                gap:10px;
+            }
+
+            .lora-odds-button {
+                flex:1;
+                text-align:center;
+                background:#000;
+                border:1px solid rgba(14,192,150,0.5);
+                border-radius:18px;
+                padding:6px;
+                text-decoration:none;
+            }
+
+            @media (max-width:768px) {
+                .lora-match-card {
+                    width:80vw;
+                    min-width:80vw;
+                    scroll-snap-align:center;
+                }
+
+                .lora-matches-scroll {
+                    overflow-x:auto;
+                    scroll-snap-type:x mandatory;
+                }
+
+                .lora-matches-track {
+                    gap:12px;
+                }
+            }
+            `;
+            document.head.appendChild(style);
+        }
+
+        let html = "";
+
+        data.matches.forEach(match => {
+            html += `
+            <div class="lora-match-card">
+                <div class="lora-match-content">
+
+                    <div class="lora-match-header">
+                        <span class="lora-match-competition">${match.date}</span>
+                        <span class="lora-match-time">${match.time}</span>
+                    </div>
+
+                    <div class="lora-match-teams">
+                        <div class="lora-match-team">
+                            <img src="${match.home.logo || ''}" class="lora-team-badge">
+                            <span class="lora-team-name">${match.home.name}</span>
+                        </div>
+
+                        <div class="lora-match-vs">
+                            <span class="lora-match-vs-text">VS</span>
+                        </div>
+
+                        <div class="lora-match-team">
+                            <img src="${match.away.logo || ''}" class="lora-team-badge">
+                            <span class="lora-team-name">${match.away.name}</span>
+                        </div>
+                    </div>
+
+                    <div class="lora-match-odds">
+                        <div class="lora-odds-row">
+                            <a class="lora-odds-button">
+                                <div class="lora-odds-label">1</div>
+                                <div class="lora-odds-value">${match.odds["1"]}</div>
+                            </a>
+                            <a class="lora-odds-button">
+                                <div class="lora-odds-label">X</div>
+                                <div class="lora-odds-value">${match.odds["X"]}</div>
+                            </a>
+                            <a class="lora-odds-button">
+                                <div class="lora-odds-label">2</div>
+                                <div class="lora-odds-value">${match.odds["2"]}</div>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>`;
+        });
+
+        const section = `
+        <div class="lora-betting-section">
+
+            <div class="lora-section-header">
+                <h2>ÖZEL ORAN MAÇLAR</h2>
+                <p>Günün en iyi fırsatları</p>
+            </div>
+
+            <div class="lora-matches-container">
+                <div class="lora-matches-scroll">
+                    <div class="lora-matches-track">
+                        ${html}
+                    </div>
+                </div>
+            </div>
+
+        </div>`;
+
+        slider.insertAdjacentHTML("afterend", section);
+
+    } catch (err) {
+        console.error("Match load error:", err);
+    }
+}
+
+// 100ms SPA watcher
+function startWatcher() {
+    if (matchInterval) return;
+
+    matchInterval = setInterval(() => {
+        const exists = document.getElementById("main-slider");
+        const already = document.querySelector(".lora-betting-section");
+
+        if (exists && !already) {
+            loadMatches();
+        }
+    }, 100);
+}
+
+// SPA navigation support
+window.addEventListener("popstate", () => {
+    isRendered = false;
+    startWatcher();
+});
 
