@@ -23,6 +23,7 @@ initializeWebsiteFeatures();
             var sportspath = window.location.pathname;
             if (sportspath === "/tr/sportsbook") {
               clearDynamicContent();
+				waitForIframeAndUpdate();
             } else if (sportspath === "/tr/trade") {
               clearDynamicContent();
             } else if (sportspath === "/tr/e-sport") {
@@ -73,6 +74,7 @@ initializeWebsiteFeatures();
 			
             } else if (path === "/tr/sportsbook") {
                 clearDynamicContent();
+				waitForIframeAndUpdate();
             } else if (path === "/tr/trade") {
                 clearDynamicContent();
             } else if (path === "/tr/e-sport") {
@@ -1314,4 +1316,46 @@ window.addEventListener("popstate", () => {
     isRendered = false;
     startWatcher();
 });
+function getBookabetFromUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  let code = urlParams.get("betid");
+
+  // fallback: /sportsbook/betid=ABC123
+  if (!code) {
+    const match = window.location.pathname.match(/betid=([^/]+)/);
+    if (match) code = match[1];
+  }
+
+  return code;
+}
+
+function waitForIframeAndUpdate() {
+  const code = getBookabetFromUrl();
+  if (!code) return;
+
+  const interval = setInterval(() => {
+    const iframe = document.getElementById("game");
+
+    if (!iframe || !iframe.src) return;
+
+    try {
+      const url = new URL(iframe.src);
+
+      // bookabet ekle/güncelle
+      url.searchParams.set("bookabet", code);
+
+      iframe.src = url.toString();
+
+      // iframe bulundu ve güncellendi → dur
+      clearInterval(interval);
+      console.log("Iframe updated with bookabet:", code);
+
+    } catch (e) {
+      console.log("waiting iframe...");
+    }
+  }, 100);
+}
+
+// SPA uyumlu başlat
 
