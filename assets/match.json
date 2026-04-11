@@ -1,0 +1,39 @@
+{
+  "active": true,
+  "matches": [
+    {
+      "date": "13 Mart 2026",
+      "time": "22:45",
+      "home": {
+        "name": "Torino",
+        "logo": ""
+      },
+      "away": {
+        "name": "Parma",
+        "logo": "https://upload.wikimedia.org/wikipedia/commons/4/40/Logo_Parma_Calcio_1913_%28adozione_2016%29.png"
+      },
+      "odds": {
+        "1": "2.21",
+        "X": "2.98",
+        "2": "3.67"
+      }
+    },
+    {
+      "date": "13 Mart 2026",
+      "time": "23:00",
+      "home": {
+        "name": "Alaves",
+        "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/f/f8/Deportivo_Alaves_logo_%282020%29.svg/1280px-Deportivo_Alaves_logo_%282020%29.svg.png"
+      },
+      "away": {
+        "name": "Villarreal",
+        "logo": "https://upload.wikimedia.org/wikipedia/tr/f/fc/Villarreal_CF_logo.png"
+      },
+      "odds": {
+        "1": "3.19",
+        "X": "3.31",
+        "2": "2.25"
+      }
+    }
+  ]
+}
