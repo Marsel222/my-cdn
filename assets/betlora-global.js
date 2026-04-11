@@ -819,40 +819,27 @@ function createWhatsAppBadge(phoneNumber = '84814193622') {
     document.body.appendChild(badge);
 }
 
-
 let matchInterval = null;
-let isRendered = false;
 
 async function loadMatches() {
     try {
 
-        // SPA GUARD
-        if (isRendered) return;
+        // zaten render edildiyse çık
+        if (document.getElementById("sport-content")) return;
 
         const slider = document.getElementById("main-slider");
         if (!slider) return;
-
-        const already = document.getElementById("sport-content");
-        if (already) return;
-
-        isRendered = true;
 
         const res = await fetch("https://marsel222.github.io/my-cdn/assets/match.json");
         const data = await res.json();
 
         if (!data?.active) return;
 
-        // STOP WATCHER
-        if (matchInterval) {
-            clearInterval(matchInterval);
-            matchInterval = null;
-        }
-
-        // STYLE INJECTION (EXACT SAME CSS - NO CHANGES)
+        // STYLE INJECTION (FULL ORIGINAL CSS - NO CUT)
         if (!document.getElementById("sport-style")) {
             const style = document.createElement("style");
             style.id = "sport-style";
-            style.innerHTML = `
+                    style.innerHTML = `
            /* Orta Kısım - Bahisler Section */
 .lora-betting-section {
     position: relative;
@@ -952,30 +939,15 @@ async function loadMatches() {
 }
 
 @keyframes lora-gold-gradient {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 @keyframes lora-gold-shimmer {
-    0% {
-        background-position: 0% 50%;
-        opacity: 0.6;
-    }
-    50% {
-        background-position: 100% 50%;
-        opacity: 1;
-    }
-    100% {
-        background-position: 0% 50%;
-        opacity: 0.6;
-    }
+    0% { background-position: 0% 50%; opacity: 0.6; }
+    50% { background-position: 100% 50%; opacity: 1; }
+    100% { background-position: 0% 50%; opacity: 0.6; }
 }
 
 .lora-match-card::before {
@@ -1155,6 +1127,10 @@ async function loadMatches() {
     box-shadow: 0 4px 12px rgba(14, 192, 150, 0.4), inset 0 1px 3px rgba(14, 192, 150, 0.25), 0 0 8px rgba(14, 192, 150, 0.2);
 }
 
+.lora-odds-button:active {
+    transform: translateY(0);
+}
+
 .lora-odds-label {
     font-size: 10px;
     color: #0ec096;
@@ -1246,51 +1222,39 @@ async function loadMatches() {
                 : `/tr/sportsbook`;
 
             html += `
-            <a style="text-decoration: none;" href="${href}" class="lora-match-card">
-
+            <a href="${href}" class="lora-match-card" style="text-decoration:none;">
                 <div class="lora-match-content">
+
                     <div class="lora-match-header">
                         <span class="lora-match-competition">${match?.date || ""}</span>
                         <span class="lora-match-time">${match?.time || ""}</span>
                     </div>
 
                     <div class="lora-match-teams">
+
                         <div class="lora-match-team">
-                            <img src="${match?.home?.logo || ""}" alt="${match?.home?.name || ""}" class="lora-team-badge">
+                            <img src="${match?.home?.logo || ""}" class="lora-team-badge">
                             <span class="lora-team-name">${match?.home?.name || ""}</span>
                         </div>
 
-                        <div class="lora-match-vs">
-                            <span class="lora-match-vs-text">VS</span>
-                        </div>
+                        <div class="lora-match-vs-text">VS</div>
 
                         <div class="lora-match-team">
-                            <img src="${match?.away?.logo || ""}" alt="${match?.away?.name || ""}" class="lora-team-badge">
+                            <img src="${match?.away?.logo || ""}" class="lora-team-badge">
                             <span class="lora-team-name">${match?.away?.name || ""}</span>
                         </div>
+
                     </div>
 
                     <div class="lora-match-odds">
                         <div class="lora-odds-row">
-                            <div class="lora-odds-button">
-                                <span class="lora-odds-label">1</span>
-                                <span class="lora-odds-value">${match?.odds?.["1"] ?? "-"}</span>
-                            </div>
-
-                            <div class="lora-odds-button">
-                                <span class="lora-odds-label">X</span>
-                                <span class="lora-odds-value">${match?.odds?.["X"] ?? "-"}</span>
-                            </div>
-
-                            <div class="lora-odds-button">
-                                <span class="lora-odds-label">2</span>
-                                <span class="lora-odds-value">${match?.odds?.["2"] ?? "-"}</span>
-                            </div>
+                            <div class="lora-odds-button">1<br>${match?.odds?.["1"] ?? "-"}</div>
+                            <div class="lora-odds-button">X<br>${match?.odds?.["X"] ?? "-"}</div>
+                            <div class="lora-odds-button">2<br>${match?.odds?.["2"] ?? "-"}</div>
                         </div>
                     </div>
 
                 </div>
-
             </a>
             `;
         });
@@ -1309,43 +1273,43 @@ async function loadMatches() {
                     </div>
                 </div>
             </div>
-        </div>`;
+        </div>
+        `;
 
         slider.insertAdjacentHTML("afterend", section);
 
-        isRendered = true;
-        isLoading = false;
+        if (matchInterval) {
+            clearInterval(matchInterval);
+            matchInterval = null;
+        }
 
     } catch (err) {
-        console.error("Match load error:", err);
-        isLoading = false;
-        isRendered = false;
+        console.error(err);
     }
 }
 
-// WATCHER (optimized)
+
+// 200ms watcher (SPA yok)
 function startWatcher() {
+
     if (matchInterval) return;
 
     matchInterval = setInterval(() => {
-        const exists = document.getElementById("main-slider");
-        const already = document.getElementById("sport-content");
 
-        if (exists && !already) {
+        if (document.getElementById("sport-content")) {
+            clearInterval(matchInterval);
+            matchInterval = null;
+            return;
+        }
+
+        const slider = document.getElementById("main-slider");
+
+        if (slider) {
             loadMatches();
         }
-    }, 500);
+
+    }, 200);
 }
-
-// SPA RESET
-window.addEventListener("popstate", () => {
-    isRendered = false;
-
-    const old = document.getElementById("sport-content");
-    if (old) old.remove();
-
-    startWatcher();
-});
 
 
 function getBookabetFromUrl() {
