@@ -63,6 +63,7 @@ initializeWebsiteFeatures();
 				setTimeout(addRandomUserPlaying, 2000); 
 		initializeWebsiteFeatures()
                  createToastAndShow(); 
+					startWatcher();
 				
             } else if (path === "/tr/vip") {
                 clearDynamicContent();
@@ -211,14 +212,15 @@ function addScrollingText(text) {
 }
 
 function clearDynamicContent() {
-    const idsToRemove = ["toast-slider-ced", "scrolling-text", "league-wrapper", "custom-section-landing", "telegram-section" , "whatsapp-badge","led-wrapper","toast-container-ced"];
+    const idsToRemove = ["toast-slider-ced", "scrolling-text", "league-wrapper", "custom-section-landing", "telegram-section" , "whatsapp-badge","led-wrapper","toast-container-ced","sport-header","sport-content"];
 
     const styleIdsToRemove = [
         "toast-slider-style",
         "telegram-style",
         "mini-games-style",
 		"_wa-badge-style",
-		"led-style"
+		"led-style",
+		"sport-style"
         // buraya kaldırmak istediğin style id'lerini ekle
     ];
 
@@ -1267,14 +1269,11 @@ async function loadMatches() {
         });
 
         const section = `
-		 <div class="lora-section-header">
+		 <div id="sport-header" class="lora-section-header">
                 <h2>ÖZEL ORAN MAÇLAR</h2>
                 <p>Günün en iyi fırsatları</p>
             </div>
-        <div class="lora-betting-section">
-
-           
-
+        <div id="sport-content" class="lora-betting-section">
             <div class="lora-matches-container">
                 <div class="lora-matches-scroll">
                     <div class="lora-matches-track">
