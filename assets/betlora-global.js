@@ -820,26 +820,35 @@ function createWhatsAppBadge(phoneNumber = '84814193622') {
 }
 
 let matchInterval = null;
+let isRendered = false;
 
 async function loadMatches() {
     try {
 
-        // zaten render edildiyse çık
-        if (document.getElementById("sport-content")) return;
+        // SPA GUARD
+        if (isRendered) return;
 
         const slider = document.getElementById("main-slider");
         if (!slider) return;
 
+        isRendered = true;
+
         const res = await fetch("https://marsel222.github.io/my-cdn/assets/match.json");
         const data = await res.json();
 
-        if (!data?.active) return;
+        if (!data.active) return;
 
-        // STYLE INJECTION (FULL ORIGINAL CSS - NO CUT)
+        // STOP WATCHER
+        if (matchInterval) {
+            clearInterval(matchInterval);
+            matchInterval = null;
+        }
+
+        // STYLE INJECTION (once)
         if (!document.getElementById("sport-style")) {
             const style = document.createElement("style");
             style.id = "sport-style";
-                    style.innerHTML = `
+            style.innerHTML = `
            /* Orta Kısım - Bahisler Section */
 .lora-betting-section {
     position: relative;
@@ -1215,56 +1224,67 @@ async function loadMatches() {
 
         let html = "";
 
-        data.matches.forEach(match => {
+data.matches.forEach(match => {
 
-            const href = match?.betid?.trim()
-                ? `/tr/sportsbook?betid=${encodeURIComponent(match.betid)}`
-                : `/tr/sportsbook`;
+    const href = (match.betid && match.betid.trim() !== "")
+        ? `/tr/sportsbook/betid=${match.betid}`
+        : `/tr/sportsbook`;
 
-            html += `
-            <a href="${href}" class="lora-match-card" style="text-decoration:none;">
-                <div class="lora-match-content">
+    html += `
+    <a style="text-decoration: none;" href="${href}" class="lora-match-card">
 
-                    <div class="lora-match-header">
-                        <span class="lora-match-competition">${match?.date || ""}</span>
-                        <span class="lora-match-time">${match?.time || ""}</span>
-                    </div>
+        <div class="lora-match-content">
+            <div class="lora-match-header">
+                <span class="lora-match-competition">${match.date}</span>
+                <span class="lora-match-time">${match.time}</span>
+            </div>
 
-                    <div class="lora-match-teams">
-
-                        <div class="lora-match-team">
-                            <img src="${match?.home?.logo || ""}" class="lora-team-badge">
-                            <span class="lora-team-name">${match?.home?.name || ""}</span>
-                        </div>
-
-                        <div class="lora-match-vs-text">VS</div>
-
-                        <div class="lora-match-team">
-                            <img src="${match?.away?.logo || ""}" class="lora-team-badge">
-                            <span class="lora-team-name">${match?.away?.name || ""}</span>
-                        </div>
-
-                    </div>
-
-                    <div class="lora-match-odds">
-                        <div class="lora-odds-row">
-                            <div class="lora-odds-button">1<br>${match?.odds?.["1"] ?? "-"}</div>
-                            <div class="lora-odds-button">X<br>${match?.odds?.["X"] ?? "-"}</div>
-                            <div class="lora-odds-button">2<br>${match?.odds?.["2"] ?? "-"}</div>
-                        </div>
-                    </div>
-
+            <div class="lora-match-teams">
+                <div class="lora-match-team">
+                    <img src="${match.home.logo || ''}" alt="${match.home.name}" class="lora-team-badge">
+                    <span class="lora-team-name">${match.home.name}</span>
                 </div>
-            </a>
-            `;
-        });
 
-        const section = `
-        <div id="sport-header" class="lora-section-header">
-            <h2>ÖZEL ORAN MAÇLAR</h2>
-            <p>Günün en iyi fırsatları</p>
+                <div class="lora-match-vs">
+                    <span class="lora-match-vs-text">VS</span>
+                </div>
+
+                <div class="lora-match-team">
+                    <img src="${match.away.logo || ''}" alt="${match.away.name}" class="lora-team-badge">
+                    <span class="lora-team-name">${match.away.name}</span>
+                </div>
+            </div>
+
+            <div class="lora-match-odds">
+                <div class="lora-odds-row">
+                    <div class="lora-odds-button">
+                        <span class="lora-odds-label">1</span>
+                        <span class="lora-odds-value">${match.odds["1"]}</span>
+                    </div>
+
+                    <div class="lora-odds-button">
+                        <span class="lora-odds-label">X</span>
+                        <span class="lora-odds-value">${match.odds["X"]}</span>
+                    </div>
+
+                    <div class="lora-odds-button">
+                        <span class="lora-odds-label">2</span>
+                        <span class="lora-odds-value">${match.odds["2"]}</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
+    </a>
+    `;
+});
+
+        const section = `
+		 <div id="sport-header" class="lora-section-header">
+                <h2>ÖZEL ORAN MAÇLAR</h2>
+                <p>Günün en iyi fırsatları</p>
+            </div>
         <div id="sport-content" class="lora-betting-section">
             <div class="lora-matches-container">
                 <div class="lora-matches-scroll">
@@ -1273,45 +1293,35 @@ async function loadMatches() {
                     </div>
                 </div>
             </div>
-        </div>
-        `;
+
+        </div>`;
 
         slider.insertAdjacentHTML("afterend", section);
 
-        if (matchInterval) {
-            clearInterval(matchInterval);
-            matchInterval = null;
-        }
-
     } catch (err) {
-        console.error(err);
+        console.error("Match load error:", err);
     }
 }
 
-
-// 200ms watcher (SPA yok)
+// 100ms SPA watcher
 function startWatcher() {
-
     if (matchInterval) return;
 
     matchInterval = setInterval(() => {
+        const exists = document.getElementById("main-slider");
+        const already = document.querySelector(".lora-betting-section");
 
-        if (document.getElementById("sport-content")) {
-            clearInterval(matchInterval);
-            matchInterval = null;
-            return;
-        }
-
-        const slider = document.getElementById("main-slider");
-
-        if (slider) {
+        if (exists && !already) {
             loadMatches();
         }
-
-    }, 200);
+    }, 100);
 }
 
-
+// SPA navigation support
+window.addEventListener("popstate", () => {
+    isRendered = false;
+    startWatcher();
+});
 function getBookabetFromUrl() {
   const urlParams = new URLSearchParams(window.location.search);
 
