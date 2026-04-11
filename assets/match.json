@@ -1,10 +1,10 @@
 {
-  "active": false,
+  "active": true,
   "matches": [
     {
       "date": "13 Mart 2026",
       "time": "22:45",
-      "betid": "Z6YRBJ",
+      "betid": "",
       "home": {
         "name": "Torino",
         "logo": ""
