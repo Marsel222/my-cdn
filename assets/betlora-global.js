@@ -1267,12 +1267,13 @@ async function loadMatches() {
         });
 
         const section = `
-        <div class="lora-betting-section">
-
-            <div class="lora-section-header">
+		 <div class="lora-section-header">
                 <h2>ÖZEL ORAN MAÇLAR</h2>
                 <p>Günün en iyi fırsatları</p>
             </div>
+        <div class="lora-betting-section">
+
+           
 
             <div class="lora-matches-container">
                 <div class="lora-matches-scroll">
