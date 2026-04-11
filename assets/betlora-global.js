@@ -844,151 +844,375 @@ async function loadMatches() {
             const style = document.createElement("style");
             style.id = "sport-style";
             style.innerHTML = `
-            .lora-betting-section {
-                display:flex;
-                flex-direction:column;
-                width:100%;
-            }
+           /* Orta Kısım - Bahisler Section */
+.lora-betting-section {
+    position: relative;
+    display: flex;
+    width: 100%;
+}
 
-            .lora-section-header {
-                text-align:center;
-                margin-bottom:16px;
-            }
+/* Slider section */
+.lora-matches-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    position: relative;
+    background: transparent;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
 
-            .lora-section-header h2 {
-                color:#0ec096;
-                font-size:20px;
-                font-weight:700;
-                margin:0;
-            }
+.lora-matches-scroll {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+	    justify-content: space-evenly;
+}
 
-            .lora-section-header p {
-                color:#aaa;
-                font-size:12px;
-                margin-top:4px;
-            }
+.lora-matches-scroll::-webkit-scrollbar {
+    display: none;
+}
 
-            .lora-matches-container {
-                display:flex;
-                justify-content:center;
-                width:100%;
-                overflow:hidden;
-            }
+.lora-matches-track {
+    display: flex;
+    width: fit-content;
+    gap: 16px;
+    will-change: transform;
+    max-width: 100%;
+    box-sizing: border-box;
+}
 
-            .lora-matches-scroll {
-                display:flex;
-                width:100%;
-                padding:12px 0;
-                overflow-x:auto;
-                scroll-behavior:smooth;
-                scrollbar-width:none;
-                -webkit-overflow-scrolling:touch;
-            }
+.lora-matches-scroll:hover .lora-matches-track,
+.lora-matches-scroll.touching .lora-matches-track {
+    animation-play-state: paused;
+}
 
-            .lora-matches-scroll::-webkit-scrollbar { display:none; }
+.lora-match-card {
+    flex: 0 0 auto;
+    width: 350px;
+    min-width: 350px;
+    max-width: 350px;
+    height: 100%;
+    position: relative;
+    border-radius: 18px;
+    background: linear-gradient(135deg, 
+        rgba(0, 0, 0, 0.95) 0%, 
+        rgba(20, 20, 20, 0.9) 25%,
+        rgba(10, 10, 10, 0.85) 50%,
+        rgba(20, 20, 20, 0.9) 75%,
+        rgba(0, 0, 0, 0.95) 100%);
+    background-size: 200% 200%;
+    animation: lora-gold-gradient 8s ease infinite;
+    border: 1px solid rgba(14, 192, 150, 0.4);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 4px rgba(14, 192, 150, 0.2);
+}
 
-            .lora-matches-track {
-                display:flex;
-                gap:16px;
-                width:fit-content;
-            }
+.lora-match-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(14, 192, 150, 0.08) 0%, 
+        rgba(14, 192, 150, 0.12) 25%,
+        rgba(14, 192, 150, 0.1) 50%,
+        rgba(14, 192, 150, 0.12) 75%,
+        rgba(14, 192, 150, 0.08) 100%);
+    background-size: 300% 300%;
+    animation: lora-gold-shimmer 6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: 18px;
+}
 
-            .lora-match-card {
-                flex:0 0 auto;
-                width:350px;
-                min-width:350px;
-                border-radius:18px;
-                background:linear-gradient(135deg,#000,#111);
-                border:1px solid rgba(14,192,150,0.4);
-                box-shadow:0 2px 8px rgba(0,0,0,0.6);
-                transition:.25s;
-            }
+@keyframes lora-gold-gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
 
-            .lora-match-card:hover {
-                transform:translateY(-4px) scale(1.02);
-                border-color:rgba(14,192,150,0.7);
-            }
+@keyframes lora-gold-shimmer {
+    0% { background-position: 0% 50%; opacity: 0.6; }
+    50% { background-position: 100% 50%; opacity: 1; }
+    100% { background-position: 0% 50%; opacity: 0.6; }
+}
 
-            .lora-match-content {
-                padding:16px;
-                display:flex;
-                flex-direction:column;
-                gap:10px;
-            }
+.lora-match-card::before {
+    display: none;
+}
 
-            .lora-match-header {
-                display:flex;
-                justify-content:space-between;
-            }
+.lora-match-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 6px 18px rgba(14, 192, 150, 0.5), 0 0 12px rgba(14, 192, 150, 0.3);
+    border-color: rgba(14, 192, 150, 0.7);
+}
 
-            .lora-match-competition,
-            .lora-match-time,
-            .lora-team-name,
-            .lora-odds-label,
-            .lora-odds-value,
-            .lora-match-vs-text {
-                color:#0ec096;
-            }
+.lora-match-content {
+    padding: 16px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    min-height: 200px;
+    z-index: 1;
+}
 
-            .lora-match-teams {
-                display:flex;
-                justify-content:space-between;
-                align-items:center;
-            }
+.lora-match-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 8px;
+}
 
-            .lora-match-team {
-                display:flex;
-                flex-direction:column;
-                align-items:center;
-                gap:6px;
-            }
+.lora-match-competition {
+    color: #0ec096;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex: 1;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(14, 192, 150, 0.5);
+}
 
-            .lora-team-badge {
-                width:40px;
-                height:40px;
-                border-radius:50%;
-                object-fit:cover;
-            }
+.lora-match-time {
+    color: #0ec096;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: right;
+    line-height: 1.2;
+    flex-shrink: 0;
+    text-shadow: 0 1px 2px rgba(14, 192, 150, 0.5);
+}
 
-            .lora-match-vs-text {
-                padding:4px 12px;
-                border-radius:999px;
-                border:1px solid rgba(14,192,150,0.5);
-                background:#000;
-            }
+.lora-match-teams {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+}
 
-            .lora-odds-row {
-                display:flex;
-                justify-content:space-evenly;
-                gap:10px;
-            }
+.lora-match-team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
 
-            .lora-odds-button {
-                flex:1;
-                text-align:center;
-                background:#000;
-                border:1px solid rgba(14,192,150,0.5);
-                border-radius:18px;
-                padding:6px;
-                text-decoration:none;
-            }
+.lora-team-badge {
+    width: auto;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
 
-            @media (max-width:768px) {
-                .lora-match-card {
-                    width:80vw;
-                    min-width:80vw;
-                    scroll-snap-align:center;
-                }
+.lora-team-badge img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: relative;
+    z-index: 2;
+}
 
-                .lora-matches-scroll {
-                    overflow-x:auto;
-                    scroll-snap-type:x mandatory;
-                }
+.lora-team-name {
+    font-size: 12px;
+    color: #0ec096;
+    text-align: center;
+    font-weight: 500;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(14, 192, 150, 0.5);
+}
 
-                .lora-matches-track {
-                    gap:12px;
-                }
-            }
+.lora-match-vs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 16px;
+}
+
+.lora-match-vs-text {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #0ec096;
+    background: #000000;
+    border: 1px solid rgba(14, 192, 150, 0.5);
+    padding: 4px 12px;
+    border-radius: 999px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(14, 192, 150, 0.2), 0 0 8px rgba(14, 192, 150, 0.3);
+    text-shadow: 0 1px 2px rgba(14, 192, 150, 0.6), 0 0 4px rgba(14, 192, 150, 0.4);
+}
+
+.lora-match-vs-image {
+    width: auto;
+    height: 30px;
+    max-width: 80px;
+    object-fit: contain;
+    display: block;
+}
+
+.lora-match-odds {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.lora-odds-row {
+    display: flex;
+    gap: 4px;
+    justify-content: space-between;
+}
+
+.lora-odds-button {
+    flex: 1;
+    background: #000000;
+    border: 1px solid rgba(14, 192, 150, 0.5);
+    border-radius: 20px;
+    padding: 6px 8px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-height: 40px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(14, 192, 150, 0.15), 0 0 4px rgba(14, 192, 150, 0.2);
+    text-decoration: none;
+    color: #0ec096;
+    position: relative;
+}
+
+.lora-odds-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(14, 192, 150, 0.08) 0%, rgba(14, 192, 150, 0.03) 50%, transparent 100%);
+    pointer-events: none;
+}
+
+.lora-odds-button:hover {
+    background: #0a0a0a;
+    border-color: rgba(14, 192, 150, 0.8);
+    transform: translateY(-1px);
+    text-decoration: none;
+    color: #0ec096;
+    box-shadow: 0 4px 12px rgba(14, 192, 150, 0.4), inset 0 1px 3px rgba(14, 192, 150, 0.25), 0 0 8px rgba(14, 192, 150, 0.2);
+}
+
+.lora-odds-button:active {
+    transform: translateY(0);
+}
+
+.lora-odds-label {
+    font-size: 10px;
+    color: #0ec096;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    text-shadow: 0 1px 2px rgba(14, 192, 150, 0.5);
+}
+
+.lora-odds-value {
+    font-size: 12px;
+    color: #0ec096;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(14, 192, 150, 0.5), 0 0 4px rgba(14, 192, 150, 0.3);
+}
+
+.lora-odds-button:hover .lora-odds-value {
+    color: #0ec096;
+    text-shadow: 0 1px 3px rgba(14, 192, 150, 0.6), 0 0 6px rgba(14, 192, 150, 0.5);
+}
+
+.lora-odds-button:hover .lora-odds-label {
+    color: #0ec096;
+}
+.lora-section-header {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.lora-section-header h2 {
+    color: #0ec096;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 0 8px rgba(14,192,150,0.4);
+}
+
+.lora-section-header p {
+    color: #aaa;
+    font-size: 12px;
+    margin-top: 4px;
+    opacity: 0.8;
+}
+@media (max-width: 768px) {
+
+    /* container düzeltme */
+    .lora-matches-container {
+        margin-left: 0;
+        padding-left: 16px;
+    }
+
+    /* scroll alanı swipe */
+    .lora-matches-scroll {
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* track spacing */
+    .lora-matches-track {
+        gap: 12px;
+    }
+
+    /* card mobil boyut */
+    .lora-match-card {
+        width: 80vw;
+        min-width: 80vw;
+        max-width: 80vw;
+        flex: 0 0 auto;
+
+        scroll-snap-align: center;
+    }
+}
             `;
             document.head.appendChild(style);
         }
