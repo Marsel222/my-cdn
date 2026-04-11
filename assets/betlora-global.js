@@ -1222,51 +1222,55 @@ async function loadMatches() {
         let html = "";
 
         data.matches.forEach(match => {
-            html += `
-            <div class="lora-match-card">
-                <div class="lora-match-content">
+    matchesHTML += `
+    <a style="text-decoration: none;" href="/tr/sportsbook" class="lora-match-card">
 
-                    <div class="lora-match-header">
-                        <span class="lora-match-competition">${match.date}</span>
-                        <span class="lora-match-time">${match.time}</span>
-                    </div>
+        <div class="lora-match-content">
+            <div class="lora-match-header">
+                <span class="lora-match-competition">${match.date}</span>
+                <span class="lora-match-time">${match.time}</span>
+            </div>
 
-                    <div class="lora-match-teams">
-                        <div class="lora-match-team">
-                            <img src="${match.home.logo || ''}" class="lora-team-badge">
-                            <span class="lora-team-name">${match.home.name}</span>
-                        </div>
-
-                        <div class="lora-match-vs">
-                            <span class="lora-match-vs-text">VS</span>
-                        </div>
-
-                        <div class="lora-match-team">
-                            <img src="${match.away.logo || ''}" class="lora-team-badge">
-                            <span class="lora-team-name">${match.away.name}</span>
-                        </div>
-                    </div>
-
-                    <div class="lora-match-odds">
-                        <div class="lora-odds-row">
-                            <a class="lora-odds-button">
-                                <div class="lora-odds-label">1</div>
-                                <div class="lora-odds-value">${match.odds["1"]}</div>
-                            </a>
-                            <a class="lora-odds-button">
-                                <div class="lora-odds-label">X</div>
-                                <div class="lora-odds-value">${match.odds["X"]}</div>
-                            </a>
-                            <a class="lora-odds-button">
-                                <div class="lora-odds-label">2</div>
-                                <div class="lora-odds-value">${match.odds["2"]}</div>
-                            </a>
-                        </div>
-                    </div>
-
+            <div class="lora-match-teams">
+                <div class="lora-match-team">
+                    <img src="${match.home.logo || ''}" alt="${match.home.name}" class="lora-team-badge">
+                    <span class="lora-team-name">${match.home.name}</span>
                 </div>
-            </div>`;
-        });
+
+                <div class="lora-match-vs">
+                    <span class="lora-match-vs-text">VS</span>
+                </div>
+
+                <div class="lora-match-team">
+                    <img src="${match.away.logo || ''}" alt="${match.away.name}" class="lora-team-badge">
+                    <span class="lora-team-name">${match.away.name}</span>
+                </div>
+            </div>
+
+            <div class="lora-match-odds">
+                <div class="lora-odds-row">
+                    <div class="lora-odds-button">
+                        <span class="lora-odds-label">1</span>
+                        <span class="lora-odds-value">${match.odds["1"]}</span>
+                    </div>
+
+                    <div class="lora-odds-button">
+                        <span class="lora-odds-label">X</span>
+                        <span class="lora-odds-value">${match.odds["X"]}</span>
+                    </div>
+
+                    <div class="lora-odds-button">
+                        <span class="lora-odds-label">2</span>
+                        <span class="lora-odds-value">${match.odds["2"]}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </a>
+    `;
+});
 
         const section = `
 		 <div id="sport-header" class="lora-section-header">
