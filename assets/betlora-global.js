@@ -1224,9 +1224,14 @@ async function loadMatches() {
 
         let html = "";
 
-        data.matches.forEach(match => {
+data.matches.forEach(match => {
+
+    const href = (match.betid && match.betid.trim() !== "")
+        ? `/tr/sportsbook/betid=${match.betid}`
+        : `/tr/sportsbook`;
+
     matchesHTML += `
-    <a style="text-decoration: none;" href="/tr/sportsbook" class="lora-match-card">
+    <a style="text-decoration: none;" href="${href}" class="lora-match-card">
 
         <div class="lora-match-content">
             <div class="lora-match-header">
