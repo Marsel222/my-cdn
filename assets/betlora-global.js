@@ -1230,7 +1230,7 @@ data.matches.forEach(match => {
         ? `/tr/sportsbook/betid=${match.betid}`
         : `/tr/sportsbook`;
 
-    matchesHTML += `
+    html += `
     <a style="text-decoration: none;" href="${href}" class="lora-match-card">
 
         <div class="lora-match-content">
