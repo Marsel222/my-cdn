@@ -1332,28 +1332,55 @@ function getBookabetFromUrl() {
 
 function waitForIframeAndUpdate() {
   const code = getBookabetFromUrl();
-  if (!code) return;
+
+  console.error("[bookabet] URL'den gelen code:", code);
+
+  if (!code) {
+    console.error("[bookabet] betid yok → script durdu");
+    return;
+  }
+
+  console.error("[bookabet] iframe bekleniyor...");
 
   const interval = setInterval(() => {
     const iframe = document.getElementById("game");
 
-    if (!iframe || !iframe.src) return;
+    console.error("[bookabet] iframe kontrol ediliyor...");
+
+    if (!iframe) {
+      console.error("[bookabet] iframe bulunamadı");
+      return;
+    }
+
+    if (!iframe.src) {
+      console.error("[bookabet] iframe bulundu ama src boş");
+      return;
+    }
+
+    console.error("[bookabet] iframe bulundu:", iframe.src);
 
     try {
       const url = new URL(iframe.src);
 
-      // bookabet ekle/güncelle
+      const before = url.toString();
+
       url.searchParams.set("bookabet", code);
 
-      iframe.src = url.toString();
+      const after = url.toString();
 
-      // iframe bulundu ve güncellendi → dur
+      console.error("[bookabet] önce:", before);
+      console.error("[bookabet] sonra:", after);
+
+      iframe.src = after;
+
+      console.error("[bookabet] iframe güncellendi ✔");
+
       clearInterval(interval);
-      console.log("Iframe updated with bookabet:", code);
 
     } catch (e) {
-      console.log("waiting iframe...");
+      console.error("[bookabet] URL parse hatası:", e);
     }
+
   }, 100);
 }
 
