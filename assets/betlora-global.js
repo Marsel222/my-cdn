@@ -21,10 +21,11 @@ initializeWebsiteFeatures();
 			removeTabsNav();
 			startWatcher();
             var sportspath = window.location.pathname;
-            if (sportspath === "/tr/sportsbook") {
-              clearDynamicContent();
-				waitForIframeAndUpdate();
-            } else if (sportspath === "/tr/trade") {
+           if (sportspath.includes("/tr/sportsbook")) {
+  clearDynamicContent();
+  waitForIframeAndUpdate();
+}
+		   else if (sportspath === "/tr/trade") {
               clearDynamicContent();
             } else if (sportspath === "/tr/e-sport") {
               clearDynamicContent();
