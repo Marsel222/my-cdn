@@ -1461,10 +1461,7 @@ function initTopbarSliderFromJSON() {
   const interval = setInterval(() => {
     const root = document.querySelector('.casino-new__topbar');
 
-    if (!root) {
-      console.error("⌛ container yok...");
-      return;
-    }
+    if (!root) return;
 
     console.error("✅ container bulundu");
     clearInterval(interval);
@@ -1473,63 +1470,64 @@ function initTopbarSliderFromJSON() {
       .then(res => res.json())
       .then(data => {
 
-        console.log("📦 JSON:", data);
-
-        if (!data.images || !data.images.length) {
-          console.error("❌ images boş");
+        const images = data.images || [];
+        if (!images.length) {
+          console.error("❌ images yok");
           return;
         }
 
         const slider = document.createElement('div');
         slider.className = 'topbar-slider';
 
-        data.images.forEach(item => {
-
-          // 🔥 SAFE ACCESS (undefined fix)
-          const mobile = item.mobile || item.mobile_url || item.src?.mobile || "";
-          const tablet = item.tablet || item.tablet_url || item.src?.tablet || "";
-          const desktop = item.desktop || item.desktop_url || item.src?.desktop || "";
+        images.forEach(item => {
 
           const picture = document.createElement('picture');
 
-          const sourceMobile = document.createElement('source');
-          sourceMobile.media = "(max-width: 767px)";
-          sourceMobile.srcset = mobile;
+          // 🔥 SENİN FORMATIN: sources array yok, direkt field'lar var
+          const sources = [
+            { media: "(max-width: 767px)", src: item.mobile },
+            { media: "(max-width: 991px)", src: item.tablet },
+            { media: "(max-width: 1023px)", src: item.tablet },
+            { media: "(max-width: 1443px)", src: item.desktop },
+            { media: "(max-width: 1919px)", src: item.desktop }
+          ];
 
-          const sourceTablet = document.createElement('source');
-          sourceTablet.media = "(max-width: 1023px)";
-          sourceTablet.srcset = tablet;
+          sources.forEach(s => {
+            if (!s.src) return;
+
+            const source = document.createElement('source');
+            source.media = s.media;
+            source.srcset = s.src;
+            picture.appendChild(source);
+          });
 
           const img = document.createElement('img');
-          img.src = desktop;
+          img.src = item.desktop;
           img.alt = "banner";
           img.loading = "lazy";
           img.draggable = false;
 
-          picture.appendChild(sourceMobile);
-          picture.appendChild(sourceTablet);
           picture.appendChild(img);
-
           slider.appendChild(picture);
         });
 
         root.innerHTML = "";
         root.appendChild(slider);
 
-        // =========================
-        // SLIDER STATE
-        // =========================
+        // ======================
+        // layout fix (KRİTİK)
+        // ======================
+        slider.style.display = "flex";
+
         let index = 0;
-        const total = data.images.length;
+        const total = images.length;
 
         function update() {
           slider.style.transition = "transform 0.5s ease";
           slider.style.transform = `translateX(-${index * 100}%)`;
         }
 
-        // =========================
-        // AUTO SLIDE
-        // =========================
+        // AUTO
         let auto = setInterval(() => {
           index = (index + 1) % total;
           update();
@@ -1543,9 +1541,7 @@ function initTopbarSliderFromJSON() {
           }, 10000);
         }
 
-        // =========================
-        // TOUCH
-        // =========================
+        // SWIPE
         let startX = 0;
 
         slider.addEventListener('touchstart', e => {
@@ -1553,55 +1549,17 @@ function initTopbarSliderFromJSON() {
         });
 
         slider.addEventListener('touchend', e => {
-          handleSwipe(startX, e.changedTouches[0].clientX);
-        });
+          const diff = startX - e.changedTouches[0].clientX;
 
-        // =========================
-        // MOUSE DRAG
-        // =========================
-        let isDown = false;
-        let dragX = 0;
-
-        slider.addEventListener('mousedown', e => {
-          isDown = true;
-          dragX = e.clientX;
-          slider.style.transition = "none";
-        });
-
-        slider.addEventListener('mouseup', e => {
-          if (!isDown) return;
-          isDown = false;
-          handleSwipe(dragX, e.clientX);
-        });
-
-        slider.addEventListener('mouseleave', () => {
-          isDown = false;
-        });
-
-        // =========================
-        // SWIPE LOGIC
-        // =========================
-        function handleSwipe(start, end) {
-          const diff = start - end;
-
-          if (diff > 50) {
-            index = (index + 1) % total;
-          } else if (diff < -50) {
-            index = (index - 1 + total) % total;
-          }
+          if (diff > 50) index = (index + 1) % total;
+          else if (diff < -50) index = (index - 1 + total) % total;
 
           update();
           resetAuto();
-        }
+        });
 
-        update();
-
-        console.error("🎉 Slider hazır (stable build)");
-      })
-      .catch(err => {
-        console.error("🔥 JSON error:", err);
+        console.error("🎉 slider hazır");
       });
 
   }, 200);
 }
-
