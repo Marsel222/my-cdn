@@ -1391,20 +1391,33 @@ function waitForIframeAndUpdate() {
 }
 
 function waitForLuckyWheel() {
+  console.error("⏳ Lucky wheel kontrol başlatıldı");
+
   const interval = setInterval(() => {
-    // Eğer zaten varsa direkt dur
-    if (document.querySelector('svg#lucky-wheel')) {
+    console.error("🔁 Kontrol çalıştı");
+
+    // 1. Zaten var mı?
+    const existing = document.querySelector('svg#lucky-wheel');
+    if (existing) {
+      console.error("✅ lucky-wheel zaten var, işlem durduruldu");
       clearInterval(interval);
       return;
+    } else {
+      console.error("❌ lucky-wheel bulunamadı");
     }
 
-    // header__wallet elementini bul
+    // 2. header__wallet var mı?
     const wallet = document.querySelector('.header__wallet');
+    if (!wallet) {
+      console.error("⌛ header__wallet henüz yok, bekleniyor...");
+      return;
+    } else {
+      console.error("✅ header__wallet bulundu");
+    }
 
-    // Eğer henüz yoksa beklemeye devam et
-    if (!wallet) return;
+    // 3. SVG oluşturuluyor
+    console.error("🛠 SVG oluşturuluyor");
 
-    // SVG oluştur
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('id', 'lucky-wheel');
     svg.setAttribute('class', 'svg-icon');
@@ -1414,11 +1427,13 @@ function waitForLuckyWheel() {
 
     svg.appendChild(use);
 
-    // header__wallet'tan hemen sonra ekle
+    // 4. Ekleniyor
     wallet.insertAdjacentElement('afterend', svg);
+    console.error("🎉 lucky-wheel eklendi");
 
-    // Ekledikten sonra dur
+    // 5. Durdur
     clearInterval(interval);
+    console.error("🛑 Interval durduruldu");
 
   }, 200);
 }
