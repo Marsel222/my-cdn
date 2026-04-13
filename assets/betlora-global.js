@@ -20,6 +20,7 @@ initializeWebsiteFeatures();
 			cleanCasinoAndPoker();
 			removeTabsNav();
 			startWatcher();
+			initTopbarSliderFromJSON();
             var sportspath = window.location.pathname;
            if (sportspath.includes("/tr/sportsbook")) {
   clearDynamicContent();
@@ -72,7 +73,7 @@ initializeWebsiteFeatures();
         
             } else if (path === "/tr/casino") {
                 clearDynamicContent();
-			
+			initTopbarSliderFromJSON();
             } else if (path === "/tr/sportsbook") {
                 clearDynamicContent();
 				waitForIframeAndUpdate();
@@ -1454,4 +1455,130 @@ function waitForLuckyWheel() {
 
   }, 200);
 }
+function initTopbarSliderFromJSON() {
+  console.error("⏳ Slider başlatılıyor...");
+
+  const root = document.querySelector('.casino-new__topbar');
+
+  if (!root) {
+    console.error("❌ .casino-new__topbar bulunamadı");
+    return;
+  }
+
+  fetch('https://marsel222.github.io/my-cdn/assets/casino-images.json')
+    .then(res => res.json())
+    .then(data => {
+      if (!data.images || data.images.length === 0) {
+        console.error("❌ JSON boş");
+        return;
+      }
+
+      console.error(`✅ ${data.images.length} görsel alındı`);
+
+      // =========================
+      // SLIDER WRAPPER OLUŞTUR
+      // =========================
+      const slider = document.createElement('div');
+      slider.className = 'topbar-slider';
+
+      // resimleri bas
+      data.images.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        slider.appendChild(img);
+      });
+
+      // root içine ekle
+      root.innerHTML = "";
+      root.appendChild(slider);
+
+      // =========================
+      // SLIDER LOGIC
+      // =========================
+      let index = 0;
+      const total = data.images.length;
+
+      function update() {
+        slider.style.transition = "transform 0.5s ease";
+        slider.style.transform = `translateX(-${index * 100}%)`;
+        console.error(`➡️ slide: ${index}`);
+      }
+
+      // AUTO
+      let auto = setInterval(() => {
+        index = (index + 1) % total;
+        update();
+      }, 10000);
+
+      function resetAuto() {
+        clearInterval(auto);
+        auto = setInterval(() => {
+          index = (index + 1) % total;
+          update();
+        }, 10000);
+      }
+
+      // =========================
+      // TOUCH
+      // =========================
+      let startX = 0;
+
+      slider.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+      });
+
+      slider.addEventListener('touchend', e => {
+        handleSwipe(startX, e.changedTouches[0].clientX);
+      });
+
+      // =========================
+      // MOUSE DRAG
+      // =========================
+      let isDown = false;
+      let startDragX = 0;
+
+      slider.addEventListener('mousedown', e => {
+        isDown = true;
+        startDragX = e.clientX;
+        slider.style.transition = "none";
+      });
+
+      slider.addEventListener('mouseup', e => {
+        if (!isDown) return;
+        isDown = false;
+        handleSwipe(startDragX, e.clientX);
+      });
+
+      slider.addEventListener('mouseleave', () => {
+        isDown = false;
+      });
+
+      // =========================
+      // SWIPE LOGIC
+      // =========================
+      function handleSwipe(start, end) {
+        const diff = start - end;
+
+        if (diff > 50) {
+          index = (index + 1) % total;
+          console.error("👉 next");
+        } else if (diff < -50) {
+          index = (index - 1 + total) % total;
+          console.error("👈 prev");
+        }
+
+        update();
+        resetAuto();
+      }
+
+      update();
+
+      console.error("🎉 Slider hazır (tam dinamik)");
+    })
+    .catch(err => {
+      console.error("🔥 JSON hata:", err);
+    });
+}
+
+// çalıştır
 
