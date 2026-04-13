@@ -1396,26 +1396,38 @@ function waitForLuckyWheel() {
   const interval = setInterval(() => {
     console.error("🔁 Kontrol çalıştı");
 
-    // 1. Zaten var mı?
-    const existing = document.querySelector('svg#lucky-wheel');
+    // SADECE header__actions içinde kontrol et
+    const headerActions = document.querySelector('.header__actions');
+
+    if (!headerActions) {
+      console.error("⌛ header__actions henüz yok");
+      return;
+    }
+
+    console.error("✅ header__actions bulundu");
+
+    const existing = headerActions.querySelector('svg#lucky-wheel');
+
+    // Eğer header__actions içinde varsa dur
     if (existing) {
-      console.error("✅ lucky-wheel zaten var, işlem durduruldu");
+      console.error("✅ header__actions içinde lucky-wheel zaten var → durduruldu");
       clearInterval(interval);
       return;
     } else {
-      console.error("❌ lucky-wheel bulunamadı");
+      console.error("❌ header__actions içinde lucky-wheel yok");
     }
 
-    // 2. header__wallet var mı?
-    const wallet = document.querySelector('.header__wallet');
+    // header__wallet'ı bul (yine header__actions içinde arıyoruz)
+    const wallet = headerActions.querySelector('.header__wallet');
+
     if (!wallet) {
-      console.error("⌛ header__wallet henüz yok, bekleniyor...");
+      console.error("⌛ header__wallet henüz yok");
       return;
-    } else {
-      console.error("✅ header__wallet bulundu");
     }
 
-    // 3. SVG oluşturuluyor
+    console.error("✅ header__wallet bulundu");
+
+    // SVG oluştur
     console.error("🛠 SVG oluşturuluyor");
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -1427,16 +1439,14 @@ function waitForLuckyWheel() {
 
     svg.appendChild(use);
 
-    // 4. Ekleniyor
+    // header__wallet'tan hemen sonra ekle
     wallet.insertAdjacentElement('afterend', svg);
-    console.error("🎉 lucky-wheel eklendi");
 
-    // 5. Durdur
+    console.error("🎉 lucky-wheel header__actions içine eklendi");
+
+    // durdur
     clearInterval(interval);
     console.error("🛑 Interval durduruldu");
 
   }, 200);
 }
-
-
-
