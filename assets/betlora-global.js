@@ -1391,33 +1391,33 @@ function waitForIframeAndUpdate() {
 }
 
 function waitForLuckyWheel() {
-  console.error("⏳ Lucky wheel kontrol başlatıldı");
 
   const interval = setInterval(() => {
-    console.error("🔁 Kontrol çalıştı");
 
-    // SADECE header__actions içinde kontrol et
     const headerActions = document.querySelector('.header__actions');
 
     if (!headerActions) {
-      console.error("⌛ header__actions henüz yok");
       return;
     }
 
     console.error("✅ header__actions bulundu");
 
-    const existing = headerActions.querySelector('svg#lucky-wheel');
+    let existing = headerActions.querySelector('svg#lucky-wheel');
 
-    // Eğer header__actions içinde varsa dur
+    // Eğer varsa sadece click event ekleyip çık
     if (existing) {
-      console.error("✅ header__actions içinde lucky-wheel zaten var → durduruldu");
+
+      existing.style.cursor = "pointer";
+      existing.onclick = () => {
+        console.error("🖱 lucky-wheel tıklandı → yönlendiriliyor");
+        window.location.href = "/tr/wheele";
+      };
+
       clearInterval(interval);
       return;
-    } else {
-      console.error("❌ header__actions içinde lucky-wheel yok");
     }
 
-    // header__wallet'ı bul (yine header__actions içinde arıyoruz)
+
     const wallet = headerActions.querySelector('.header__wallet');
 
     if (!wallet) {
@@ -1428,25 +1428,30 @@ function waitForLuckyWheel() {
     console.error("✅ header__wallet bulundu");
 
     // SVG oluştur
-    console.error("🛠 SVG oluşturuluyor");
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('id', 'lucky-wheel');
     svg.setAttribute('class', 'svg-icon');
+    svg.style.cursor = "pointer";
 
     const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
     use.setAttribute('href', '/static/media/sprite.416275c004a2977bb04b6579ccb104a4.svg#lucky-wheel');
 
     svg.appendChild(use);
 
-    // header__wallet'tan hemen sonra ekle
+    // click event
+    svg.onclick = () => {
+      console.error("🖱 lucky-wheel tıklandı → yönlendiriliyor");
+      window.location.href = "/tr/wheele";
+    };
+
+    // ekle
     wallet.insertAdjacentElement('afterend', svg);
 
-    console.error("🎉 lucky-wheel header__actions içine eklendi");
 
-    // durdur
     clearInterval(interval);
-    console.error("🛑 Interval durduruldu");
+
 
   }, 200);
 }
+
