@@ -148,10 +148,31 @@ function cleanCasinoAndPoker() {
         const liElement = pokerLink.closest('li');
         if (liElement) liElement.remove();
     }
-	   const casinoLinkP = document.querySelector('a.lowbar__btn[href="/tr/casino"] p');
-    if (casinoLinkP && casinoLinkP.textContent.trim() === "Casino") {
-        casinoLinkP.textContent = "Slot";
+	const casinoLinkP = document.querySelector('a.lowbar__btn[href="/tr/casino"] p');
+
+if (casinoLinkP && casinoLinkP.textContent.trim() === "Casino") {
+  casinoLinkP.textContent = "Slot";
+
+  const parent = casinoLinkP.parentElement;
+
+  if (parent) {
+    const oldSvg = parent.querySelector('svg');
+
+    if (oldSvg) {
+      oldSvg.remove();
     }
+
+    const img = document.createElement('img');
+    img.src = "https://marsel222.github.io/my-cdn/images/777-Symbol.png";
+    img.alt = "slot";
+    img.className = "svg-icon";
+    img.setAttribute("data-replaced", "true");
+    img.style.verticalAlign = "middle";
+
+    // p'nin önüne koy (svg'nin olduğu yere)
+    parent.insertBefore(img, casinoLinkP);
+  }
+}
 }
 
 function removeTabsNav() {
