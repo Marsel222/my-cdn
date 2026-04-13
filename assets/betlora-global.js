@@ -8,12 +8,13 @@ document.head.appendChild(link);
     let lastUrl = location.href;
     let isFirstLoad = true;
     if (isFirstLoad) {
+		waitForLuckyWheel();
         setTimeout(function () { 
 			addMenuItemsWithAuth();
           bonusTabCustomReplace();
 addScrollingTextWithNextUrl();
 initializeWebsiteFeatures();
-			  waitForLuckyWheel();
+			  
 		setTimeout(addRandomUserPlaying, 2000); 
 			createToastAndShow(); 
 			filterActiveLanguages();
