@@ -1469,7 +1469,7 @@ function initTopbarSliderFromJSON() {
     console.error("✅ .casino-new__topbar bulundu");
     clearInterval(interval);
 
-    fetch('https://abc.com/test.json')
+    fetch('https://marsel222.github.io/my-cdn/assets/casino-images.json')
       .then(res => res.json())
       .then(data => {
         if (!data.images || data.images.length === 0) {
