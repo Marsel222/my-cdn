@@ -167,6 +167,7 @@ if (casinoLinkP) {
 
   // p'nin hemen önüne koy
   parent.insertBefore(img, casinoLinkP);
+	if (casinoLinkP && casinoLinkP.textContent.trim() === "Casino") { casinoLinkP.textContent = "Slot"; }
 }
 }
 
