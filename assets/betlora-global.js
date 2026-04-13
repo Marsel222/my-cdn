@@ -1456,129 +1456,132 @@ function waitForLuckyWheel() {
   }, 200);
 }
 function initTopbarSliderFromJSON() {
-  console.error("⏳ Slider başlatılıyor...");
+  console.error("⏳ Slider bekleniyor...");
 
-  const root = document.querySelector('.casino-new__topbar');
+  const interval = setInterval(() => {
+    const root = document.querySelector('.casino-new__topbar');
 
-  if (!root) {
-    console.error("❌ .casino-new__topbar bulunamadı");
-    return;
-  }
+    if (!root) {
+      console.error("⌛ .casino-new__topbar yok, bekleniyor...");
+      return;
+    }
 
-  fetch('https://marsel222.github.io/my-cdn/assets/casino-images.json')
-    .then(res => res.json())
-    .then(data => {
-      if (!data.images || data.images.length === 0) {
-        console.error("❌ JSON boş");
-        return;
-      }
+    console.error("✅ .casino-new__topbar bulundu");
+    clearInterval(interval); // 🔥 artık kontrolü bırak
 
-      console.error(`✅ ${data.images.length} görsel alındı`);
+    fetch('https://abc.com/test.json')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.images || data.images.length === 0) {
+          console.error("❌ JSON boş");
+          return;
+        }
 
-      // =========================
-      // SLIDER WRAPPER OLUŞTUR
-      // =========================
-      const slider = document.createElement('div');
-      slider.className = 'topbar-slider';
+        console.error(`✅ ${data.images.length} görsel geldi`);
 
-      // resimleri bas
-      data.images.forEach(src => {
-        const img = document.createElement('img');
-        img.src = src;
-        slider.appendChild(img);
-      });
+        // ======================
+        // SLIDER OLUŞTUR
+        // ======================
+        const slider = document.createElement('div');
+        slider.className = 'topbar-slider';
 
-      // root içine ekle
-      root.innerHTML = "";
-      root.appendChild(slider);
+        data.images.forEach(src => {
+          const img = document.createElement('img');
+          img.src = src;
+          slider.appendChild(img);
+        });
 
-      // =========================
-      // SLIDER LOGIC
-      // =========================
-      let index = 0;
-      const total = data.images.length;
+        root.innerHTML = "";
+        root.appendChild(slider);
 
-      function update() {
-        slider.style.transition = "transform 0.5s ease";
-        slider.style.transform = `translateX(-${index * 100}%)`;
-        console.error(`➡️ slide: ${index}`);
-      }
+        // ======================
+        // STATE
+        // ======================
+        let index = 0;
+        const total = data.images.length;
 
-      // AUTO
-      let auto = setInterval(() => {
-        index = (index + 1) % total;
-        update();
-      }, 10000);
+        function update() {
+          slider.style.transition = "transform 0.5s ease";
+          slider.style.transform = `translateX(-${index * 100}%)`;
+        }
 
-      function resetAuto() {
-        clearInterval(auto);
-        auto = setInterval(() => {
+        // ======================
+        // AUTO
+        // ======================
+        let auto = setInterval(() => {
           index = (index + 1) % total;
           update();
         }, 10000);
-      }
 
-      // =========================
-      // TOUCH
-      // =========================
-      let startX = 0;
+        function resetAuto() {
+          clearInterval(auto);
+          auto = setInterval(() => {
+            index = (index + 1) % total;
+            update();
+          }, 10000);
+        }
 
-      slider.addEventListener('touchstart', e => {
-        startX = e.touches[0].clientX;
-      });
+        // ======================
+        // TOUCH
+        // ======================
+        let startX = 0;
 
-      slider.addEventListener('touchend', e => {
-        handleSwipe(startX, e.changedTouches[0].clientX);
-      });
+        slider.addEventListener('touchstart', e => {
+          startX = e.touches[0].clientX;
+        });
 
-      // =========================
-      // MOUSE DRAG
-      // =========================
-      let isDown = false;
-      let startDragX = 0;
+        slider.addEventListener('touchend', e => {
+          handleSwipe(startX, e.changedTouches[0].clientX);
+        });
 
-      slider.addEventListener('mousedown', e => {
-        isDown = true;
-        startDragX = e.clientX;
-        slider.style.transition = "none";
-      });
+        // ======================
+        // MOUSE DRAG
+        // ======================
+        let isDown = false;
+        let dragX = 0;
 
-      slider.addEventListener('mouseup', e => {
-        if (!isDown) return;
-        isDown = false;
-        handleSwipe(startDragX, e.clientX);
-      });
+        slider.addEventListener('mousedown', e => {
+          isDown = true;
+          dragX = e.clientX;
+          slider.style.transition = "none";
+        });
 
-      slider.addEventListener('mouseleave', () => {
-        isDown = false;
-      });
+        slider.addEventListener('mouseup', e => {
+          if (!isDown) return;
+          isDown = false;
+          handleSwipe(dragX, e.clientX);
+        });
 
-      // =========================
-      // SWIPE LOGIC
-      // =========================
-      function handleSwipe(start, end) {
-        const diff = start - end;
+        slider.addEventListener('mouseleave', () => {
+          isDown = false;
+        });
 
-        if (diff > 50) {
-          index = (index + 1) % total;
-          console.error("👉 next");
-        } else if (diff < -50) {
-          index = (index - 1 + total) % total;
-          console.error("👈 prev");
+        // ======================
+        // SWIPE
+        // ======================
+        function handleSwipe(start, end) {
+          const diff = start - end;
+
+          if (diff > 50) {
+            index = (index + 1) % total;
+            console.error("👉 next");
+          } else if (diff < -50) {
+            index = (index - 1 + total) % total;
+            console.error("👈 prev");
+          }
+
+          update();
+          resetAuto();
         }
 
         update();
-        resetAuto();
-      }
 
-      update();
+        console.error("🎉 Slider hazır + interval durdu");
+      })
+      .catch(err => {
+        console.error("🔥 JSON hata:", err);
+      });
 
-      console.error("🎉 Slider hazır (tam dinamik)");
-    })
-    .catch(err => {
-      console.error("🔥 JSON hata:", err);
-    });
+  }, 200);
 }
-
-// çalıştır
 
