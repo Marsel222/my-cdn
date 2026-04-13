@@ -1435,7 +1435,7 @@ function waitForLuckyWheel() {
       existing.style.cursor = "pointer";
       existing.onclick = () => {
         console.error("🖱 lucky-wheel tıklandı → yönlendiriliyor");
-        window.location.href = "/tr/wheele";
+        window.location.href = "/tr/wheel";
       };
 
       clearInterval(interval);
