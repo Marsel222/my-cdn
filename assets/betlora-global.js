@@ -1485,11 +1485,31 @@ function initTopbarSliderFromJSON() {
         const slider = document.createElement('div');
         slider.className = 'topbar-slider';
 
-        data.images.forEach(src => {
-          const img = document.createElement('img');
-          img.src = src;
-          slider.appendChild(img);
-        });
+     data.images.forEach(item => {
+  const picture = document.createElement('picture');
+
+  // mobile
+  const mobile = document.createElement('source');
+  mobile.media = "(max-width: 767px)";
+  mobile.srcset = item.mobile;
+
+  // tablet
+  const tablet = document.createElement('source');
+  tablet.media = "(max-width: 1023px)";
+  tablet.srcset = item.tablet;
+
+  // desktop (fallback img)
+  const img = document.createElement('img');
+  img.src = item.desktop;
+  img.alt = "banner";
+  img.loading = "lazy";
+
+  picture.appendChild(mobile);
+  picture.appendChild(tablet);
+  picture.appendChild(img);
+
+  slider.appendChild(picture);
+});
 
         root.innerHTML = "";
         root.appendChild(slider);
