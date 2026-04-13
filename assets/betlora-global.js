@@ -1462,14 +1462,14 @@ function initTopbarSliderFromJSON() {
     const root = document.querySelector('.casino-new__topbar');
 
     if (!root) {
-      console.error("⌛ .casino-new__topbar yok, bekleniyor...");
+      console.error("⌛ .casino-new__topbar yok...");
       return;
     }
 
     console.error("✅ .casino-new__topbar bulundu");
-    clearInterval(interval); // 🔥 artık kontrolü bırak
+    clearInterval(interval);
 
-    fetch('https://marsel222.github.io/my-cdn/assets/casino-images.json')
+    fetch('https://abc.com/test.json')
       .then(res => res.json())
       .then(data => {
         if (!data.images || data.images.length === 0) {
@@ -1477,57 +1477,59 @@ function initTopbarSliderFromJSON() {
           return;
         }
 
-        console.error(`✅ ${data.images.length} görsel geldi`);
+        console.error(`✅ ${data.images.length} slide geldi`);
 
-        // ======================
-        // SLIDER OLUŞTUR
-        // ======================
+        // =========================
+        // SLIDER WRAPPER
+        // =========================
         const slider = document.createElement('div');
         slider.className = 'topbar-slider';
 
-     data.images.forEach(item => {
-  const picture = document.createElement('picture');
+        // =========================
+        // PICTURE SLIDES
+        // =========================
+        data.images.forEach(item => {
+          const picture = document.createElement('picture');
 
-  // mobile
-  const mobile = document.createElement('source');
-  mobile.media = "(max-width: 767px)";
-  mobile.srcset = item.mobile;
+          const mobile = document.createElement('source');
+          mobile.media = "(max-width: 767px)";
+          mobile.srcset = item.mobile;
 
-  // tablet
-  const tablet = document.createElement('source');
-  tablet.media = "(max-width: 1023px)";
-  tablet.srcset = item.tablet;
+          const tablet = document.createElement('source');
+          tablet.media = "(max-width: 1023px)";
+          tablet.srcset = item.tablet;
 
-  // desktop (fallback img)
-  const img = document.createElement('img');
-  img.src = item.desktop;
-  img.alt = "banner";
-  img.loading = "lazy";
+          const img = document.createElement('img');
+          img.src = item.desktop;
+          img.alt = "banner";
+          img.loading = "lazy";
 
-  picture.appendChild(mobile);
-  picture.appendChild(tablet);
-  picture.appendChild(img);
+          picture.appendChild(mobile);
+          picture.appendChild(tablet);
+          picture.appendChild(img);
 
-  slider.appendChild(picture);
-});
+          slider.appendChild(picture);
+        });
 
+        // mount
         root.innerHTML = "";
         root.appendChild(slider);
 
-        // ======================
+        // =========================
         // STATE
-        // ======================
+        // =========================
         let index = 0;
         const total = data.images.length;
 
         function update() {
           slider.style.transition = "transform 0.5s ease";
           slider.style.transform = `translateX(-${index * 100}%)`;
+          console.error(`➡️ slide: ${index}`);
         }
 
-        // ======================
-        // AUTO
-        // ======================
+        // =========================
+        // AUTO SLIDE
+        // =========================
         let auto = setInterval(() => {
           index = (index + 1) % total;
           update();
@@ -1541,9 +1543,9 @@ function initTopbarSliderFromJSON() {
           }, 10000);
         }
 
-        // ======================
+        // =========================
         // TOUCH
-        // ======================
+        // =========================
         let startX = 0;
 
         slider.addEventListener('touchstart', e => {
@@ -1554,9 +1556,9 @@ function initTopbarSliderFromJSON() {
           handleSwipe(startX, e.changedTouches[0].clientX);
         });
 
-        // ======================
+        // =========================
         // MOUSE DRAG
-        // ======================
+        // =========================
         let isDown = false;
         let dragX = 0;
 
@@ -1576,9 +1578,9 @@ function initTopbarSliderFromJSON() {
           isDown = false;
         });
 
-        // ======================
-        // SWIPE
-        // ======================
+        // =========================
+        // SWIPE LOGIC
+        // =========================
         function handleSwipe(start, end) {
           const diff = start - end;
 
@@ -1596,7 +1598,7 @@ function initTopbarSliderFromJSON() {
 
         update();
 
-        console.error("🎉 Slider hazır + interval durdu");
+        console.error("🎉 FULL responsive slider hazır");
       })
       .catch(err => {
         console.error("🔥 JSON hata:", err);
@@ -1604,4 +1606,5 @@ function initTopbarSliderFromJSON() {
 
   }, 200);
 }
+
 
