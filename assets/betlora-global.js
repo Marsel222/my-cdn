@@ -1467,7 +1467,7 @@ function waitForLuckyWheel() {
     // click event
     svg.onclick = () => {
       console.error("🖱 lucky-wheel tıklandı → yönlendiriliyor");
-      window.location.href = "/tr/wheele";
+      window.location.href = "/tr/wheel";
     };
 
     // ekle
