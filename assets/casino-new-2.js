@@ -1512,6 +1512,9 @@
     await fetchTabs();
     return `
       <div class="${CONFIG.rootClass} casino-container container">
+      <div class="casino-new__topbar">
+</div>
+      
         ${renderTabs()}
         ${renderSearch()}
         <div id="casino-new-content" class="casino-new__content">
