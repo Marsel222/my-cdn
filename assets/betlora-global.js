@@ -13,7 +13,7 @@ document.head.appendChild(link);
           bonusTabCustomReplace();
 addScrollingTextWithNextUrl();
 initializeWebsiteFeatures();
-			  
+			  waitForLuckyWheel();
 		setTimeout(addRandomUserPlaying, 2000); 
 			createToastAndShow(); 
 			filterActiveLanguages();
@@ -1390,5 +1390,38 @@ function waitForIframeAndUpdate() {
   }, 100);
 }
 
-// SPA uyumlu başlat
+function waitForLuckyWheel() {
+  const interval = setInterval(() => {
+    // Eğer zaten varsa direkt dur
+    if (document.querySelector('svg#lucky-wheel')) {
+      clearInterval(interval);
+      return;
+    }
+
+    // header__wallet elementini bul
+    const wallet = document.querySelector('.header__wallet');
+
+    // Eğer henüz yoksa beklemeye devam et
+    if (!wallet) return;
+
+    // SVG oluştur
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('id', 'lucky-wheel');
+    svg.setAttribute('class', 'svg-icon');
+
+    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', '/static/media/sprite.416275c004a2977bb04b6579ccb104a4.svg#lucky-wheel');
+
+    svg.appendChild(use);
+
+    // header__wallet'tan hemen sonra ekle
+    wallet.insertAdjacentElement('afterend', svg);
+
+    // Ekledikten sonra dur
+    clearInterval(interval);
+
+  }, 200);
+}
+
+
 
