@@ -1462,61 +1462,62 @@ function initTopbarSliderFromJSON() {
     const root = document.querySelector('.casino-new__topbar');
 
     if (!root) {
-      console.error("⌛ .casino-new__topbar yok...");
+      console.error("⌛ container yok...");
       return;
     }
 
-    console.error("✅ .casino-new__topbar bulundu");
+    console.error("✅ container bulundu");
     clearInterval(interval);
 
-    fetch('https://marsel222.github.io/my-cdn/assets/casino-images.json')
+    fetch('https://abc.com/test.json')
       .then(res => res.json())
       .then(data => {
-        if (!data.images || data.images.length === 0) {
-          console.error("❌ JSON boş");
+
+        console.log("📦 JSON:", data);
+
+        if (!data.images || !data.images.length) {
+          console.error("❌ images boş");
           return;
         }
 
-        console.error(`✅ ${data.images.length} slide geldi`);
-
-        // =========================
-        // SLIDER WRAPPER
-        // =========================
         const slider = document.createElement('div');
         slider.className = 'topbar-slider';
 
-        // =========================
-        // PICTURE SLIDES
-        // =========================
         data.images.forEach(item => {
+
+          // 🔥 SAFE ACCESS (undefined fix)
+          const mobile = item.mobile || item.mobile_url || item.src?.mobile || "";
+          const tablet = item.tablet || item.tablet_url || item.src?.tablet || "";
+          const desktop = item.desktop || item.desktop_url || item.src?.desktop || "";
+
           const picture = document.createElement('picture');
 
-          const mobile = document.createElement('source');
-          mobile.media = "(max-width: 767px)";
-          mobile.srcset = item.mobile;
+          const sourceMobile = document.createElement('source');
+          sourceMobile.media = "(max-width: 767px)";
+          sourceMobile.srcset = mobile;
 
-          const tablet = document.createElement('source');
-          tablet.media = "(max-width: 1023px)";
-          tablet.srcset = item.tablet;
+          const sourceTablet = document.createElement('source');
+          sourceTablet.media = "(max-width: 1023px)";
+          sourceTablet.srcset = tablet;
 
           const img = document.createElement('img');
-          img.src = item.desktop;
+          img.src = desktop;
           img.alt = "banner";
           img.loading = "lazy";
+          img.draggable = false;
 
-          picture.appendChild(mobile);
-          picture.appendChild(tablet);
+          picture.appendChild(sourceMobile);
+          picture.appendChild(sourceTablet);
           picture.appendChild(img);
 
           slider.appendChild(picture);
         });
 
-        // mount
         root.innerHTML = "";
         root.appendChild(slider);
 
         // =========================
-        // STATE
+        // SLIDER STATE
         // =========================
         let index = 0;
         const total = data.images.length;
@@ -1524,7 +1525,6 @@ function initTopbarSliderFromJSON() {
         function update() {
           slider.style.transition = "transform 0.5s ease";
           slider.style.transform = `translateX(-${index * 100}%)`;
-          console.error(`➡️ slide: ${index}`);
         }
 
         // =========================
@@ -1586,10 +1586,8 @@ function initTopbarSliderFromJSON() {
 
           if (diff > 50) {
             index = (index + 1) % total;
-            console.error("👉 next");
           } else if (diff < -50) {
             index = (index - 1 + total) % total;
-            console.error("👈 prev");
           }
 
           update();
@@ -1598,13 +1596,12 @@ function initTopbarSliderFromJSON() {
 
         update();
 
-        console.error("🎉 FULL responsive slider hazır");
+        console.error("🎉 Slider hazır (stable build)");
       })
       .catch(err => {
-        console.error("🔥 JSON hata:", err);
+        console.error("🔥 JSON error:", err);
       });
 
   }, 200);
 }
-
 
