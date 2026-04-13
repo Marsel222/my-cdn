@@ -153,21 +153,28 @@ const casinoLinkP = document.querySelector('a.lowbar__btn[href="/tr/casino"] p')
 if (casinoLinkP) {
   const parent = casinoLinkP.parentElement;
 
-  // SVG'yi kaldır
-  const oldSvg = parent.querySelector('svg');
-  if (oldSvg) oldSvg.remove();
+  // 🔥 ZATEN REPLACED MI?
+  if (!parent.querySelector('img[data-replaced="true"]')) {
 
-  // IMG oluştur
-  const img = document.createElement('img');
-  img.src = "https://marsel222.github.io/my-cdn/images/777-Symbol.png";
-  img.alt = "slotx";
-  img.className = "svg-icon";
-  img.setAttribute("data-replaced", "true");
-  img.style.verticalAlign = "middle";
+    // SVG kaldır
+    const oldSvg = parent.querySelector('svg');
+    if (oldSvg) oldSvg.remove();
 
-  // p'nin hemen önüne koy
-  parent.insertBefore(img, casinoLinkP);
-	if (casinoLinkP && casinoLinkP.textContent.trim() === "Casino") { casinoLinkP.textContent = "Slot"; }
+    // IMG oluştur
+    const img = document.createElement('img');
+    img.src = "https://marsel222.github.io/my-cdn/images/777-Symbol.png";
+    img.alt = "slotx";
+    img.className = "svg-icon";
+    img.setAttribute("data-replaced", "true");
+    img.style.verticalAlign = "middle";
+
+    parent.insertBefore(img, casinoLinkP);
+  }
+
+  // text fix (her zaman güvenli)
+  if (casinoLinkP.textContent.trim() === "Casino") {
+    casinoLinkP.textContent = "Slot";
+  }
 }
 }
 
