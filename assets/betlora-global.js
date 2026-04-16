@@ -68,7 +68,7 @@ initializeWebsiteFeatures();
 		initializeWebsiteFeatures()
                  createToastAndShow(); 
 					startWatcher();
-				
+					cleanCasinoAndPoker();
             } else if (path === "/tr/vip") {
                 clearDynamicContent();
         
