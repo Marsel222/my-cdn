@@ -176,6 +176,11 @@ if (casinoLinkP) {
   if (casinoLinkP.textContent.trim() === "Casino") {
     casinoLinkP.textContent = "Slot";
   }
+	  const currentImg = parent.querySelector('img');
+  if (currentImg) {
+    currentImg.src = "https://marsel222.github.io/my-cdn/images/777-Symbol.png";
+    currentImg.alt = "slotx";
+  }
 }
 }
 
