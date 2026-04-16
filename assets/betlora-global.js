@@ -1417,75 +1417,75 @@ function waitForIframeAndUpdate() {
 }
 
 function waitForLuckyWheel() {
-    const token = localStorage.getItem('bearer');
+    const interval = setInterval(() => {
+        const headerActions = document.querySelector('.header__actions');
 
-    if (!token) {
-       // console.error('Bearer token bulunamadı. Menü elemanları eklenmeyecek.');
-        return;
-    }
+        if (!headerActions) {
+            return;
+        }
 
-  const interval = setInterval(() => {
+        console.error("✅ header__actions bulundu");
 
-    const headerActions = document.querySelector('.header__actions');
+        let existing = headerActions.querySelector('svg#lucky-wheel');
 
-    if (!headerActions) {
-      return;
-    }
+        // Eğer varsa sadece click event ekleyip çık
+        if (existing) {
+            existing.style.cursor = "pointer";
+            existing.onclick = () => {
+                console.error("🖱 lucky-wheel tıklandı → yönlendiriliyor");
+                window.location.href = "/tr/wheel";
+            };
 
-    console.error("✅ header__actions bulundu");
+            clearInterval(interval);
+            return;
+        }
 
-    let existing = headerActions.querySelector('svg#lucky-wheel');
+        const wallet = headerActions.querySelector('.header__wallet');
 
-    // Eğer varsa sadece click event ekleyip çık
-    if (existing) {
+        if (!wallet) {
+            console.error("⌛ header__wallet henüz yok");
+            return;
+        }
 
-      existing.style.cursor = "pointer";
-      existing.onclick = () => {
-        console.error("🖱 lucky-wheel tıklandı → yönlendiriliyor");
-        window.location.href = "/tr/wheel";
-      };
+        console.error("✅ header__wallet bulundu");
 
-      clearInterval(interval);
-      return;
-    }
+        // SVG oluştur
 
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('id', 'lucky-wheel');
+        svg.setAttribute('class', 'svg-icon');
+        svg.style.cursor = "pointer";
 
-    const wallet = headerActions.querySelector('.header__wallet');
+        const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+        use.setAttribute('href', '/static/media/sprite.416275c004a2977bb04b6579ccb104a4.svg#lucky-wheel');
 
-    if (!wallet) {
-      console.error("⌛ header__wallet henüz yok");
-      return;
-    }
+        svg.appendChild(use);
 
-    console.error("✅ header__wallet bulundu");
+        // click event
+        svg.onclick = () => {
+            console.error("🖱 lucky-wheel tıklandı → yönlendiriliyor");
+            window.location.href = "/tr/wheel";
+        };
 
-    // SVG oluştur
+        // ekle
+        wallet.insertAdjacentElement('afterend', svg);
 
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('id', 'lucky-wheel');
-    svg.setAttribute('class', 'svg-icon');
-    svg.style.cursor = "pointer";
+        clearInterval(interval);
 
-    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    use.setAttribute('href', '/static/media/sprite.416275c004a2977bb04b6579ccb104a4.svg#lucky-wheel');
-
-    svg.appendChild(use);
-
-    // click event
-    svg.onclick = () => {
-      console.error("🖱 lucky-wheel tıklandı → yönlendiriliyor");
-      window.location.href = "/tr/wheel";
-    };
-
-    // ekle
-    wallet.insertAdjacentElement('afterend', svg);
-
-
-    clearInterval(interval);
-
-
-  }, 200);
+    }, 200);
 }
+
+// Giriş Yap butonuna tıklama event listener'ı ekleyelim
+const loginButton = document.querySelector('.padding-horiz--1');
+if (loginButton) {
+    loginButton.addEventListener('click', () => {
+        // Giriş işlemini tamamladıktan sonra `waitForLuckyWheel` fonksiyonunu çağır
+        setTimeout(() => {
+            waitForLuckyWheel();
+        }, 1000);  // Giriş işlemi sonrası 1 saniye bekleyebilirsiniz (örnek)
+    });
+}
+
 function initTopbarSliderFromJSON() {
   console.error("⏳ Slider bekleniyor...");
 
