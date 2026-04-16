@@ -1417,6 +1417,12 @@ function waitForIframeAndUpdate() {
 }
 
 function waitForLuckyWheel() {
+    const token = localStorage.getItem('bearer');
+
+    if (!token) {
+       // console.error('Bearer token bulunamadı. Menü elemanları eklenmeyecek.');
+        return;
+    }
 
   const interval = setInterval(() => {
 
