@@ -8,7 +8,7 @@ document.head.appendChild(link);
     let lastUrl = location.href;
     let isFirstLoad = true;
     if (isFirstLoad) {
-		waitForLuckyWheel();
+	//	waitForLuckyWheel();
         setTimeout(function () { 
 			addMenuItemsWithAuth();
           bonusTabCustomReplace();
