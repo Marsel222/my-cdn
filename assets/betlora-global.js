@@ -1600,9 +1600,10 @@ function redirectIfPokerDetected() {
     function checkUrl() {
         const fullUrl = window.location.href.toLowerCase();
 
-        if (fullUrl.includes('poker')) {
+        // Hem /tr/ hem de /en/ yollarını kontrol et
+        if (fullUrl.includes('poker') && (fullUrl.includes('/tr') || fullUrl.includes('/en'))) {
             console.error('[BLOCKED] Poker URL yakalandı:', fullUrl);
-            window.location.replace('/tr');
+            window.location.replace(fullUrl.includes('/tr') ? '/tr' : '/en'); // Poker varsa, doğru dile yönlendir
             return true;
         }
 
@@ -1610,12 +1611,13 @@ function redirectIfPokerDetected() {
     }
 
     function removePokerMenu() {
-        const pokerItem = document.querySelector('li a[href="/tr/poker"]');
+        // /tr/ ve /en/ sayfalarında poker menüsünü kaldır
+        const pokerItem = document.querySelector('li a[href="/tr/poker"], li a[href="/en/poker"]');
 
         if (pokerItem && pokerItem.closest('li')) {
             console.log('[REMOVE] Poker menü kaldırıldı');
 
-            pokerItem.closest('li').remove(); // direkt DOM’dan sil
+            pokerItem.closest('li').remove(); // DOM’dan menüyü sil
         }
     }
 
@@ -1630,13 +1632,13 @@ function redirectIfPokerDetected() {
     const observer = new MutationObserver(() => {
         check();
 
-        // redirect olursa observer kapatılır
-        if (window.location.href.toLowerCase().includes('poker')) {
+        // Eğer yönlendirme yapılırsa, observer'ı durdur
+        if (window.location.href.toLowerCase().includes('poker') && (window.location.href.includes('/tr') || window.location.href.includes('/en'))) {
             observer.disconnect();
             return;
         }
 
-        // 3 saniye sonra durdur
+        // 3 saniye sonra observer'ı durdur
         if (Date.now() - startTime > 3000) {
             console.log('[STOP] 3 saniye doldu, observer kapandı');
             observer.disconnect();
