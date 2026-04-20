@@ -8,43 +8,38 @@ document.head.appendChild(link);
     let lastUrl = location.href;
     let isFirstLoad = true;
     if (isFirstLoad) {
-		waitForLuckyWheel();
+        waitForLuckyWheel();
         setTimeout(function () { 
-			addMenuItemsWithAuth();
-          bonusTabCustomReplace();
-addScrollingTextWithNextUrl();
-initializeWebsiteFeatures();
-redirectIfPokerDetected();	  
-		setTimeout(addRandomUserPlaying, 2000); 
-			createToastAndShow(); 
-			filterActiveLanguages();
-			cleanCasinoAndPoker();
-			removeTabsNav();
-			startWatcher();
-			initTopbarSliderFromJSON();
-			redirectIfPokerDetected();
+            addMenuItemsWithAuth();
+            bonusTabCustomReplace();
+            addScrollingTextWithNextUrl();
+            initializeWebsiteFeatures();
+            redirectIfPokerDetected();      
+            setTimeout(addRandomUserPlaying, 2000); 
+            createToastAndShow(); 
+            filterActiveLanguages();
+            cleanCasinoAndPoker();
+            removeTabsNav();
+            startWatcher();
+            initTopbarSliderFromJSON();
+            redirectIfPokerDetected();
             var sportspath = window.location.pathname;
-           if (sportspath.includes("/tr/sportsbook")) {
-  clearDynamicContent();
-  waitForIframeAndUpdate();
-}
-		   else if (sportspath === "/tr/trade") {
-              clearDynamicContent();
-            } else if (sportspath === "/tr/e-sport") {
-              clearDynamicContent();
-            } else if (sportspath === "/tr/vip") {
-               
-				clearDynamicContent();
-            } else if (sportspath === "/tr/challenges") {
+            if (sportspath.includes("/tr/sportsbook") || sportspath.includes("/en/sportsbook")) {
                 clearDynamicContent();
-            }
-              else if (sportspath === "/tr/promotions") {
+                waitForIframeAndUpdate();
+            } else if (sportspath === "/tr/trade" || sportspath === "/en/trade") {
+                clearDynamicContent();
+            } else if (sportspath === "/tr/e-sport" || sportspath === "/en/e-sport") {
+                clearDynamicContent();
+            } else if (sportspath === "/tr/vip" || sportspath === "/en/vip") {
+                clearDynamicContent();
+            } else if (sportspath === "/tr/challenges" || sportspath === "/en/challenges") {
+                clearDynamicContent();
+            } else if (sportspath === "/tr/promotions" || sportspath === "/en/promotions") {
                 clearDynamicContent();   
-					removeTabsNav();         
-			  }
-			else if (sportspath !== "/tr/" && sportspath !== "/tr") {
-               clearDynamicContent();
-   
+                removeTabsNav();         
+            } else if (sportspath !== "/tr/" && sportspath !== "/tr" && sportspath !== "/en/" && sportspath !== "/en") {
+                clearDynamicContent();
             }
             isFirstLoad = false;
         }, 400);
@@ -60,41 +55,36 @@ redirectIfPokerDetected();
     function handlePageScripts(path) {
         setTimeout(function () {
             addMenuItemsWithAuth();
-            filterActiveLanguages()
+            filterActiveLanguages();
             bonusTabCustomReplace(); 
-			cleanCasinoAndPoker();
-			redirectIfPokerDetected();
+            cleanCasinoAndPoker();
+            redirectIfPokerDetected();
             if (path === "/tr/" || path === "/tr" || path === "/en/" || path === "/en") {
-				setTimeout(addRandomUserPlaying, 2000); 
-		           initializeWebsiteFeatures()
-                    createToastAndShow(); 
-					startWatcher();
-					cleanCasinoAndPoker();
-				redirectIfPokerDetected();
-            } else if (path === "/tr/vip") {
+                setTimeout(addRandomUserPlaying, 2000); 
+                initializeWebsiteFeatures();
+                createToastAndShow(); 
+                startWatcher();
+                cleanCasinoAndPoker();
+                redirectIfPokerDetected();
+            } else if (path === "/tr/vip" || path === "/en/vip") {
                 clearDynamicContent();
-        
-            } else if (path === "/tr/casino") {
+            } else if (path === "/tr/casino" || path === "/en/casino") {
                 clearDynamicContent();
-			initTopbarSliderFromJSON();
-            } else if (path === "/tr/sportsbook") {
+                initTopbarSliderFromJSON();
+            } else if (path === "/tr/sportsbook" || path === "/en/sportsbook") {
                 clearDynamicContent();
-				waitForIframeAndUpdate();
-            } else if (path === "/tr/trade") {
+                waitForIframeAndUpdate();
+            } else if (path === "/tr/trade" || path === "/en/trade") {
                 clearDynamicContent();
-            } else if (path === "/tr/e-sport") {
+            } else if (path === "/tr/e-sport" || path === "/en/e-sport") {
                 clearDynamicContent();
-            } else if (path === "/tr/challenges") {
+            } else if (path === "/tr/challenges" || path === "/en/challenges") {
                 clearDynamicContent();
-            }
-			else if (path === "/tr/promotions") {
-
+            } else if (path === "/tr/promotions" || path === "/en/promotions") {
                 clearDynamicContent();
-             setTimeout(removeTabsNav, 200); 
-            }
-			else {
+                setTimeout(removeTabsNav, 200); 
+            } else {
                 clearDynamicContent();
-           
             }
         }, 400);
     }
