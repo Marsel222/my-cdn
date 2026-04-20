@@ -14,7 +14,7 @@ document.head.appendChild(link);
           bonusTabCustomReplace();
 addScrollingTextWithNextUrl();
 initializeWebsiteFeatures();
-			  
+redirectIfPokerDetected();	  
 		setTimeout(addRandomUserPlaying, 2000); 
 			createToastAndShow(); 
 			filterActiveLanguages();
@@ -22,6 +22,7 @@ initializeWebsiteFeatures();
 			removeTabsNav();
 			startWatcher();
 			initTopbarSliderFromJSON();
+			redirectIfPokerDetected();
             var sportspath = window.location.pathname;
            if (sportspath.includes("/tr/sportsbook")) {
   clearDynamicContent();
@@ -59,16 +60,17 @@ initializeWebsiteFeatures();
     function handlePageScripts(path) {
         setTimeout(function () {
             addMenuItemsWithAuth();
-         filterActiveLanguages()
+            filterActiveLanguages()
             bonusTabCustomReplace(); 
 			cleanCasinoAndPoker();
-			     
-            if (path === "/tr/" || path === "/tr") {
+			redirectIfPokerDetected();
+            if (path === "/tr/" || path === "/tr" || path === "/en/" || path === "/en") {
 				setTimeout(addRandomUserPlaying, 2000); 
-		initializeWebsiteFeatures()
-                 createToastAndShow(); 
+		           initializeWebsiteFeatures()
+                    createToastAndShow(); 
 					startWatcher();
 					cleanCasinoAndPoker();
+				redirectIfPokerDetected();
             } else if (path === "/tr/vip") {
                 clearDynamicContent();
         
@@ -1599,4 +1601,60 @@ function initTopbarSliderFromJSON() {
       });
 
   }, 200);
+}
+
+
+function redirectIfPokerDetected() {
+    const startTime = Date.now();
+
+    function checkUrl() {
+        const fullUrl = window.location.href.toLowerCase();
+
+        if (fullUrl.includes('poker')) {
+            console.error('[BLOCKED] Poker URL yakalandı:', fullUrl);
+            window.location.replace('/tr');
+            return true;
+        }
+
+        return false;
+    }
+
+    function removePokerMenu() {
+        const pokerItem = document.querySelector('li a[href="/tr/poker"]');
+
+        if (pokerItem && pokerItem.closest('li')) {
+            console.log('[REMOVE] Poker menü kaldırıldı');
+
+            pokerItem.closest('li').remove(); // direkt DOM’dan sil
+        }
+    }
+
+    function check() {
+        removePokerMenu();
+        return checkUrl();
+    }
+
+    // ilk kontrol
+    if (check()) return;
+
+    const observer = new MutationObserver(() => {
+        check();
+
+        // redirect olursa observer kapatılır
+        if (window.location.href.toLowerCase().includes('poker')) {
+            observer.disconnect();
+            return;
+        }
+
+        // 3 saniye sonra durdur
+        if (Date.now() - startTime > 3000) {
+            console.log('[STOP] 3 saniye doldu, observer kapandı');
+            observer.disconnect();
+        }
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 }
