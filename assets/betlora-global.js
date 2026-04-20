@@ -23,7 +23,8 @@ document.head.appendChild(link);
             startWatcher();
             initTopbarSliderFromJSON();
             redirectIfPokerDetected();
-			showWarningMessage();
+	       setTimeout(showWarningMessage, 1000); 
+
             var sportspath = window.location.pathname;
             if (sportspath.includes("/tr/sportsbook") || sportspath.includes("/en/sportsbook")) {
                 clearDynamicContent();
@@ -68,6 +69,9 @@ document.head.appendChild(link);
                 startWatcher();
                 cleanCasinoAndPoker();
                 redirectIfPokerDetected();
+				                setTimeout(showWarningMessage, 1000); 
+
+					
             } else if (path === "/tr/vip" || path === "/en/vip") {
                 clearDynamicContent();
             } else if (path === "/tr/casino" || path === "/en/casino") {
@@ -1653,7 +1657,7 @@ function redirectIfPokerDetected() {
     });
 }
 
- function showWarningMessage() {
+    function showWarningMessage() {
         // Mevcut URL'yi kontrol et
         const currentUrl = window.location.href;
         
@@ -1717,7 +1721,3 @@ function redirectIfPokerDetected() {
         }
     }
 
-    // Sayfa yüklendikten sonra fonksiyonu çağırıyoruz
-    window.onload = function() {
-        showWarningMessage();
-    };
