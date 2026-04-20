@@ -23,6 +23,7 @@ document.head.appendChild(link);
             startWatcher();
             initTopbarSliderFromJSON();
             redirectIfPokerDetected();
+			showWarningMessage();
             var sportspath = window.location.pathname;
             if (sportspath.includes("/tr/sportsbook") || sportspath.includes("/en/sportsbook")) {
                 clearDynamicContent();
@@ -59,7 +60,7 @@ document.head.appendChild(link);
             bonusTabCustomReplace(); 
             cleanCasinoAndPoker();
             redirectIfPokerDetected();
-			
+			showWarningMessage();
             if (path === "/tr/" || path === "/tr" || path === "/en/" || path === "/en") {
                 setTimeout(addRandomUserPlaying, 2000); 
                 initializeWebsiteFeatures();
@@ -1651,3 +1652,72 @@ function redirectIfPokerDetected() {
         subtree: true
     });
 }
+
+ function showWarningMessage() {
+        // Mevcut URL'yi kontrol et
+        const currentUrl = window.location.href;
+        
+        // URL'de "betlora216" var mı diye kontrol ediyoruz
+        if (currentUrl.includes("betlora216")) {
+            // Eğer URL "betlora216" içeriyorsa, stil ve mesajı ekle
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .container {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 300px;
+                    background-color: #f1f1f1;
+                }
+
+                .warning-message {
+                    font-size: 2rem;
+                    font-weight: bold;
+                    color: white; /* Yazı rengi beyaz */
+                    background-color: red; /* Arka plan rengi kırmızı */
+                    padding: 20px;
+                    border-radius: 10px;
+                    text-align: center;
+                    animation: blink 1s infinite;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Hafif gölge efekti */
+                }
+
+                @keyframes blink {
+                    0% {
+                        opacity: 1;
+                    }
+                    50% {
+                        opacity: 0;
+                    }
+                    100% {
+                        opacity: 1;
+                    }
+                }
+            `;
+            document.head.appendChild(style); // CSS'i head tag'ine ekliyoruz
+
+            // Uyarı mesajının HTML içeriği
+            const messageHTML = `
+                <div class="container">
+                    <div class="warning-message">
+                        Bu site sahtedir! Lütfen Yatırım Yapmayınız. Güncel adresimiz: 
+                        <a href="https://t2m.io/Betlora" target="_blank">https://t2m.io/Betlora</a>
+                    </div>
+                </div>
+            `;
+
+            // "toast-slider-ced" id'sine sahip container'ı alıyoruz
+            const container = document.getElementById('toast-slider-ced');
+            
+            // Container içeriğini temizliyoruz
+            container.innerHTML = '';
+
+            // Yeni uyarı mesajını container'a ekliyoruz
+            container.innerHTML = messageHTML;
+        }
+    }
+
+    // Sayfa yüklendikten sonra fonksiyonu çağırıyoruz
+    window.onload = function() {
+        showWarningMessage();
+    };
