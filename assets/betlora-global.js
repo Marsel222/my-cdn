@@ -59,6 +59,7 @@ document.head.appendChild(link);
             bonusTabCustomReplace(); 
             cleanCasinoAndPoker();
             redirectIfPokerDetected();
+			
             if (path === "/tr/" || path === "/tr" || path === "/en/" || path === "/en") {
                 setTimeout(addRandomUserPlaying, 2000); 
                 initializeWebsiteFeatures();
@@ -543,7 +544,7 @@ function initializeWebsiteFeatures() {
     // Dinamik Toast Slider Fonksiyonu (mini-slider-wrapper kontrolü ile)
     function createToastSliderInWrapper(gameList, options = {}) {
         const wrapperId = options.wrapperId || 'main-slider';
-        const initialCount = 50; // Başlangıçta 50 toast öğesi olacak
+        const initialCount = 100; // Başlangıçta 50 toast öğesi olacak
 
         // Wrapper div var mı kontrol et
         const wrapper = document.getElementById(wrapperId);
