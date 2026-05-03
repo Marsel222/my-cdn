@@ -1,1723 +1,220 @@
-let link = document.createElement("link");
-link.rel = "stylesheet";
-link.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css";
 
-document.head.appendChild(link);
+// ==========================================
+// FEATURE: Sidebar Social Links Wp-Telegram
+// Canlı Destek butonunun altına sosyal medya linkleri ekler
+// Hedef: .sb-top-btn.supportbtn (Canlı Destek) altı
+// Kapsam: Tüm sayfalar
+// ==========================================
+(function() {
+  const FEATURE_ID = 'lora-sidebar-social-links';
 
-(function () {
-    let lastUrl = location.href;
-    let isFirstLoad = true;
-    if (isFirstLoad) {
-        waitForLuckyWheel();
-        setTimeout(function () { 
-            addMenuItemsWithAuth();
-            bonusTabCustomReplace();
-            addScrollingTextWithNextUrl();
-            initializeWebsiteFeatures();
-            redirectIfPokerDetected();      
-            setTimeout(addRandomUserPlaying, 2000); 
-            createToastAndShow(); 
-            filterActiveLanguages();
-            cleanCasinoAndPoker();
-            removeTabsNav();
-            startWatcher();
-            initTopbarSliderFromJSON();
-            redirectIfPokerDetected();
-	       setTimeout(showWarningMessage, 1000); 
-
-            var sportspath = window.location.pathname;
-            if (sportspath.includes("/tr/sportsbook") || sportspath.includes("/en/sportsbook")) {
-                clearDynamicContent();
-                waitForIframeAndUpdate();
-            } else if (sportspath === "/tr/trade" || sportspath === "/en/trade") {
-                clearDynamicContent();
-            } else if (sportspath === "/tr/e-sport" || sportspath === "/en/e-sport") {
-                clearDynamicContent();
-            } else if (sportspath === "/tr/vip" || sportspath === "/en/vip") {
-                clearDynamicContent();
-            } else if (sportspath === "/tr/challenges" || sportspath === "/en/challenges") {
-                clearDynamicContent();
-            } else if (sportspath === "/tr/promotions" || sportspath === "/en/promotions") {
-                clearDynamicContent();   
-                removeTabsNav();         
-            } else if (sportspath !== "/tr/" && sportspath !== "/tr" && sportspath !== "/en/" && sportspath !== "/en") {
-                clearDynamicContent();
-            }
-            isFirstLoad = false;
-        }, 400);
+  const socialLinks = [
+    {
+      name: 'Instagram',
+      url: 'https://www.instagram.com/betloraofficial/',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>'
+    },
+   
+    {
+      name: 'Telegram Kanalı',
+      url: 'https://t.me/loraresmi',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>'
+    },
+    {
+      name: 'WhatsApp Destek',
+      url: 'https://bit.ly/m/betlorawp',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>'
     }
+  ];
 
-    function checkUrlChange() {
-        if (location.href !== lastUrl) {
-            lastUrl = location.href;
-            handlePageScripts(location.pathname);
-        }
-    }
-
-    function handlePageScripts(path) {
-        setTimeout(function () {
-            addMenuItemsWithAuth();
-            filterActiveLanguages();
-            bonusTabCustomReplace(); 
-            cleanCasinoAndPoker();
-            redirectIfPokerDetected();
-			showWarningMessage();
-            if (path === "/tr/" || path === "/tr" || path === "/en/" || path === "/en") {
-                setTimeout(addRandomUserPlaying, 2000); 
-                initializeWebsiteFeatures();
-                createToastAndShow(); 
-                startWatcher();
-                cleanCasinoAndPoker();
-                redirectIfPokerDetected();
-				                setTimeout(showWarningMessage, 1000); 
-
-					
-            } else if (path === "/tr/vip" || path === "/en/vip") {
-                clearDynamicContent();
-            } else if (path === "/tr/casino" || path === "/en/casino") {
-                clearDynamicContent();
-                initTopbarSliderFromJSON();
-            } else if (path === "/tr/sportsbook" || path === "/en/sportsbook") {
-                clearDynamicContent();
-                waitForIframeAndUpdate();
-            } else if (path === "/tr/trade" || path === "/en/trade") {
-                clearDynamicContent();
-            } else if (path === "/tr/e-sport" || path === "/en/e-sport") {
-                clearDynamicContent();
-            } else if (path === "/tr/challenges" || path === "/en/challenges") {
-                clearDynamicContent();
-            } else if (path === "/tr/promotions" || path === "/en/promotions") {
-                clearDynamicContent();
-                setTimeout(removeTabsNav, 200); 
-            } else {
-                clearDynamicContent();
-            }
-        }, 400);
-    }
-
-    new MutationObserver(checkUrlChange).observe(document, {
-        subtree: true,
-        childList: true,
-    });
-    window.addEventListener("load", function () {
-        checkUrlChange(); // Sayfa yüklendikten hemen sonra kontrol et
-    });
-
-    const pushState = history.pushState;
-    const replaceState = history.replaceState;
-
-    history.pushState = function () {
-        pushState.apply(history, arguments);
-        checkUrlChange();
-    };
-
-    history.replaceState = function () {
-        replaceState.apply(history, arguments);
-        checkUrlChange();
-    };
-
-    window.addEventListener("popstate", checkUrlChange);
-
-    window.addEventListener("load", checkUrlChange);
-})();
-
-function checkModal() {
-    const modal = document.getElementById("global-modal");
-
-    if (modal) {
-        modal.style.display = "none"; // Modal'ı gizle
-    }
-}
-
-function cleanCasinoAndPoker() {
-    // 1️⃣ Fazla casino container'larını temizle
-    const path = window.location.pathname;
-    if (/\/[a-z]{2}\/casino$|\/casino$|\/[a-z]{2}\/poker$|\/poker$/.test(path)) {
-        const containers = document.querySelectorAll('.casino-new-root.casino-container.container');
-        if (containers.length > 1) {
-            for (let i = 1; i < containers.length; i++) {
-                containers[i].remove();
-            }
-        }
-    }
-
-    // 2️⃣ Poker link <li> öğesini kaldır
-    const pokerLink = document.querySelector('li a[href="/tr/poker"]');
-    if (pokerLink) {
-        const liElement = pokerLink.closest('li');
-        if (liElement) liElement.remove();
-    }
-const casinoLinkP = document.querySelector('a.lowbar__btn[href="/tr/casino"] p');
-
-if (casinoLinkP) {
-  const parent = casinoLinkP.parentElement;
-
-  // 🔥 ZATEN REPLACED MI?
-  if (!parent.querySelector('img[data-replaced="true"]')) {
-
-    // SVG kaldır
-    const oldSvg = parent.querySelector('svg');
-    if (oldSvg) oldSvg.remove();
-
-    // IMG oluştur
-    const img = document.createElement('img');
-    img.src = "https://marsel222.github.io/my-cdn/images/777-Symbol.png";
-    img.alt = "slotx";
-    img.className = "svg-icon";
-    img.setAttribute("data-replaced", "true");
-    img.style.verticalAlign = "middle";
-
-    parent.insertBefore(img, casinoLinkP);
+  function isAlreadyInserted() {
+    return document.getElementById(FEATURE_ID) !== null;
   }
 
-  // text fix (her zaman güvenli)
-  if (casinoLinkP.textContent.trim() === "Casino") {
-    casinoLinkP.textContent = "Slot";
-  }
-	  const currentImg = parent.querySelector('img');
-  if (currentImg) {
-    currentImg.src = "https://marsel222.github.io/my-cdn/images/777-Symbol.png";
-    currentImg.alt = "slotx";
-  }
-}
-}
-
-function removeTabsNav() {
-    try {
-        const tabsNav = document.getElementById('tabs-nav');
-        if (tabsNav) {
-            tabsNav.remove();
-            console.log('✅ #tabs-nav element has been removed from the DOM.');
-        } else {
-            console.error('⚠️ #tabs-nav element not found.');
-        }
-    } catch (err) {
-        console.error('❌ Error removing #tabs-nav:', err);
-    }
-}
-
-// Kullanmak için
-// removeTabsNav();
-
-
-function getNextUrlNumber() {
-    const currentUrl = window.location.href;
-    const match = currentUrl.match(/betlora(\d+)/); // betlora sonrası gelen sayıyı alıyoruz
-
-    if (match && match[1]) {
-        const currentNumber = parseInt(match[1], 10); // Mevcut sayıyı al
-        return currentNumber + 1; // Sayıyı 1 artır
-    }
-    return null; // URL'de uygun sayı yoksa
-}
-
-function addScrollingTextWithNextUrl() {
-    const nextNumber = getNextUrlNumber();
-    if (nextNumber !== null) {
-        const text = `BİR SONRAKİ GÜNCEL ADRESİMİZ betlora${nextNumber}.com'dur. LÜTFEN SAHTE SİTELERE İTİBAR ETMEYİNİZ.`;
-        addScrollingText(text);
-    } else {
-        console.error("Geçerli bir URL formatı bulunamadı.");
-    }
-}
-function addScrollingText(text) {
-  const existing = document.querySelector(".scrolling-text");
-  if (existing) {
-    const currentText = existing.querySelector("span")?.textContent;
-    if (currentText === text) return; // Eğer metin aynıysa hiçbir şey yapma
-    // Metin farklıysa güncelle
-    existing.querySelector("span").textContent = text;
-    return;
-  }
-  
-  // Yeni kayan metin divi oluştur
-  const scrollingDiv = document.createElement("div");
-  scrollingDiv.className = "scrolling-text";
-  scrollingDiv.id = "scrolling-text";
-  const span = document.createElement("span");
-  span.textContent = text;
-  scrollingDiv.appendChild(span);
-
-  // Header'dan sonra ekle
-  const header = document.querySelector("header");
-  header.insertAdjacentElement("afterend", scrollingDiv);
-}
-
-function clearDynamicContent() {
-    const idsToRemove = ["toast-slider-ced", "scrolling-text", "league-wrapper", "custom-section-landing", "telegram-section" , "whatsapp-badge","led-wrapper","toast-container-ced","sport-header","sport-content"];
-
-    const styleIdsToRemove = [
-        "toast-slider-style",
-        "telegram-style",
-        "mini-games-style",
-		"_wa-badge-style",
-		"led-style",
-		"sport-style"
-        // buraya kaldırmak istediğin style id'lerini ekle
-    ];
-
-    idsToRemove.forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.remove();
-            console.log(`${id} temizlendi.`);
-        }
-    });
-
-    styleIdsToRemove.forEach((id) => {
-        const styleEl = document.getElementById(id);
-        if (styleEl) {
-            styleEl.remove();
-            console.log(`${id} style etiketi kaldırıldı.`);
-        }
-    });
-}
-
-function addMenuItemsWithAuth() {
-    const token = localStorage.getItem('bearer');
-
-    if (!token) {
-       // console.error('Bearer token bulunamadı. Menü elemanları eklenmeyecek.');
-        return;
-    }
-
-    const menuList = document.querySelector('.menu-list');
-
-    if (!menuList) {
-      //  console.error('Menu listesi bulunamadı.');
-        return;
-    }
-
-    // Zaten eklenmişse tekrar ekleme
-    if (menuList.querySelector('[data-custom-menu="true"]')) {
-      //  console.error('Menü elemanları zaten eklenmiş.');
-        return;
-    }
-
-    const items = [
-        {
-            text: 'Para Yatır',
-            href: '/tr/payments/deposit',
-            svg: `
-                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2V16" stroke="#26a777" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M6 10L12 16L18 10" stroke="#26a777" stroke-width="2" stroke-linecap="round"/>
-                    <rect x="2" y="18" width="20" height="4" rx="1" fill="#26a777"/>
-                </svg>
-            `
-        },
-        {
-            text: 'Para Çek',
-            href: '/tr/payments/withdrawal',
-            svg: `
-                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 22V8" stroke="#26a777" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M6 14L12 8L18 14" stroke="#26a777" stroke-width="2" stroke-linecap="round"/>
-                    <rect x="2" y="2" width="20" height="4" rx="1" fill="#26a777"/>
-                </svg>
-            `
-        }
-    ];
-
-    items.forEach(item => {
-        const li = document.createElement('li');
-        li.className = 'menu-item';
-        li.setAttribute('data-custom-menu', 'true'); // kontrol için işaretleme
-
-        const div = document.createElement('div');
-        div.className = 'item-text text-in';
-        div.innerHTML = item.svg;
-
-        const span = document.createElement('span');
-        span.className = 'item-text text-in';
-        span.textContent = item.text;
-
-        li.addEventListener('click', () => {
-            window.location.href = item.href;
-        });
-
-        li.appendChild(div);
-        li.appendChild(span);
-        menuList.appendChild(li);
-    });
-}
-
-
-function bonusTabCustomReplace() {
-    const token = localStorage.getItem('bearer');
-
-    if (!token) {
-        return;
-    }
-
-    const url = window.location.href;
-
-    // URL kontrolü
-    if (!url.includes("modal=bonus-request")) {
-        return;
-    }
-
-    // --- UL yoksa DOM'a eklenmesini beklemek için OBSERVER EKLENDİ ---
-    function tryApply() {
-        const tabsUl = document.querySelector('.tabs-nav.tabs-nav--modal');
-        if (!tabsUl) return false;
-
-        // Eğer custom tab zaten varsa tekrar oluşturma
-        if (tabsUl.querySelector(".custom-bonus-tab")) {
-            return true; // işlem tamam
-        }
-
-        // Yeni custom li oluştur
-        const newLi = document.createElement("li");
-        newLi.className = "nav-item";
-        newLi.setAttribute("role", "presentation");
-
-        // Custom <a> sekmesi oluştur
-        const newA = document.createElement("a");
-        newA.className = "tabs-nav__btn custom-bonus-tab";
-        newA.textContent = "Bonus Kodu Gir";
-        newA.href = "?modal=vip&tab=bonus-code";
-
-        newLi.appendChild(newA);
-        tabsUl.appendChild(newLi);
-
-        return true; // başarıyla uygulandı
-    }
-
-    // İlk deneme
-    if (tryApply()) return;
-
-    // UL henüz eklenmediyse bekle
-    const observer = new MutationObserver(() => {
-        if (tryApply()) {
-            observer.disconnect(); // işlem tamamlandı → izlemeyi durdur
-        }
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
-}
-
-
-
-function addRandomUserPlaying() {
-    const slots = document.querySelectorAll('a.slot.slot--carousel');
-
-    slots.forEach(slot => {
-        // Tekrar eklenmesini engeller
-        if (slot.querySelector('.user-playing')) return;
-
-        const randomNumber = Math.floor(Math.random() * (200 - 20 + 1)) + 20; // 20–300
-
-        const p = document.createElement('p');
-        p.className = 'user-playing';
-        p.style.marginTop = '6px';
-        p.style.fontStyle = 'italic';
-        p.style.color = '#7fb3d3';
-        p.style.fontSize = '11px';
-
-        // Yeşil nokta + bold sayı
-        p.innerHTML = `<span style="color:#2ecc71;">•</span> <strong>${randomNumber}</strong> Çevrimiçi`;
-
-        slot.appendChild(p);
-    });
-}
-
-
-function createToastAndShow() {
-    // HTML oluşturuluyor
-    const toastHTML = `
-        <div id="toast-container-ced">
-            <div class="image-box-ced">
-                <img class="game-img-ced" src="" alt="Game Image">
-            </div>
-            <div class="info-ced">
-                <p class="user-ced">BG*** ÇEKİMİ ONAYLANDI</p>
-                <p class="game-title-ced">EGT INTERACTIVE MORE DICE ROLL</p>
-                <div class="win-value-ced">
-                    <span class="live-icon-ced"></span>
-                    <span class="price">477,43 TL</span>
-                </div>
-            </div>
-        </div>
+  function createSocialLinkButton(link) {
+    const a = document.createElement('a');
+    a.className = 'sb-top-btn lora-social-link-item';
+    a.href = link.url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.setAttribute('data-sb-tooltip', link.name);
+    a.setAttribute('aria-label', link.name);
+    a.innerHTML = `
+      <span class="icon" aria-hidden="true">
+        <span style="display: inline-flex; width: 20px; height: 20px; line-height: 0;">
+          ${link.icon}
+        </span>
+      </span>
+      <span class="sb-top-title">${link.name}</span>
+      <span class="sb-top-arrow" aria-hidden="true">›</span>
     `;
-    // Sayfanın body kısmına toast öğesini ekle
-    document.body.insertAdjacentHTML("beforeend", toastHTML);
+    return a;
+  }
 
-    const gameList = [
-        { title: "BIB BASS BONANZA 1000", img: "https://vendor-provider.fra1.cdn.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/GN8mlG5kFJ18n1oZfaMGGZ5ECn99RB26L2F7fQyZ.png" },
-        { title: "GATES OF OLYMPUS 1000", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/HRILC4ibvAUtUUHZHw44QYrLadCQDd3FpW4uVoQi.avif" },
-        { title: "OUT SOURCED", img: "https://vendor-provider.fra1.cdn.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/zCAPQeGAtoFqDgTjX6btOGYe6hgIdg6C4iirTYnG.png" },
-        { title: "BIG BASS DOWN DELUXE", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/8t3f8yM1HACXy8qARZsGlbEM17TCYAqOxvqAVEa8.avif" },
-        { title: "WILD WEST GOLD", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/X8a3Hm2DZGEtorfe1FhLcvrGd3woxgiwbCHwAxxt.avif" },
-        { title: "SWEET BONANZA 1000", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/dy3y1exXqAstJkCAgmiNmtCjTOd53fiRR8v5hqeW.avif" },
-        { title: "FRUIT PARTY", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/09DbxG6YpwN7QP7eYDxGOSYjBLRwOuxMxc6TPLJy.avif" },
-        { title: "WISDOM OF ATHENA 1000", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/SqLRHFm82GBn4AuQbS331xn1QcVxLo20VI0KCzr8.avif" },
-        { title: "SUGAR RUSH 1000", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/3ZCbcXmpRA680KHyV2jYGNBJu32SBXf7YyuAwid3.avif" },
-        { title: "FLAMING HOT", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/yvrIgUnZIy7kgxwCP53YaQ8gXnDwQUaJOn9jliG8.png" },
-        { title: "HAND OF MIDAS 2", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/lEydb8VtvGa3ywWZSmAz3WrVElOZK6eaZWaWeClv.avif" },
-        { title: "CRAZY TIME", img: "https://vendor-provider.fra1.cdn.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/kOyIxpFKFZQZxykpEx1QboVZ92DsfpxBaLalIYOl.png" },
-        { title: "DRAGON TIGER", img: "https://vendor-provider.fra1.cdn.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/EMnrV18IIbidpiG0WLNokDDvAR8pVMxrQ2bVBDpA.png" },
-        { title: "POKER", img: "https://vendor-provider.fra1.cdn.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/dUaPG9qu6y43tRMvtKRmVQJen3qK6WATou9jTEjn.png" }
-    ];
+  function createElement() {
+    const wrapper = document.createElement('div');
+    wrapper.id = FEATURE_ID;
+    wrapper.className = 'lora-sidebar-social-section';
 
-    const toast = document.getElementById("toast-container-ced");
-    let toastActive = false;
+    const dividerTop = document.createElement('div');
+    dividerTop.className = 'sidebar-section-title';
+    dividerTop.innerHTML = '<span class="sidebar-section-title__line"></span>';
+    wrapper.appendChild(dividerTop);
 
-    // Başlangıçta toast öğesini görünmez yap
-    toast.style.bottom = "-150px";
-
-    function animateToast() {
-        const randomDuration = Math.random() * 80000 + 50000; // 5000ms ile 20000ms arasında rastgele süre
-
-        // Eğer toast aktifse, bir sonraki animasyonu başlatmadan önce minimum 5 saniye bekle
-        if (toastActive) {
-            return setTimeout(animateToast, 5000); // Minimum 5 saniye bekle
-        }
-
-        toastActive = true;
-
-        const randomUser = `****${Math.floor(Math.random() * 1000)}`;
-        const randomGame = gameList[Math.floor(Math.random() * gameList.length)];
-
-        // Fiyatı 1.000 ile 25.000 arasında rastgele bir değer üret
-        const randomPrice = Math.floor(Math.random() * 150000 + 10000); // 1000 ile 25000 arasında değer üret
-
-        const userElement = toast.querySelector(".user-ced");
-        const gameTitleElement = toast.querySelector(".game-title-ced");
-        const priceElement = toast.querySelector(".price");
-        const gameImgElement = toast.querySelector(".game-img-ced");
-
-        userElement.textContent = randomUser + " KAZANDI";
-        gameTitleElement.textContent = randomGame.title;
-        priceElement.textContent = `${randomPrice} TL`;
-        gameImgElement.src = randomGame.img;
-
-        setTimeout(() => {
-            toast.style.transition = "bottom 1s ease-out";
-            toast.style.bottom = "30px"; // Yukarıya 30px kaydır
-        }, randomDuration);
-
-        setTimeout(() => {
-            toast.style.transition = "bottom 1s ease-in";
-            toast.style.bottom = "-150px"; // Aşağıya kaydır
-            toastActive = false;
-        }, randomDuration + 3000); // Yukarı çıktıktan 3 saniye sonra
-
-        setTimeout(animateToast, randomDuration + 5000); // Minimum 5 saniye sonra tekrar döngüye gir
-    }
-
-    animateToast();
-}
-
-function filterActiveLanguages() {
-    const langMenu = document.querySelector('.dropdown-menu.sidebar__lang-menu');
-    const langItems = langMenu.querySelectorAll('li');
-    const activeLangs = ['EN', 'TR'];  // Aktif diller
-
-    langItems.forEach(item => {
-        const span = item.querySelector('span');
-        if (!activeLangs.includes(span.textContent.trim())) {
-            item.remove(); // Diğerlerini kaldır
-        }
+    socialLinks.forEach(link => {
+      wrapper.appendChild(createSocialLinkButton(link));
     });
-}
-function initializeWebsiteFeatures() {
 
+    const dividerBottom = document.createElement('div');
+    dividerBottom.className = 'sidebar-section-title';
+    dividerBottom.innerHTML = '<span class="sidebar-section-title__line"></span>';
+    wrapper.appendChild(dividerBottom);
 
-    // Random kullanıcı adı oluşturma fonksiyonu
-    function generateRandomUsername() {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        const length = Math.floor(Math.random() * 10) + 6;  // Yıldız kısmı 6 ile 15 arasında olacak
-        let username = '';
-
-        // İlk 2 harfi ekle
-        username += chars.charAt(Math.floor(Math.random() * chars.length));
-
-        // Yıldızları ekle
-        for (let i = 0; i < length - 2; i++) {
-            username += '*';
-        }
-
-        // Son 2 harfi ekle
-        username += chars.charAt(Math.floor(Math.random() * chars.length));
-
-        return username;
-    }
-
-    // Dinamik Toast Slider Fonksiyonu (mini-slider-wrapper kontrolü ile)
-    function createToastSliderInWrapper(gameList, options = {}) {
-        const wrapperId = options.wrapperId || 'main-slider';
-        const initialCount = 100; // Başlangıçta 50 toast öğesi olacak
-
-        // Wrapper div var mı kontrol et
-        const wrapper = document.getElementById(wrapperId);
-        if (!wrapper) {
-            console.warn(`Div id="${wrapperId}" bulunamadı!`);
-            return;
-        }
-
-        // Eğer slider zaten eklenmişse tekrar ekleme
-        if (wrapper.querySelector('#toast-slider-ced')) {
-            console.log('Toast slider zaten mevcut.');
-            return;
-        }
-
-        // 1. Stil ekle (sadece bir kez eklenir)
-        if (!document.getElementById('toast-slider-style')) {
-            const style = document.createElement('style');
-            style.id = 'toast-slider-style';
-            style.textContent = `
-            /* Container ve track */
-            #toast-slider-ced {
-                width: 100%;
-                overflow: hidden;
-                z-index: 1000000;
-                background-color: #09223c;
-                margin-top: 41px;
-                margin-bottom: 19px;
-            }
-            .toast-track-ced {
-                display: flex;
-                gap: 12px;
-                animation: slide-left 100s linear infinite; /* Sürekli kayma animasyonu */
-            }
-            .toast-item-ced {
-                display: flex;
-                align-items: center;
-                min-width: 310px;
-                background: rgba(9, 34, 60, 0.95);
-                border: 1px solid #0ec096;
-                border-radius: 12px;
-                padding: 12px;
-                box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-                font-family: 'Poppins', sans-serif;
-                backdrop-filter: blur(10px);
-            }
-            .image-box-ced {
-                width: 60px;
-                height: 60px;
-                flex-shrink: 0;
-            }
-            .image-box-ced img {
-                width: 100%;
-                height: 100%;
-                border-radius: 8px;
-                object-fit: cover;
-                border: 1px solid #0ec096;
-            }
-            .info-ced {
-                flex: 1;
-                margin-left: 14px;
-                overflow: hidden;
-            }
-            .user-ced {
-                font-size: 11px;
-                color: #0ec096;
-                font-weight: 600;
-                margin: 0;
-                text-transform: uppercase;
-            }
-            .game-title-ced {
-                font-size: 14px;
-                color: #ffffff;
-                font-weight: 700;
-                margin: 2px 0;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            .win-value-ced {
-                font-size: 17px;
-                color: #0ec096;
-                font-weight: 900;
-                margin: 0;
-                display: flex;
-                align-items: center;
-            }
-            .live-icon-ced {
-                width: 8px;
-                height: 8px;
-                background: #0ec096;
-                border-radius: 50%;
-                margin-right: 8px;
-                box-shadow: 0 0 8px #0ec096;
-                animation: flash 1.5s infinite;
-            }
-            @keyframes flash {
-                0%, 100% { opacity: 1; }
-                50% { opacity: 0.4; }
-            }
-            @keyframes slide-left {
-                0% { transform: translateX(0); }
-                100% { transform: translateX(-1600%); }
-            }
-            `;
-            document.head.appendChild(style);
-        }
-
-        // 2. Slider container oluştur
-        const slider = document.createElement('div');
-        slider.id = 'toast-slider-ced';
-
-        const track = document.createElement('div');
-        track.className = 'toast-track-ced';
-
-        slider.appendChild(track);
-        wrapper.appendChild(slider);
-
-        // 3. Toast ekleme fonksiyonu
-        function updateToastContent(toastElement) {
-            const randomGame = gameList[Math.floor(Math.random() * gameList.length)];
-            const randomUser = generateRandomUsername();  // Yeni random kullanıcı adı
-
-            // Oranlı kazanç hesaplama
-            let randomPrice;
-
-            // %75 oranında 1K ile 5K arasında
-            if (Math.random() < 0.75) {
-                randomPrice = Math.floor(Math.random() * 4001 + 1000); // 1K ile 5K arasında
-            }
-            // %10 oranında 5K ile 15K arasında
-            else if (Math.random() < 0.10) {
-                randomPrice = Math.floor(Math.random() * 10001 + 5000); // 5K ile 15K arasında
-            }
-            // %10 oranında 15K ile 25K arasında
-            else if (Math.random() < 0.10) {
-                randomPrice = Math.floor(Math.random() * 10001 + 15000); // 15K ile 25K arasında
-            }
-            // %5 oranında 50K ile 150K arasında
-            else {
-                randomPrice = Math.floor(Math.random() * 100001 + 50000); // 50K ile 150K arasında
-            }
-
-            // Toast item içeriğini güncelle
-            toastElement.querySelector('.user-ced').innerText = `${randomUser} KAZANDI`;
-            toastElement.querySelector('.game-title-ced').innerText = randomGame.title;
-            toastElement.querySelector('.price').innerText = `${randomPrice} TL`;
-            toastElement.querySelector('.image-box-ced img').src = randomGame.img;
-        }
-
-        // 4. Başlangıçta 50 toast öğesi oluştur
-        let toastElements = [];
-        function createInitialToasts() {
-            for (let i = 0; i < initialCount; i++) {
-                const toastItem = document.createElement('div');
-                toastItem.className = 'toast-item-ced';
-                toastItem.innerHTML = `
-                    <div class="image-box-ced">
-                        <img src="" alt="Game Image">
-                    </div>
-                    <div class="info-ced">
-                        <p class="user-ced"></p>
-                        <p class="game-title-ced"></p>
-                        <div class="win-value-ced">
-                            <span class="live-icon-ced"></span>
-                            <span class="price"></span>
-                        </div>
-                    </div>
-                `;
-                track.appendChild(toastItem);
-                toastElements.push(toastItem);  // Eklenen öğeyi tut
-            }
-            // 5. Başlangıçta ilk içeriği yükle
-            toastElements.forEach((toastElement) => {
-                updateToastContent(toastElement);  // İlk içerik yükle
-            });
-        }
-
-        createInitialToasts(); // İlk slider öğelerini oluştur
-
-        // 6. Her 100 saniyede bir yeni toast öğeleri ekle
-        setInterval(() => {
-            toastElements.forEach((toast) => toast.remove()); // Eski öğeleri sil
-            toastElements = []; // Eski öğeleri temizle
-            createInitialToasts(); // Yeni öğeleri oluştur
-        }, 50000); // 50 saniye (100000 ms)
-    }
-
-    // Örnek oyun listesi
-    const games = [
-        { title: "BIG BASS BONANZA 1000", img: "https://vendor-provider.fra1.cdn.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/GN8mlG5kFJ18n1oZfaMGGZ5ECn99RB26L2F7fQyZ.png" },
-        { title: "GATES OF OLYMPUS DICE", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/qVrgf2qkZ44apoCdNlS47ivKbn7xQbOkgQ6lRIyc.avif" },
-        { title: "20 SUPER HOT", img: "https://vendor-provider.fra1.cdn.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/9TtOVGFJcH8UBsSGl3Ce58lhMFn2TmFp9JD1ZeqR.png" },
-        { title: "VAMPIRE NIGHT VIP BELL LINK", img: "https://vendor-provider.fra1.cdn.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/mNO1iaNhi8Q5JZg4B35dbPsleKYCwZdazS9a1kN4.png" },
-        { title: "SHINING CROWN", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/q5ImhlA8QQNhoCWIrrCkuNxTivRdi8tOwZBl4DCb.png" },
-        { title: "40 BURNING HOT", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/IIul50QRjUNZcojMhN5oocCMbJ1wzJBJTrotr3Yz.png" },
-        { title: "SUGAR RUSH SUPER SCATTER", img: "https://d3psi4rj7mv4u4.cloudfront.net/games/pragmaticplay/sugar_rush_super_scatter.jpg" },
-        { title: "WISDOM OF ATHENA 1000", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/ZDD52QUSLUJM4NWSdYEwNNxw4cWoHrBXYNUxAsCg.png" },
-        { title: "SUGAR RUSH 1000", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/y0C8hNvNSkcQIPZkqnR4gbePs7YU4tkZtluv0OBy.png" },
-        { title: "SWEET BONANZA SUPER SCATTER", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/l1JYlUIe4z4BP9fpGIKnc9JD9m3AHxBcwGNzQncs.png" },
-        { title: "THE DOG HOUSE MEGAWAYS", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/WI9EeOXR3EIhOSyPgUCosUNT18FYeOgvz4Dlbaxm.png" },
-        { title: "SWEET BONANZA 1000", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/NuZ9UYNGezQHMpj2rE8uJR13wrZWYzlEuzflSHEb.png" },
-        { title: "ROULETTE", img: "https://vendor-provider.fra1.digitaloceanspaces.com/ebetlab/gXmqkthvbB1521K/games/b9uylQsVqYbSG3xTXLmQuslENtjeOFzfjWyq6BTK.png" },
-        { title: "BLACKJACK", img: "https://vendor-provider.fra1.cdn.digitaloceanspaces.com/ebetlab/kjaflkjqnlkwAqwrjqkldkljgq/games/b3KPqV9UyOixpMNKS7A2Lnd4YYqUxFn64dR6LDp2.png" }
-    ];
-
-    // Slider'ı başlat
-	 createToastSliderInWrapper(games);
-
-}
- 
-function createWhatsAppBadge(phoneNumber = '84814193622') {
-    if (!document.getElementById("_wa-badge-style")) {
-        const style = document.createElement('style');
-        style.id = '_wa-badge-style';
-        style.innerHTML = `
-            ._wa-badge {
-                position: fixed;
-                top: 35%;
-                right: -135px;
-                transform: translateY(-50%);
-                background-color: #25D366;
-                color: white;
-                padding: 10px 16px;
-                border-radius: 8px 0 0 8px;
-                box-shadow: 0 8px 24px rgba(32, 163, 233, 0.35);
-                display: flex;
-                align-items: center;
-                transition: right 0.4s ease;
-                z-index: 9999;
-                text-decoration: none;
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                animation: _wa-pulse 2.5s ease-in-out infinite;
-            }
-
-            ._wa-badge img {
-                width: 30px;
-                height: 30px;
-                margin-right: 20px;       
-                flex-shrink: 0;
-            }
-
-            ._wa-badge-text {
-                white-space: nowrap;
-                font-family: 'Segoe UI', 'Arial', sans-serif;
-                font-size: 14px;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-                color: white;
-            }
-
-            ._wa-badge:hover {
-                right: 0;
-            }
-
-            ._wa-badge:hover ._wa-badge-text {
-                opacity: 1;
-            }
-
-            @keyframes _wa-pulse {
-                0% {
-                    transform: translateY(-50%) scale(1);
-                }
-                50% {
-                    transform: translateY(-50%) scale(1.05);
-                }
-                100% {
-                    transform: translateY(-50%) scale(1);
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    // Badge zaten varsa tekrar ekleme
-    if (document.querySelector('._wa-badge')) return;
-
-    // Badge elementi
-    const badge = document.createElement('a');
-    badge.href = `https://wa.me/${phoneNumber}`;
-   // badge.href = `https://bit.ly/m/CedaBETViP`;
-    badge.className = '_wa-badge';
-    badge.target = '_blank';
-    badge.setAttribute('aria-label', 'WhatsApp ile iletişime geç');
-	  badge.id = 'whatsapp-badge';
-
-    const icon = document.createElement('img');
-    icon.src = 'https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg';
-    icon.alt = 'WhatsApp Icon';
-
-    const text = document.createElement('span');
-    text.className = '_wa-badge-text';
-    text.textContent = 'WhatsApp Hattı';
-
-    badge.appendChild(icon);
-    badge.appendChild(text);
-    document.body.appendChild(badge);
-}
-
-let matchInterval = null;
-let isRendered = false;
-
-async function loadMatches() {
-    try {
-
-        // SPA GUARD
-        if (isRendered) return;
-
-        const slider = document.getElementById("main-slider");
-        if (!slider) return;
-
-        isRendered = true;
-
-        const res = await fetch("https://marsel222.github.io/my-cdn/assets/match.json");
-        const data = await res.json();
-
-        if (!data.active) return;
-
-        // STOP WATCHER
-        if (matchInterval) {
-            clearInterval(matchInterval);
-            matchInterval = null;
-        }
-
-        // STYLE INJECTION (once)
-        if (!document.getElementById("sport-style")) {
-            const style = document.createElement("style");
-            style.id = "sport-style";
-            style.innerHTML = `
-           /* Orta Kısım - Bahisler Section */
-.lora-betting-section {
-    position: relative;
-    display: flex;
-    width: 100%;
-}
-
-/* Slider section */
-.lora-matches-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    position: relative;
-    background: transparent;
-    max-width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
-}
-
-.lora-matches-scroll {
-    position: relative;
-    width: 100%;
-    max-width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    padding: 12px 0;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    box-sizing: border-box;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-	    justify-content: space-evenly;
-}
-
-.lora-matches-scroll::-webkit-scrollbar {
-    display: none;
-}
-
-.lora-matches-track {
-    display: flex;
-    width: fit-content;
-    gap: 16px;
-    will-change: transform;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-
-.lora-matches-scroll:hover .lora-matches-track,
-.lora-matches-scroll.touching .lora-matches-track {
-    animation-play-state: paused;
-}
-
-.lora-match-card {
-    flex: 0 0 auto;
-    width: 350px;
-    min-width: 350px;
-    max-width: 350px;
-    height: 100%;
-    position: relative;
-    border-radius: 18px;
-    background: linear-gradient(135deg, 
-        rgba(0, 0, 0, 0.95) 0%, 
-        rgba(20, 20, 20, 0.9) 25%,
-        rgba(10, 10, 10, 0.85) 50%,
-        rgba(20, 20, 20, 0.9) 75%,
-        rgba(0, 0, 0, 0.95) 100%);
-    background-size: 200% 200%;
-    animation: lora-gold-gradient 8s ease infinite;
-    border: 1px solid rgba(14, 192, 150, 0.4);
-    overflow: hidden;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 4px rgba(14, 192, 150, 0.2);
-}
-
-.lora-match-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, 
-        rgba(14, 192, 150, 0.08) 0%, 
-        rgba(14, 192, 150, 0.12) 25%,
-        rgba(14, 192, 150, 0.1) 50%,
-        rgba(14, 192, 150, 0.12) 75%,
-        rgba(14, 192, 150, 0.08) 100%);
-    background-size: 300% 300%;
-    animation: lora-gold-shimmer 6s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 0;
-    border-radius: 18px;
-}
-
-@keyframes lora-gold-gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-@keyframes lora-gold-shimmer {
-    0% { background-position: 0% 50%; opacity: 0.6; }
-    50% { background-position: 100% 50%; opacity: 1; }
-    100% { background-position: 0% 50%; opacity: 0.6; }
-}
-
-.lora-match-card::before {
-    display: none;
-}
-
-.lora-match-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 6px 18px rgba(14, 192, 150, 0.5), 0 0 12px rgba(14, 192, 150, 0.3);
-    border-color: rgba(14, 192, 150, 0.7);
-}
-
-.lora-match-content {
-    padding: 16px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-    min-height: 200px;
-    z-index: 1;
-}
-
-.lora-match-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
-    gap: 8px;
-}
-
-.lora-match-competition {
-    color: #0ec096;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    flex: 1;
-    line-height: 1.2;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-shadow: 0 1px 2px rgba(14, 192, 150, 0.5);
-}
-
-.lora-match-time {
-    color: #0ec096;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: right;
-    line-height: 1.2;
-    flex-shrink: 0;
-    text-shadow: 0 1px 2px rgba(14, 192, 150, 0.5);
-}
-
-.lora-match-teams {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 8px;
-}
-
-.lora-match-team {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-}
-
-.lora-team-badge {
-    width: auto;
-    height: 40px;
-    border-radius: 50%;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
-.lora-team-badge img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: relative;
-    z-index: 2;
-}
-
-.lora-team-name {
-    font-size: 12px;
-    color: #0ec096;
-    text-align: center;
-    font-weight: 500;
-    max-width: 80px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-shadow: 0 1px 2px rgba(14, 192, 150, 0.5);
-}
-
-.lora-match-vs {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 16px;
-}
-
-.lora-match-vs-text {
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: #0ec096;
-    background: #000000;
-    border: 1px solid rgba(14, 192, 150, 0.5);
-    padding: 4px 12px;
-    border-radius: 999px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(14, 192, 150, 0.2), 0 0 8px rgba(14, 192, 150, 0.3);
-    text-shadow: 0 1px 2px rgba(14, 192, 150, 0.6), 0 0 4px rgba(14, 192, 150, 0.4);
-}
-
-.lora-match-vs-image {
-    width: auto;
-    height: 30px;
-    max-width: 80px;
-    object-fit: contain;
-    display: block;
-}
-
-.lora-match-odds {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-top: 12px;
-}
-
-.lora-odds-row {
-    display: flex;
-    gap: 4px;
-    justify-content: space-between;
-}
-
-.lora-odds-button {
-    flex: 1;
-    background: #000000;
-    border: 1px solid rgba(14, 192, 150, 0.5);
-    border-radius: 20px;
-    padding: 6px 8px;
-    cursor: pointer;
-    transition: all 0.18s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    min-height: 40px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(14, 192, 150, 0.15), 0 0 4px rgba(14, 192, 150, 0.2);
-    text-decoration: none;
-    color: #0ec096;
-    position: relative;
-}
-
-.lora-odds-button::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 20px;
-    background: linear-gradient(135deg, rgba(14, 192, 150, 0.08) 0%, rgba(14, 192, 150, 0.03) 50%, transparent 100%);
-    pointer-events: none;
-}
-
-.lora-odds-button:hover {
-    background: #0a0a0a;
-    border-color: rgba(14, 192, 150, 0.8);
-    transform: translateY(-1px);
-    text-decoration: none;
-    color: #0ec096;
-    box-shadow: 0 4px 12px rgba(14, 192, 150, 0.4), inset 0 1px 3px rgba(14, 192, 150, 0.25), 0 0 8px rgba(14, 192, 150, 0.2);
-}
-
-.lora-odds-button:active {
-    transform: translateY(0);
-}
-
-.lora-odds-label {
-    font-size: 10px;
-    color: #0ec096;
-    font-weight: 500;
-    text-align: center;
-    line-height: 1.2;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 100%;
-    text-shadow: 0 1px 2px rgba(14, 192, 150, 0.5);
-}
-
-.lora-odds-value {
-    font-size: 12px;
-    color: #0ec096;
-    font-weight: 700;
-    text-shadow: 0 1px 2px rgba(14, 192, 150, 0.5), 0 0 4px rgba(14, 192, 150, 0.3);
-}
-
-.lora-odds-button:hover .lora-odds-value {
-    color: #0ec096;
-    text-shadow: 0 1px 3px rgba(14, 192, 150, 0.6), 0 0 6px rgba(14, 192, 150, 0.5);
-}
-
-.lora-odds-button:hover .lora-odds-label {
-    color: #0ec096;
-}
-.lora-section-header {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 16px;
-}
-
-.lora-section-header h2 {
-    color: #0ec096;
-    font-size: 20px;
-    font-weight: 700;
-    margin: 0;
-    text-shadow: 0 0 8px rgba(14,192,150,0.4);
-}
-
-.lora-section-header p {
-    color: #aaa;
-    font-size: 12px;
-    margin-top: 4px;
-    opacity: 0.8;
-}
-@media (max-width: 768px) {
-
-    /* container düzeltme */
-    .lora-matches-container {
-        margin-left: 0;
-        padding-left: 16px;
-    }
-
-    /* scroll alanı swipe */
-    .lora-matches-scroll {
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    /* track spacing */
-    .lora-matches-track {
-        gap: 12px;
-    }
-
-    /* card mobil boyut */
-    .lora-match-card {
-        width: 80vw;
-        min-width: 80vw;
-        max-width: 80vw;
-        flex: 0 0 auto;
-
-        scroll-snap-align: center;
-    }
-}
-            `;
-            document.head.appendChild(style);
-        }
-
-        let html = "";
-
-data.matches.forEach(match => {
-
-    const href = (match.betid && match.betid.trim() !== "")
-        ? `/tr/sportsbook/betid=${match.betid}`
-        : `/tr/sportsbook`;
-
-    html += `
-    <a style="text-decoration: none;" href="${href}" class="lora-match-card">
-
-        <div class="lora-match-content">
-            <div class="lora-match-header">
-                <span class="lora-match-competition">${match.date}</span>
-                <span class="lora-match-time">${match.time}</span>
-            </div>
-
-            <div class="lora-match-teams">
-                <div class="lora-match-team">
-                    <img src="${match.home.logo || ''}" alt="${match.home.name}" class="lora-team-badge">
-                    <span class="lora-team-name">${match.home.name}</span>
-                </div>
-
-                <div class="lora-match-vs">
-                    <span class="lora-match-vs-text">VS</span>
-                </div>
-
-                <div class="lora-match-team">
-                    <img src="${match.away.logo || ''}" alt="${match.away.name}" class="lora-team-badge">
-                    <span class="lora-team-name">${match.away.name}</span>
-                </div>
-            </div>
-
-            <div class="lora-match-odds">
-                <div class="lora-odds-row">
-                    <div class="lora-odds-button">
-                        <span class="lora-odds-label">1</span>
-                        <span class="lora-odds-value">${match.odds["1"]}</span>
-                    </div>
-
-                    <div class="lora-odds-button">
-                        <span class="lora-odds-label">X</span>
-                        <span class="lora-odds-value">${match.odds["X"]}</span>
-                    </div>
-
-                    <div class="lora-odds-button">
-                        <span class="lora-odds-label">2</span>
-                        <span class="lora-odds-value">${match.odds["2"]}</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </a>
-    `;
-});
-
-        const section = `
-		 <div id="sport-header" class="lora-section-header">
-                <h2>ÖZEL ORAN MAÇLAR</h2>
-                <p>Günün en iyi fırsatları</p>
-            </div>
-        <div id="sport-content" class="lora-betting-section">
-            <div class="lora-matches-container">
-                <div class="lora-matches-scroll">
-                    <div class="lora-matches-track">
-                        ${html}
-                    </div>
-                </div>
-            </div>
-
-        </div>`;
-
-        slider.insertAdjacentHTML("afterend", section);
-
-    } catch (err) {
-        console.error("Match load error:", err);
-    }
-}
-
-// 100ms SPA watcher
-function startWatcher() {
-    if (matchInterval) return;
-
-    matchInterval = setInterval(() => {
-        const exists = document.getElementById("main-slider");
-        const already = document.querySelector(".lora-betting-section");
-
-        if (exists && !already) {
-            loadMatches();
-        }
-    }, 100);
-}
-
-// SPA navigation support
-window.addEventListener("popstate", () => {
-    isRendered = false;
-    startWatcher();
-});
-function getBookabetFromUrl() {
-  const urlParams = new URLSearchParams(window.location.search);
-
-  let code = urlParams.get("betid");
-
-  // fallback: /sportsbook/betid=ABC123
-  if (!code) {
-    const match = window.location.pathname.match(/betid=([^/]+)/);
-    if (match) code = match[1];
+    return wrapper;
   }
 
-  return code;
-}
+  function insertElement() {
+    if (isAlreadyInserted()) return;
 
-function waitForIframeAndUpdate() {
-  const code = getBookabetFromUrl();
+    const supportBtn = document.querySelector('.sb-top-btn.supportbtn');
+    if (!supportBtn) return;
 
-  console.error("[bookabet] URL'den gelen code:", code);
+    const el = createElement();
+    supportBtn.parentNode.insertBefore(el, supportBtn.nextSibling);
 
-  if (!code) {
-    console.error("[bookabet] betid yok → script durdu");
-    return;
+    
   }
 
-  console.error("[bookabet] iframe bekleniyor...");
-
-  const interval = setInterval(() => {
-    const iframe = document.getElementById("game");
-
-    console.error("[bookabet] iframe kontrol ediliyor...");
-
-    if (!iframe) {
-      console.error("[bookabet] iframe bulunamadı");
-      return;
-    }
-
-    if (!iframe.src) {
-      console.error("[bookabet] iframe bulundu ama src boş");
-      return;
-    }
-
-    console.error("[bookabet] iframe bulundu:", iframe.src);
-
-    try {
-      const url = new URL(iframe.src);
-
-      const before = url.toString();
-
-      url.searchParams.set("bookabet", code);
-
-      const after = url.toString();
-
-      console.error("[bookabet] önce:", before);
-      console.error("[bookabet] sonra:", after);
-
-      iframe.src = after;
-
-      console.error("[bookabet] iframe güncellendi ✔");
-
-      clearInterval(interval);
-
-    } catch (e) {
-      console.error("[bookabet] URL parse hatası:", e);
-    }
-
-  }, 100);
-}
-
-function waitForLuckyWheel() {
-
-
-  const interval = setInterval(() => {
-    const token = localStorage.getItem('bearer');
-
-    if (!token) {
-       // console.error('Bearer token bulunamadı. Menü elemanları eklenmeyecek.');
-        return;
-    }
-    const headerActions = document.querySelector('.header__actions');
-
-    if (!headerActions) {
-      return;
-    }
-
-    console.error("✅ header__actions bulundu");
-
-    let existing = headerActions.querySelector('svg#lucky-wheel');
-
-    // Eğer varsa sadece click event ekleyip çık
-    if (existing) {
-
-      existing.style.cursor = "pointer";
-      existing.onclick = () => {
-        console.error("🖱 lucky-wheel tıklandı → yönlendiriliyor");
-        window.location.href = "/tr/wheel";
-      };
-
-      clearInterval(interval);
-      return;
-    }
-
-
-    const wallet = headerActions.querySelector('.header__wallet');
-
-    if (!wallet) {
-      console.error("⌛ header__wallet henüz yok");
-      return;
-    }
-
-    console.error("✅ header__wallet bulundu");
-
-    // SVG oluştur
-
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('id', 'lucky-wheel');
-    svg.setAttribute('class', 'svg-icon');
-    svg.style.cursor = "pointer";
-
-    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    use.setAttribute('href', '/static/media/sprite.416275c004a2977bb04b6579ccb104a4.svg#lucky-wheel');
-
-    svg.appendChild(use);
-
-    // click event
-    svg.onclick = () => {
-      console.error("🖱 lucky-wheel tıklandı → yönlendiriliyor");
-      window.location.href = "/tr/wheel";
-    };
-
-    // ekle
-    wallet.insertAdjacentElement('afterend', svg);
-
-
-    clearInterval(interval);
-
-
-  }, 2000);
-}
-
-function initTopbarSliderFromJSON() {
-  console.error("⏳ Slider bekleniyor...");
-
-  const interval = setInterval(() => {
-    const root = document.querySelector('.casino-new__topbar');
-
-    if (!root) return;
-
-    console.error("✅ container bulundu");
-    clearInterval(interval);
-
-    fetch('https://marsel222.github.io/my-cdn/assets/casino-images.json')
-      .then(res => res.json())
-      .then(data => {
-
-        const images = data.images || [];
-        if (!images.length) {
-          console.error("❌ images yok");
-          return;
-        }
-
-        const slider = document.createElement('div');
-        slider.className = 'topbar-slider';
-
-        images.forEach(item => {
-
-          const picture = document.createElement('picture');
-
-          // 🔥 SENİN FORMATIN: sources array yok, direkt field'lar var
-          const sources = [
-            { media: "(max-width: 767px)", src: item.mobile },
-            { media: "(max-width: 991px)", src: item.tablet },
-            { media: "(max-width: 1023px)", src: item.tablet },
-            { media: "(max-width: 1443px)", src: item.desktop },
-            { media: "(max-width: 1919px)", src: item.desktop }
-          ];
-
-          sources.forEach(s => {
-            if (!s.src) return;
-
-            const source = document.createElement('source');
-            source.media = s.media;
-            source.srcset = s.src;
-            picture.appendChild(source);
-          });
-
-          const img = document.createElement('img');
-          img.src = item.desktop;
-          img.alt = "banner";
-          img.loading = "lazy";
-          img.draggable = false;
-
-          picture.appendChild(img);
-          slider.appendChild(picture);
-        });
-
-        root.innerHTML = "";
-        root.appendChild(slider);
-
-        // ======================
-        // layout fix (KRİTİK)
-        // ======================
-        slider.style.display = "flex";
-
-        let index = 0;
-        const total = images.length;
-
-        function update() {
-          slider.style.transition = "transform 0.5s ease";
-          slider.style.transform = `translateX(-${index * 100}%)`;
-        }
-
-        // AUTO
-        let auto = setInterval(() => {
-          index = (index + 1) % total;
-          update();
-        }, 10000);
-
-        function resetAuto() {
-          clearInterval(auto);
-          auto = setInterval(() => {
-            index = (index + 1) % total;
-            update();
-          }, 10000);
-        }
-
-        // SWIPE
-        let startX = 0;
-
-        slider.addEventListener('touchstart', e => {
-          startX = e.touches[0].clientX;
-        });
-
-        slider.addEventListener('touchend', e => {
-          const diff = startX - e.changedTouches[0].clientX;
-
-          if (diff > 50) index = (index + 1) % total;
-          else if (diff < -50) index = (index - 1 + total) % total;
-
-          update();
-          resetAuto();
-        });
-
-        console.error("🎉 slider hazır");
-      });
-
-  }, 200);
-}
-
-
-function redirectIfPokerDetected() {
-    const startTime = Date.now();
-
-    function checkUrl() {
-        const fullUrl = window.location.href.toLowerCase();
-
-        // Hem /tr/ hem de /en/ yollarını kontrol et
-        if (fullUrl.includes('poker') && (fullUrl.includes('/tr') || fullUrl.includes('/en'))) {
-            console.error('[BLOCKED] Poker URL yakalandı:', fullUrl);
-            window.location.replace(fullUrl.includes('/tr') ? '/tr' : '/en'); // Poker varsa, doğru dile yönlendir
-            return true;
-        }
-
-        return false;
-    }
-
-    function removePokerMenu() {
-        // /tr/ ve /en/ sayfalarında poker menüsünü kaldır
-        const pokerItem = document.querySelector('li a[href="/tr/poker"], li a[href="/en/poker"]');
-
-        if (pokerItem && pokerItem.closest('li')) {
-            console.log('[REMOVE] Poker menü kaldırıldı');
-
-            pokerItem.closest('li').remove(); // DOM’dan menüyü sil
-        }
-    }
-
-    function check() {
-        removePokerMenu();
-        return checkUrl();
-    }
-
-    // ilk kontrol
-    if (check()) return;
+  function init() {
+    setTimeout(insertElement, 300);
 
     const observer = new MutationObserver(() => {
-        check();
-
-        // Eğer yönlendirme yapılırsa, observer'ı durdur
-        if (window.location.href.toLowerCase().includes('poker') && (window.location.href.includes('/tr') || window.location.href.includes('/en'))) {
-            observer.disconnect();
-            return;
-        }
-
-        // 3 saniye sonra observer'ı durdur
-        if (Date.now() - startTime > 3000) {
-            console.log('[STOP] 3 saniye doldu, observer kapandı');
-            observer.disconnect();
-        }
+      if (!isAlreadyInserted() && document.querySelector('.sb-top-btn.supportbtn')) {
+        insertElement();
+      }
     });
 
     observer.observe(document.body, {
-        childList: true,
-        subtree: true
+      childList: true,
+      subtree: true
     });
-}
 
-    function showWarningMessage() {
-        // Mevcut URL'yi kontrol et
-        const currentUrl = window.location.href;
-        
-        // URL'de "betlora216" var mı diye kontrol ediyoruz
-        if (currentUrl.includes("betlora216")) {
-            // Eğer URL "betlora216" içeriyorsa, stil ve mesajı ekle
-            const style = document.createElement('style');
-            style.innerHTML = `
-                .container {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    height: 300px;
-                    background-color: #f1f1f1;
-                }
+    let lastUrl = location.href;
+    new MutationObserver(() => {
+      if (location.href !== lastUrl) {
+        lastUrl = location.href;
+        setTimeout(insertElement, 300);
+      }
+    }).observe(document, { subtree: true, childList: true });
+  }
 
-                .warning-message {
-                    font-size: 2rem;
-                    font-weight: bold;
-                    color: white; /* Yazı rengi beyaz */
-                    background-color: red; /* Arka plan rengi kırmızı */
-                    padding: 20px;
-                    border-radius: 10px;
-                    text-align: center;
-                    animation: blink 1s infinite;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Hafif gölge efekti */
-                }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
 
-                @keyframes blink {
-                    0% {
-                        opacity: 1;
-                    }
-                    50% {
-                        opacity: 0;
-                    }
-                    100% {
-                        opacity: 1;
-                    }
-                }
-            `;
-            document.head.appendChild(style); // CSS'i head tag'ine ekliyoruz
 
-            // Uyarı mesajının HTML içeriği
-            const messageHTML = `
-                <div class="container">
-                    <div class="warning-message">
-                        Bu site sahtedir! Lütfen Yatırım Yapmayınız. Güncel adresimiz: 
-                        <a href="https://t2m.io/Betlora" target="_blank">https://t2m.io/Betlora</a>
-                    </div>
-                </div>
-            `;
 
-            // "toast-slider-ced" id'sine sahip container'ı alıyoruz
-            const container = document.getElementById('toast-slider-ced');
-            
-            // Container içeriğini temizliyoruz
-            container.innerHTML = '';
 
-            // Yeni uyarı mesajını container'a ekliyoruz
-            container.innerHTML = messageHTML;
-        }
+
+// ==========================================
+// FEATURE: Header Chat Button
+// Header'a notification butonundan sonra brand renkli chat butonu ekler
+// Tıklayınca sayfadaki asıl chat butonunu tetikler (drawer açar)
+// Hedef: .header-minified-buttons > .notifications-box sonrası
+// Kapsam: Tüm sayfalar
+// ==========================================
+(function() {
+  const FEATURE_ID = 'lora-header-chat-btn';
+
+  function isAlreadyInserted() {
+    return document.getElementById(FEATURE_ID) !== null;
+  }
+
+  function findRealChatButton() {
+    return document.querySelector('button.chat-button[aria-label="Open chat"]')
+        || document.querySelector('button.chat-button');
+  }
+
+  function createElement() {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = FEATURE_ID;
+    btn.className = 'lora-header-chat-btn';
+    btn.setAttribute('aria-label', 'Canlı Destek');
+    btn.setAttribute('data-sb-tooltip', 'Canlı Destek');
+
+    btn.innerHTML = `
+      <span class="icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17 17" fill="none" width="20" height="20">
+          <path d="M12.9791 0.835327H4.25184C2.24675 0.835327 0.615479 2.4666 0.615479 4.47169V10.2899C0.615479 12.0455 1.86711 13.5146 3.52457 13.8528V16.1081C3.52457 16.3764 3.67221 16.623 3.90857 16.7495C4.01621 16.807 4.13402 16.8353 4.25184 16.8353C4.39293 16.8353 4.5333 16.7939 4.65548 16.7131L8.83584 13.9262H12.9791C14.9842 13.9262 16.6155 12.295 16.6155 10.2899V4.47169C16.6155 2.4666 14.9842 0.835327 12.9791 0.835327ZM8.21184 12.5939L4.97912 14.7488V13.199C4.97912 12.7975 4.6533 12.4717 4.25184 12.4717C3.04893 12.4717 2.07002 11.4928 2.07002 10.2899V4.47169C2.07002 3.26878 3.04893 2.28987 4.25184 2.28987H12.9791C14.182 2.28987 15.1609 3.26878 15.1609 4.47169V10.2899C15.1609 11.4928 14.182 12.4717 12.9791 12.4717H8.61548C8.56457 12.471 8.49184 12.4761 8.40893 12.5008C8.32166 12.5262 8.25548 12.5641 8.21184 12.5939Z" fill="currentColor"/>
+          <path d="M12.9792 5.19885H4.25193C3.85048 5.19885 3.52466 5.52467 3.52466 5.92613C3.52466 6.32758 3.85048 6.6534 4.25193 6.6534H12.9792C13.3807 6.6534 13.7065 6.32758 13.7065 5.92613C13.7065 5.52467 13.3807 5.19885 12.9792 5.19885Z" fill="currentColor"/>
+          <path d="M11.5247 8.10791H5.70652C5.30507 8.10791 4.97925 8.43373 4.97925 8.83518C4.97925 9.23664 5.30507 9.56246 5.70652 9.56246H11.5247C11.9262 9.56246 12.252 9.23664 12.252 8.83518C12.252 8.43373 11.9262 8.10791 11.5247 8.10791Z" fill="currentColor"/>
+        </svg>
+      </span>
+    `;
+
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const realChatBtn = findRealChatButton();
+      if (realChatBtn) {
+        realChatBtn.click();
+      } else {
+        console.warn('Chat button bulunamadı');
+      }
+    });
+
+    return btn;
+  }
+
+  function insertElement() {
+    if (isAlreadyInserted()) return;
+
+    const minifiedButtons = document.querySelector('.header-minified-buttons');
+    if (!minifiedButtons) return;
+
+    const notificationsBox = minifiedButtons.querySelector('.notifications-box');
+    const el = createElement();
+
+    if (notificationsBox) {
+      notificationsBox.parentNode.insertBefore(el, notificationsBox.nextSibling);
+    } else {
+      minifiedButtons.appendChild(el);
     }
+
+    console.log('✅ lora header chat button eklendi');
+  }
+
+  function init() {
+    setTimeout(insertElement, 400);
+
+    const observer = new MutationObserver(() => {
+      if (!isAlreadyInserted() && document.querySelector('.header-minified-buttons')) {
+        insertElement();
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    let lastUrl = location.href;
+    new MutationObserver(() => {
+      if (location.href !== lastUrl) {
+        lastUrl = location.href;
+        setTimeout(insertElement, 400);
+      }
+    }).observe(document, { subtree: true, childList: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
 
