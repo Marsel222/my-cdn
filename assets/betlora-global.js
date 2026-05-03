@@ -110,7 +110,85 @@
   }
 })();
 
+// ==========================================
+// FEATURE: Menu Head WhatsApp Button
+// .menu-head içindeki call-button'dan hemen önce WhatsApp butonu ekler
+// Hedef: .menu-head .buttons > .call-button öncesi
+// Kapsam: Tüm sayfalar
+// ==========================================
+(function() {
+  const FEATURE_ID = 'lora-menu-whatsapp-btn';
 
+  const whatsappLink = {
+    name: 'WhatsApp',
+    url: 'https://bit.ly/m/betlorawp',
+    icon: '<span aria-hidden="true">📱</span>' // Emoji ikon, dilersen SVG ile değiştirebilirsin
+  };
+
+  function isAlreadyInserted() {
+    return document.getElementById(FEATURE_ID) !== null;
+  }
+
+  function createWhatsappButton() {
+    const btn = document.createElement('a');
+    btn.id = FEATURE_ID;
+    btn.className = 'call-button lora-whatsapp-button';
+    btn.href = whatsappLink.url;
+    btn.target = '_blank';
+    btn.rel = 'noopener noreferrer';
+    btn.setAttribute('data-sb-tooltip', whatsappLink.name);
+    btn.setAttribute('aria-label', whatsappLink.name);
+
+    btn.innerHTML = `
+      <span class="call-button__icon" aria-hidden="true">
+        ${whatsappLink.icon}
+      </span>
+    `;
+    return btn;
+  }
+
+  function insertButton() {
+    if (isAlreadyInserted()) return;
+
+    const callBtn = document.querySelector('.menu-head .buttons .call-button');
+    if (!callBtn) return;
+
+    const whatsappBtn = createWhatsappButton();
+    callBtn.parentNode.insertBefore(whatsappBtn, callBtn);
+    console.log('✅ WhatsApp button eklendi');
+  }
+
+  function init() {
+    setTimeout(insertButton, 300);
+
+    // DOM değişikliklerini gözlemle
+    const observer = new MutationObserver(() => {
+      if (!isAlreadyInserted() && document.querySelector('.menu-head .buttons .call-button')) {
+        insertButton();
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    // URL değişirse tekrar ekle
+    let lastUrl = location.href;
+    new MutationObserver(() => {
+      if (location.href !== lastUrl) {
+        lastUrl = location.href;
+        setTimeout(insertButton, 300);
+      }
+    }).observe(document, { subtree: true, childList: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
 
 
 
