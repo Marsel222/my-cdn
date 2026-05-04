@@ -140,7 +140,7 @@
     btn.setAttribute('aria-label', whatsappLink.name);
 
     btn.innerHTML = `
-      <span style="display: inline-flex; width: 20px; height: 20px; line-height: 0;" class="call-button__icon" aria-hidden="true">
+      <span style="display: block; width: 20px; height: 20px; line-height: 0;" class="call-button__icon" aria-hidden="true">
         ${whatsappLink.icon}
       </span>
     `;
