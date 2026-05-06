@@ -190,6 +190,91 @@
   }
 })();
 
+// ==========================================
+// FEATURE: Scrolling Text with Next URL
+// Header'ın altına bir sonraki betlora numarasını gösteren kayan metin ekler
+// Kapsam: Tüm sayfalar
+// ==========================================
+(function() {
+    const FEATURE_ID = 'lora-scrolling-next-url';
+
+    function getNextUrlNumber() {
+        const currentUrl = window.location.href;
+        const match = currentUrl.match(/betlora(\d+)/); // betlora sonrası gelen sayıyı al
+        if (match && match[1]) {
+            const currentNumber = parseInt(match[1], 10);
+            return currentNumber + 1;
+        }
+        return null;
+    }
+
+    function createScrollingTextElement(text) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'scrolling-text';
+        wrapper.id = FEATURE_ID;
+
+        const span = document.createElement('span');
+        span.textContent = text;
+
+        wrapper.appendChild(span);
+        return wrapper;
+    }
+
+    function isAlreadyInserted() {
+        return document.getElementById(FEATURE_ID) !== null;
+    }
+
+    function insertOrUpdateScrollingText() {
+        const nextNumber = getNextUrlNumber();
+        if (nextNumber === null) {
+            console.error("Geçerli bir URL formatı bulunamadı.");
+            return;
+        }
+
+        const text = `BİR SONRAKİ GÜNCEL ADRESİMİZ betlora${nextNumber}.com'dur. LÜTFEN SAHTE SİTELERE İTİBAR ETMEYİNİZ.`;
+
+        const existing = document.getElementById(FEATURE_ID);
+        if (existing) {
+            const currentText = existing.querySelector('span')?.textContent;
+            if (currentText !== text) {
+                existing.querySelector('span').textContent = text; // Metni güncelle
+            }
+            return;
+        }
+
+        const scrollingDiv = createScrollingTextElement(text);
+        const header = document.querySelector('middle-header');
+        if (header) {
+            header.insertAdjacentElement('afterend', scrollingDiv);
+        }
+    }
+
+    function init() {
+        setTimeout(insertOrUpdateScrollingText, 300);
+
+        // DOM değişikliklerini gözlemle (SPAs için)
+        const observer = new MutationObserver(() => {
+            insertOrUpdateScrollingText();
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        // URL değişirse tekrar ekle
+        let lastUrl = location.href;
+        new MutationObserver(() => {
+            if (location.href !== lastUrl) {
+                lastUrl = location.href;
+                setTimeout(insertOrUpdateScrollingText, 300);
+            }
+        }).observe(document, { subtree: true, childList: true });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+
 
 
 
