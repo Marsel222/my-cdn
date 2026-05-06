@@ -243,7 +243,7 @@
         }
 
         const scrollingDiv = createScrollingTextElement(text);
-        const header = document.querySelector('middle-header');
+        const header = document.querySelector('header');
         if (header) {
             header.insertAdjacentElement('afterend', scrollingDiv);
         }
