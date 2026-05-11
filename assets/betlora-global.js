@@ -201,10 +201,17 @@
     function getNextUrlNumber() {
         const currentUrl = window.location.href;
         const match = currentUrl.match(/betlora(\d+)/); // betlora sonrası gelen sayıyı al
-        if (match && match[1]) {
-            const currentNumber = parseInt(match[1], 10);
-            return currentNumber + 1;
+      if (match && match[1]) {
+        let currentNumber = parseInt(match[1], 10);
+        
+        // 230'u atla
+        let nextNumber = currentNumber + 1;
+        if (nextNumber === 230) {
+            nextNumber = 231;
         }
+        return nextNumber;
+    }
+      
         return null;
     }
 
