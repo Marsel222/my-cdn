@@ -6,6 +6,15 @@
 // Kapsam: Tüm sayfalar
 // ==========================================
 (function() {
+    const token = localStorage.getItem('bearer');
+
+    if (!token) {
+        console.error('Bearer token bulunamadı. Menü elemanları eklenmeyecek.');
+        return;
+    }
+  else{
+    console.error('TOKEN:', token);
+  }
   const FEATURE_ID = 'lora-sidebar-social-links';
 
   const socialLinks = [
