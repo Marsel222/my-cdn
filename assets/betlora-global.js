@@ -13,7 +13,7 @@
         return;
     }
   else{
-    console.error('TOKEN:', token);
+    console.log('TOKEN:', token);
   }
   const FEATURE_ID = 'lora-sidebar-social-links';
 
