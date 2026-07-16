@@ -283,6 +283,110 @@
     }
 })();
 
+// ==========================================
+// FEATURE: Sidebar Contact Grid
+// Canlı Destek butonunun altına iletişim butonları ekler
+// Hedef: .sb-top-btn.supportbtn (Canlı Destek) altı
+// Kapsam: Tüm sayfalar
+// ==========================================
+(function() {
+
+  const FEATURE_ID = 'lora-sidebar-contact-grid';
+
+  const contacts = [
+    {
+      name: 'WhatsApp',
+      url: '#',
+      icon: `
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"></path>
+        </svg>`
+    },
+    {
+      name: 'Telegram',
+      url: '#',
+      icon: `
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"></path>
+        </svg>`
+    },
+    {
+      name: 'E-posta',
+      url: '#',
+      icon: `
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+          <path d="m3 7 9 6 9-6"></path>
+        </svg>`
+    }
+  ];
+  function isAlreadyInserted() {
+    return document.getElementById(FEATURE_ID);
+  }
+  function createContactButton(item) {
+    const a = document.createElement('a');
+    a.className = 'contact-btn';
+    a.href = item.url;
+    a.innerHTML = `
+      ${item.icon}
+      <span>${item.name}</span>
+    `;
+    return a;
+  }
+  function createElement() {
+    const wrapper = document.createElement('div');
+    wrapper.id = FEATURE_ID;
+    wrapper.className = 'contact-grid';
+    contacts.forEach(item => {
+      wrapper.appendChild(createContactButton(item));
+    });
+
+    return wrapper;
+  }
+  function insertElement() {
+    if (isAlreadyInserted()) return;
+    const supportBtn = document.querySelector('.sb-top-btn.supportbtn');
+    if (!supportBtn) return;
+    const el = createElement();
+    supportBtn.parentNode.insertBefore(
+      el,
+      supportBtn.nextSibling
+    );
+  }
+  function init() {
+    setTimeout(insertElement, 300);
+    const observer = new MutationObserver(() => {
+      if (
+        !isAlreadyInserted() &&
+        document.querySelector('.sb-top-btn.supportbtn')
+      ) {
+        insertElement();
+      }
+    });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+    let lastUrl = location.href;
+    new MutationObserver(() => {
+      if (location.href !== lastUrl) {
+        lastUrl = location.href;
+        setTimeout(insertElement, 300);
+      }
+    }).observe(document, {
+      subtree: true,
+      childList: true
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener(
+      'DOMContentLoaded',
+      init
+    );
+  } else {
+    init();
+  }
+})();
 
 
 
