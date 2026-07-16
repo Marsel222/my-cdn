@@ -284,14 +284,14 @@
 })();
 
 // ==========================================
-// FEATURE: Sidebar Contact Grid
-// Canlı Destek butonunun altına iletişim butonları ekler
-// Hedef: .sb-top-btn.supportbtn (Canlı Destek) altı
+// FEATURE: Sidebar Promo + Contact Grid
+// Canlı Destek üstüne kampanya, altına iletişim butonları ekler
+// Hedef: .sb-top-btn.supportbtn (Canlı Destek)
 // Kapsam: Tüm sayfalar
 // ==========================================
 (function() {
 
-  const FEATURE_ID = 'lora-sidebar-contact-grid';
+  const FEATURE_ID = 'lora-sidebar-extra-section';
 
   const contacts = [
     {
@@ -320,70 +320,150 @@
         </svg>`
     }
   ];
+
+
   function isAlreadyInserted() {
     return document.getElementById(FEATURE_ID);
   }
+
+
   function createContactButton(item) {
+
     const a = document.createElement('a');
+
     a.className = 'contact-btn';
     a.href = item.url;
+
     a.innerHTML = `
       ${item.icon}
       <span>${item.name}</span>
     `;
+
     return a;
+
   }
+
+
+  function createPromo() {
+
+    const promo = document.createElement('div');
+
+    promo.className = 'promo-card';
+
+    promo.innerHTML = `
+      <div class="promo-top">
+        <div>
+          <div class="promo-label">GÜNÜN FIRSATI</div>
+          <div class="promo-title">%25 YATIRIM BONUSU</div>
+          <div class="promo-sub">Sadece bugün geçerli!</div>
+        </div>
+        <div class="promo-gift" aria-hidden="true">🎁</div>
+      </div>
+      <button class="promo-btn">
+        HEMEN KEŞFET
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 6 6 6-6 6"></path>
+        </svg>
+      </button>
+    `;
+
+    return promo;
+
+  }
+
+
   function createElement() {
+
     const wrapper = document.createElement('div');
+
     wrapper.id = FEATURE_ID;
-    wrapper.className = 'contact-grid';
+
+    const contactGrid = document.createElement('div');
+
+    contactGrid.className = 'contact-grid';
+
     contacts.forEach(item => {
-      wrapper.appendChild(createContactButton(item));
+      contactGrid.appendChild(createContactButton(item));
     });
 
+
+    wrapper.appendChild(createPromo());
+    wrapper.appendChild(contactGrid);
+
+
     return wrapper;
+
   }
+
+
   function insertElement() {
+
     if (isAlreadyInserted()) return;
+
     const supportBtn = document.querySelector('.sb-top-btn.supportbtn');
+
     if (!supportBtn) return;
+
+
     const el = createElement();
+
+
     supportBtn.parentNode.insertBefore(
       el,
-      supportBtn.nextSibling
+      supportBtn
     );
+
+
+    supportBtn.parentNode.insertBefore(
+      supportBtn,
+      el.nextSibling
+    );
+
   }
+
+
   function init() {
-    setTimeout(insertElement, 300);
-    const observer = new MutationObserver(() => {
-      if (
+
+    setTimeout(insertElement,300);
+
+
+    const observer = new MutationObserver(()=>{
+
+      if(
         !isAlreadyInserted() &&
         document.querySelector('.sb-top-btn.supportbtn')
-      ) {
+      ){
         insertElement();
       }
+
     });
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
+
+
+    observer.observe(document.body,{
+      childList:true,
+      subtree:true
     });
+
+
     let lastUrl = location.href;
-    new MutationObserver(() => {
-      if (location.href !== lastUrl) {
-        lastUrl = location.href;
-        setTimeout(insertElement, 300);
+    new MutationObserver(()=>{
+      if(location.href!==lastUrl){
+        lastUrl=location.href;
+        setTimeout(insertElement,300);
       }
-    }).observe(document, {
-      subtree: true,
-      childList: true
+    }).observe(document,{
+      subtree:true,
+      childList:true
     });
+
   }
-  if (document.readyState === 'loading') {
+  if(document.readyState==='loading'){
+
     document.addEventListener(
       'DOMContentLoaded',
       init
     );
-  } else {
+  }else{
     init();
   }
 })();
