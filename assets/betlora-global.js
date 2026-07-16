@@ -311,14 +311,6 @@
         </svg>`,
     },
     {
-      name: "E-posta",
-      url: "#",
-      icon: `
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="5" width="18" height="14" rx="2"></rect>
-          <path d="m3 7 9 6 9-6"></path>
-        </svg>`,
-    },
   ];
 
   function createPromo() {
@@ -328,20 +320,7 @@
     promo.className = "promo-card";
 
     promo.innerHTML = `
-      <div class="promo-top">
-        <div>
-          <div class="promo-label">GÜNÜN FIRSATI</div>
-          <div class="promo-title">%25 YATIRIM BONUSU</div>
-          <div class="promo-sub">Sadece bugün geçerli!</div>
-        </div>
-        <div class="promo-gift" aria-hidden="true">🎁</div>
-      </div>
-      <button class="promo-btn">
-        HEMEN KEŞFET
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m9 6 6 6-6 6"></path>
-        </svg>
-      </button>
+
     `;
 
     return promo;
