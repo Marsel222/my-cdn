@@ -192,88 +192,90 @@
 })();
 
 // ==========================================
-// FEATURE: Scrolling Text with Next URL
-// Header'ın altına bir sonraki betlora numarasını gösteren kayan metin ekler
-// Kapsam: Tüm sayfalar
+// FEATURE: Next URL Text Update
+// Sadece sıralı betloraXXX.com domainlerinde çalışır
 // ==========================================
 (function() {
-    const FEATURE_ID = 'lora-scrolling-next-url';
+    const FEATURE_ID = 'lora-new-home-link';
+
+    function isValidNumberedDomain() {
+        const hostname = window.location.hostname;
+
+        // Sadece betlora + sayı + .com kabul edilir
+        return /^betlora\d+\.com$/i.test(hostname);
+    }
 
     function getNextUrlNumber() {
         const currentUrl = window.location.href;
-        const match = currentUrl.match(/betlora(\d+)/); // betlora sonrası gelen sayıyı al
-      if (match && match[1]) {
-        let currentNumber = parseInt(match[1], 10);
-        
-        // 230'u atla
-        let nextNumber = currentNumber + 1;
-        if (nextNumber === 230) {
-            nextNumber = 231;
+        const match = currentUrl.match(/betlora(\d+)/);
+
+        if (match && match[1]) {
+            let currentNumber = parseInt(match[1], 10);
+
+            // 230'u atla
+            let nextNumber = currentNumber + 1;
+
+            if (nextNumber === 230) {
+                nextNumber = 231;
+            }
+
+            return nextNumber;
         }
-        return nextNumber;
-    }
-      
+
         return null;
     }
 
-    function createScrollingTextElement(text) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'scrolling-text';
-        wrapper.id = FEATURE_ID;
+    function insertOrUpdateText() {
 
-        const span = document.createElement('span');
-        span.textContent = text;
+        // Ana domain veya geçersiz domain ise çık
+        if (!isValidNumberedDomain()) {
+            return;
+        }
 
-        wrapper.appendChild(span);
-        return wrapper;
-    }
-
-    function isAlreadyInserted() {
-        return document.getElementById(FEATURE_ID) !== null;
-    }
-
-    function insertOrUpdateScrollingText() {
         const nextNumber = getNextUrlNumber();
+
         if (nextNumber === null) {
-            console.error("Geçerli bir URL formatı bulunamadı.");
             return;
         }
 
-        const text = `BİR SONRAKİ GÜNCEL ADRESİMİZ betlora${nextNumber}.com'dur. LÜTFEN SAHTE SİTELERE İTİBAR ETMEYİNİZ.`;
+        const text = `betlora${nextNumber}.com`;
 
-        const existing = document.getElementById(FEATURE_ID);
-        if (existing) {
-            const currentText = existing.querySelector('span')?.textContent;
-            if (currentText !== text) {
-                existing.querySelector('span').textContent = text; // Metni güncelle
-            }
+        const container = document.getElementById(FEATURE_ID);
+
+        if (!container) {
             return;
         }
 
-        const scrollingDiv = createScrollingTextElement(text);
-        const header = document.querySelector('header');
-        if (header) {
-            header.insertAdjacentElement('afterend', scrollingDiv);
+        const span = container.querySelector('span');
+
+        if (span && span.textContent !== text) {
+            span.textContent = text;
         }
     }
 
     function init() {
-        setTimeout(insertOrUpdateScrollingText, 300);
+        setTimeout(insertOrUpdateText, 300);
 
-        // DOM değişikliklerini gözlemle (SPAs için)
         const observer = new MutationObserver(() => {
-            insertOrUpdateScrollingText();
+            insertOrUpdateText();
         });
-        observer.observe(document.body, { childList: true, subtree: true });
 
-        // URL değişirse tekrar ekle
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
         let lastUrl = location.href;
+
         new MutationObserver(() => {
             if (location.href !== lastUrl) {
                 lastUrl = location.href;
-                setTimeout(insertOrUpdateScrollingText, 300);
+                setTimeout(insertOrUpdateText, 300);
             }
-        }).observe(document, { subtree: true, childList: true });
+        }).observe(document, {
+            subtree: true,
+            childList: true
+        });
     }
 
     if (document.readyState === 'loading') {
@@ -309,8 +311,8 @@
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
           <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"></path>
         </svg>`,
-    },
-    {
+    }
+    
   ];
 
   function createPromo() {
