@@ -193,7 +193,8 @@
 
 // ==========================================
 // FEATURE: Next URL Text Update
-// Sadece sıralı betloraXXX.com domainlerinde çalışır
+// lora-new-home-link span içine sonraki betlora domainini yazar
+// Sadece betloraXXX.com domainlerinde çalışır
 // ==========================================
 (function() {
     const FEATURE_ID = 'lora-new-home-link';
@@ -207,14 +208,14 @@
 
     function getNextUrlNumber() {
         const currentUrl = window.location.href;
-        const match = currentUrl.match(/betlora(\d+)/);
+        const match = currentUrl.match(/betlora(\d+)/i);
 
         if (match && match[1]) {
             let currentNumber = parseInt(match[1], 10);
 
-            // 230'u atla
             let nextNumber = currentNumber + 1;
 
+            // 230'u atla
             if (nextNumber === 230) {
                 nextNumber = 231;
             }
@@ -227,7 +228,7 @@
 
     function insertOrUpdateText() {
 
-        // Ana domain veya geçersiz domain ise çık
+        // Ana domain veya geçersiz domain ise çalışma
         if (!isValidNumberedDomain()) {
             return;
         }
@@ -240,22 +241,23 @@
 
         const text = `betlora${nextNumber}.com`;
 
-        const container = document.getElementById(FEATURE_ID);
+        // ID doğrudan span üzerinde
+        const span = document.getElementById(FEATURE_ID);
 
-        if (!container) {
+        if (!span) {
             return;
         }
 
-        const span = container.querySelector('span');
-
-        if (span && span.textContent !== text) {
+        if (span.textContent !== text) {
             span.textContent = text;
         }
     }
 
     function init() {
+
         setTimeout(insertOrUpdateText, 300);
 
+        // DOM değişikliklerini takip et
         const observer = new MutationObserver(() => {
             insertOrUpdateText();
         });
@@ -265,24 +267,32 @@
             subtree: true
         });
 
+
+        // URL değişikliklerini takip et
         let lastUrl = location.href;
 
         new MutationObserver(() => {
+
             if (location.href !== lastUrl) {
                 lastUrl = location.href;
+
                 setTimeout(insertOrUpdateText, 300);
             }
+
         }).observe(document, {
             subtree: true,
             childList: true
         });
+
     }
+
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
+
 })();
 
 // ==========================================
