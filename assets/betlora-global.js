@@ -332,6 +332,7 @@
     promo.className = "promo-card";
 
     promo.innerHTML = `
+<a   style="position: absolute; inset: 0; display: block;" href="/promotions/betlora-hep-yaninda-freespin-bonusu"></a>
 
     `;
 
