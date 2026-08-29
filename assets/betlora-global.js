@@ -344,7 +344,7 @@
 
     a.className = "contact-btn";
     a.href = item.url;
-
+    a.target = "_blank";
     a.innerHTML = `
       ${item.icon}
       <span>${item.name}</span>
