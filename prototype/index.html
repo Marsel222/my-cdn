@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#070a0d">
+  <title>Betlora V2 — Yerel Görsel Prototip</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="prototype-note">YEREL TASARIM PROTOTİPİ <span>• gerçek işlem içermez</span></div>
+
+  <div class="app-shell">
+    <aside class="side-rail" aria-label="Ana navigasyon">
+      <a class="brand" href="#home" data-nav="home" aria-label="Betlora ana sayfa">
+        <span class="brand-mark">L</span>
+        <span class="brand-name">BETLORA</span>
+      </a>
+
+      <nav class="rail-nav">
+        <button class="rail-link is-active" data-nav="home"><span>⌂</span><b>Ana Sayfa</b></button>
+        <button class="rail-link" data-nav="casino"><span>♠</span><b>Casino</b></button>
+        <button class="rail-link" data-nav="sports"><span>◉</span><b>Spor</b></button>
+        <button class="rail-link" data-nav="promotions"><span>✦</span><b>Fırsatlar</b></button>
+        <button class="rail-link" data-nav="vip"><span>♛</span><b>VIP Kulüp</b></button>
+      </nav>
+
+      <div class="rail-lower">
+        <button class="rail-link"><span>?</span><b>Yardım</b></button>
+        <button class="support-chip"><i></i><span><small>Canlı destek</small>Çevrimiçi</span></button>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <button class="mobile-brand" data-nav="home" aria-label="Ana sayfa"><span>L</span> BETLORA</button>
+        <button class="search-trigger"><span>⌕</span><em>Oyun, takım veya içerik ara</em><kbd>/</kbd></button>
+        <div class="top-actions">
+          <button class="round-action" aria-label="Bildirimler">♢<i></i></button>
+          <button class="wallet-compact"><small>CÜZDAN</small><strong>Görüntüle</strong><span>›</span></button>
+          <button class="profile-action"><span>LK</span><b>Hesabım</b></button>
+        </div>
+      </header>
+
+      <main>
+        <section class="page is-active" data-page="home">
+          <div class="page-intro home-intro">
+            <div>
+              <span class="eyebrow">BETLORA V2</span>
+              <h1>Oyunun ritmi.<br><em>Senin alanın.</em></h1>
+              <p>Casino, canlı oyunlar ve spor karşılaşmaları tek, tutarlı ve hızlı bir deneyimde.</p>
+            </div>
+            <div class="session-card">
+              <span>HIZLI ERİŞİM</span>
+              <div><button>Para Yatır</button><button>Bonuslarım</button><button>Bahislerim</button></div>
+            </div>
+          </div>
+
+          <div class="hero-grid">
+            <article class="hero-panel hero-casino">
+              <div class="hero-copy">
+                <span class="hero-kicker">CANLI • SLOT • MASA</span>
+                <h2>Casino dünyası<br><em>tek dokunuşta.</em></h2>
+                <p>Favori kategorilerine hızlı ulaş, kaldığın yerden devam et.</p>
+                <div class="hero-actions"><button data-nav="casino">Casino’ya Git <b>→</b></button><button class="ghost">Canlı Casino</button></div>
+              </div>
+              <div class="casino-art" aria-hidden="true">
+                <div class="halo"></div><div class="card card-a">A</div><div class="card card-k">K</div><div class="chip">L</div>
+              </div>
+            </article>
+
+            <article class="hero-panel hero-sports">
+              <div class="hero-copy">
+                <span class="hero-kicker">CANLI • MAÇ ÖNCESİ</span>
+                <h2>Sporun nabzı<br><em>şimdi burada.</em></h2>
+                <p>Popüler karşılaşmalar ve oranlar daha okunabilir bir akışta.</p>
+                <div class="hero-actions"><button data-nav="sports">Spor’a Git <b>→</b></button><button class="ghost">Canlı Maçlar</button></div>
+              </div>
+              <div class="sports-art" aria-hidden="true">
+                <div class="score-card"><span>CANLI</span><b>74:32</b><strong>2 — 1</strong></div><div class="ball">◉</div>
+              </div>
+            </article>
+          </div>
+
+          <div class="section-head"><div><span class="eyebrow">SANA ÖZEL</span><h2>Öne çıkanlar</h2></div><button data-nav="promotions">Tümünü gör →</button></div>
+          <div class="feature-row">
+            <article class="feature-card feature-wheel"><span>GÜNLÜK</span><h3>Şans Çarkı</h3><p>Günlük hakkını kullan, sürpriz ödülünü keşfet.</p><button>Çarkı Aç</button><div class="mini-wheel">L</div></article>
+            <article class="feature-card feature-vip"><span>VIP KULÜP</span><h3>Bir sonraki seviye yakın</h3><div class="progress"><i style="width:62%"></i></div><p>Avantajlarını ve seviye yolculuğunu tek ekranda takip et.</p><button data-nav="vip">VIP Alanını Aç</button></article>
+            <article class="feature-card feature-promo"><span>SEÇİLİ FIRSAT</span><h3>Haftanın kampanyaları</h3><p>Koşulları açık, detayları kolay okunur kampanya kartları.</p><button data-nav="promotions">Fırsatları İncele</button></article>
+          </div>
+
+          <div class="section-head compact"><div><span class="eyebrow">OYUN KEŞFİ</span><h2>Popüler oyunlar</h2></div><div class="filter-pills"><button class="is-active">Tümü</button><button>Slot</button><button>Canlı</button></div></div>
+          <div class="game-shelf">
+            <article class="game-card"><div class="game-art art-1"><span>GATES</span><b>OLYMPUS</b></div><h3>Gates of Olympus</h3><p>Pragmatic Play</p></article>
+            <article class="game-card"><div class="game-art art-2"><span>SWEET</span><b>BONANZA</b></div><h3>Sweet Bonanza</h3><p>Pragmatic Play</p></article>
+            <article class="game-card"><div class="game-art art-3"><span>LIVE</span><b>ROULETTE</b></div><h3>Lightning Roulette</h3><p>Evolution</p></article>
+            <article class="game-card"><div class="game-art art-4"><span>BIG</span><b>BASS</b></div><h3>Big Bass Splash</h3><p>Pragmatic Play</p></article>
+            <article class="game-card"><div class="game-art art-5"><span>BLACK</span><b>JACK</b></div><h3>Infinite Blackjack</h3><p>Evolution</p></article>
+          </div>
+        </section>
+
+        <section class="page" data-page="casino">
+          <div class="page-header"><div><span class="eyebrow">OYUN MERKEZİ</span><h1>Casino</h1><p>Keşif, kategori ve sağlayıcı akışı tek bir düzen içinde.</p></div><button class="primary-action">Favorilerim ♡</button></div>
+          <div class="category-strip"><button class="is-active">Tümü</button><button>Popüler</button><button>Yeni</button><button>Slot</button><button>Canlı Casino</button><button>Masa</button><button>Jackpot</button></div>
+          <div class="casino-feature">
+            <div><span>ÖNE ÇIKAN KOLEKSİYON</span><h2>Canlı masalarda<br>yerini al.</h2><p>Oyun türü, sağlayıcı ve masa limitleri daha anlaşılır bir hiyerarşide.</p><button>Canlı Casino’yu Aç →</button></div>
+            <div class="table-art"><i></i><b>LIVE</b><span>CASINO</span></div>
+          </div>
+          <div class="section-head compact"><div><span class="eyebrow">KATALOĞU KEŞFET</span><h2>Tüm oyunlar</h2></div><div class="filter-pills"><button>Sağlayıcılar</button><button>Sırala</button></div></div>
+          <div class="catalog-grid">
+            <article class="catalog-card c1"><div><span>PRAGMATIC</span><b>Gates of Olympus</b></div><button>Oyna</button></article>
+            <article class="catalog-card c2"><div><span>EVOLUTION</span><b>Crazy Time</b></div><button>Oyna</button></article>
+            <article class="catalog-card c3"><div><span>PRAGMATIC</span><b>Sweet Bonanza</b></div><button>Oyna</button></article>
+            <article class="catalog-card c4"><div><span>PLAY'N GO</span><b>Book of Dead</b></div><button>Oyna</button></article>
+            <article class="catalog-card c5"><div><span>EVOLUTION</span><b>Lightning Roulette</b></div><button>Oyna</button></article>
+            <article class="catalog-card c6"><div><span>HACKSAW</span><b>Wanted Dead</b></div><button>Oyna</button></article>
+          </div>
+        </section>
+
+        <section class="page" data-page="sports">
+          <div class="page-header"><div><span class="eyebrow">SPOR MERKEZİ</span><h1>Karşılaşmalar</h1><p>Yoğun oran tabloları yerine hızlı taranabilen maç kartları.</p></div><button class="primary-action">Bahislerim</button></div>
+          <div class="sport-tabs"><button class="is-active">Futbol</button><button>Basketbol</button><button>Tenis</button><button>Voleybol</button><button>Tümü</button></div>
+          <div class="sports-layout">
+            <div class="event-column">
+              <div class="league-head"><div><span>★</span><b>Şampiyonlar Ligi</b></div><small>Bugün • 6 karşılaşma</small></div>
+              <article class="match-card"><div class="match-time"><b>20:45</b><span>BUGÜN</span></div><div class="teams"><p><i>RMA</i> Real Madrid</p><p><i>MCI</i> Manchester City</p></div><div class="odds"><button><small>1</small><b>2.12</b></button><button><small>X</small><b>3.40</b></button><button><small>2</small><b>2.78</b></button></div><button class="more">+32</button></article>
+              <article class="match-card"><div class="match-time live"><b>68'</b><span>CANLI</span></div><div class="teams"><p><i>INT</i> Inter</p><p><i>ARS</i> Arsenal</p></div><div class="odds"><button><small>1</small><b>1.84</b></button><button><small>X</small><b>3.10</b></button><button><small>2</small><b>4.20</b></button></div><button class="more">+18</button></article>
+              <div class="league-head"><div><span>●</span><b>Süper Lig</b></div><small>Bugün • 4 karşılaşma</small></div>
+              <article class="match-card"><div class="match-time"><b>21:00</b><span>BUGÜN</span></div><div class="teams"><p><i>GS</i> Galatasaray</p><p><i>FB</i> Fenerbahçe</p></div><div class="odds"><button><small>1</small><b>2.30</b></button><button><small>X</small><b>3.05</b></button><button><small>2</small><b>2.65</b></button></div><button class="more">+24</button></article>
+            </div>
+            <aside class="bet-slip"><span class="eyebrow">BAHİS KUPONU</span><h3>Seçimlerini buraya ekle</h3><div class="empty-slip">＋</div><p>Oran seçerek kuponunu oluşturabilirsin.</p><button disabled>Bahsi Onayla</button></aside>
+          </div>
+        </section>
+
+        <section class="page" data-page="promotions">
+          <div class="page-header"><div><span class="eyebrow">FIRSATLAR</span><h1>Promosyonlar</h1><p>Başlık, fayda ve koşullar ilk bakışta anlaşılır.</p></div><div class="filter-pills"><button class="is-active">Aktif</button><button>Tümü</button></div></div>
+          <article class="promo-hero"><div><span>SEÇİLİ KAMPANYA</span><h2>Hoş geldin deneyimi,<br>daha açık koşullarla.</h2><p>Kampanya detayları, uygunluk ve çevrim bilgileri tek sayfada okunur.</p><button>Detayları Gör →</button></div><div class="gift-art"><i></i><b>✦</b></div></article>
+          <div class="promo-grid">
+            <article class="promo-card green"><span>YENİ ÜYE</span><h3>%300 Hoş Geldin Bonusu</h3><p>İlk üyelik deneyimine özel kampanya.</p><div><small>Detayları incele</small><b>→</b></div></article>
+            <article class="promo-card blue"><span>İLK YATIRIM</span><h3>%100 Kayıp Bonusu</h3><p>Koşulları ve kullanım adımları tek ekranda.</p><div><small>Detayları incele</small><b>→</b></div></article>
+            <article class="promo-card purple"><span>FREESPIN</span><h3>111 Freespin</h3><p>Seçili oyunlarda deneme fırsatı.</p><div><small>Detayları incele</small><b>→</b></div></article>
+            <article class="promo-card gold"><span>VIP</span><h3>VIP Kayıp Bonusu</h3><p>Seviye avantajlarıyla birlikte görüntüle.</p><div><small>Detayları incele</small><b>→</b></div></article>
+          </div>
+        </section>
+
+        <section class="page" data-page="vip">
+          <div class="vip-hero">
+            <div class="vip-copy"><span class="eyebrow">BETLORA VIP</span><h1>Her seviye,<br><em>yeni bir ayrıcalık.</em></h1><p>Tekrarlanan açıklamalar yerine net hedefler, görünür avantajlar ve anlaşılır ilerleme.</p><div class="vip-actions"><button>Avantajlarımı Gör</button><button class="ghost">Kurallar</button></div></div>
+            <div class="rank-orbit"><i></i><i></i><i></i><div><span>L</span><b>SEED</b><small>1 / 13</small></div></div>
+          </div>
+
+          <div class="vip-overview">
+            <article class="current-rank"><div class="rank-title"><span class="rank-icon">◆</span><div><small>MEVCUT SEVİYE</small><h2>Seed</h2></div><b>01</b></div><div class="rank-progress"><div><span>Sonraki seviye: Spark</span><strong>62%</strong></div><i><b style="width:62%"></b></i></div><div class="rank-stats"><div><small>İLERLEME</small><strong>Güncel durum</strong></div><div><small>AVANTAJ</small><strong>%20 Kayıp Bonusu</strong></div><div><small>RAKEBACK</small><strong>%3</strong></div></div></article>
+            <aside class="benefit-summary"><span class="eyebrow">BU SEVİYEDE</span><h3>Aktif avantajların</h3><ul><li><span>✓</span>Kayıp bonusu erişimi</li><li><span>✓</span>Öncelikli destek</li><li><span>✓</span>Seviye takibi</li></ul><button>VIP Geçmişi →</button></aside>
+          </div>
+
+          <div class="section-head compact"><div><span class="eyebrow">13 SEVİYELİ YOLCULUK</span><h2>Seviye haritası</h2></div><button>Tüm avantajlar</button></div>
+          <div class="rank-track">
+            <article class="rank-card is-current"><span>01</span><i>◆</i><h3>Seed</h3><p>Başlangıç</p><b>%3</b></article>
+            <article class="rank-card"><span>02</span><i>✦</i><h3>Spark</h3><p>Gelişim</p><b>%4</b></article>
+            <article class="rank-card"><span>03</span><i>◇</i><h3>Pulse</h3><p>Ritim</p><b>%7</b></article>
+            <article class="rank-card"><span>04</span><i>ϟ</i><h3>Edge</h3><p>Avantaj</p><b>%8</b></article>
+            <article class="rank-card"><span>05</span><i>◈</i><h3>Veil</h3><p>Seçkin</p><b>%8</b></article>
+            <article class="rank-card"><span>06</span><i>∞</i><h3>Flux</h3><p>Akış</p><b>%9</b></article>
+            <article class="rank-card"><span>07</span><i>◉</i><h3>Aura</h3><p>Prestij</p><b>%10</b></article>
+            <article class="rank-card"><span>08</span><i>▲</i><h3>Fang</h3><p>Keskin</p><b>%10</b></article>
+            <article class="rank-card"><span>09</span><i>●</i><h3>Core</h3><p>Kontrol</p><b>%11</b></article>
+            <article class="rank-card"><span>10</span><i>▰</i><h3>Myth</h3><p>Efsane</p><b>%11</b></article>
+            <article class="rank-card"><span>11</span><i>♛</i><h3>Royale</h3><p>Liderlik</p><b>%12</b></article>
+            <article class="rank-card"><span>12</span><i>◎</i><h3>Eternum</h3><p>Sonsuz</p><b>%14</b></article>
+            <article class="rank-card prime"><span>13</span><i>L</i><h3>Prime</h3><p>Zirve</p><b>%15</b></article>
+          </div>
+          <p class="data-note">Not: Oranlar yalnız mevcut şablondaki görünümü temsil eder. Doğruluk ve eşleşme sorunları veri hatası olarak ayrıca ele alınacaktır.</p>
+        </section>
+      </main>
+
+      <nav class="mobile-nav" aria-label="Mobil navigasyon">
+        <button class="is-active" data-nav="home"><span>⌂</span><b>Ana Sayfa</b></button>
+        <button data-nav="casino"><span>♠</span><b>Casino</b></button>
+        <button class="mobile-wallet"><span>↗</span><b>Cüzdan</b></button>
+        <button data-nav="sports"><span>◉</span><b>Spor</b></button>
+        <button data-nav="vip"><span>♛</span><b>VIP</b></button>
+      </nav>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

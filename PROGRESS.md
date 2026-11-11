@@ -1,6 +1,6 @@
 # Betlora V2 ilerleme kaydı
 
-Son güncelleme: 2026-11-11 18:35 Europe/Istanbul
+Son güncelleme: 2026-11-11 19:06 Europe/Istanbul
 
 ## Sürüm durumu
 
@@ -8,7 +8,8 @@ Son güncelleme: 2026-11-11 18:35 Europe/Istanbul
 - Test CSS üzerinde doğrulanmış düzenleme: bildirim kutusu responsive paketi, SHA-256 `5a1c8e58014c9aa58bbee1c7303b5c42609f8a50933095b7dc7adef1135189d2`.
 - Hazırlanan ve panel sunucusunda kalıcılığı doğrulanan sürüm: `v0.2.0`, aday SHA-256 `997185742715ecf9df0a7d167c3f5f1661c5ff501bb0b11cf7d58fbb14c1254e`.
 - `v0.2.0` kaynak CDN’de yeni sorgu anahtarıyla mevcut; test sitesinin kullandığı sabit sürümlü URL henüz eski içeriği döndürdüğü için gerçek site doğrulaması bekliyor.
-- Hazırlanan fakat yayınlanmayan sonraki modül: `src/v2/modules/10-shell-v0.3.0.css` (header, desktop sidebar yüzeyi ve mobil alt navigasyon).
+- `src/v2/modules/10-shell-v0.3.0.css` yalnız karşılaştırma kaydıdır; kullanıcı geri bildirimi sonrasında yayın adayı olmaktan çıkarıldı.
+- Yeni bütünsel tasarım yönü `prototype/` altında yerel ve yayınlanmamış prototip olarak hazırlandı.
 
 ## Tamamlanan modüller
 
@@ -23,13 +24,17 @@ Son güncelleme: 2026-11-11 18:35 Europe/Istanbul
 - Bildirim kutusu responsive paketi: masaüstü 1920×889, tablet 1024×768, mobil 390×844; yatay taşma yok.
 - Kapat ve “Bir daha gösterme” davranışları çalışıyor; bildirim izni kullanıcı tıklaması olmadan istenmiyor.
 - v0.2.0 panel kaydı “Yenile” sonrası GitHub adayıyla birebir eşleşiyor.
-- v0.3.0 kabuk modülü yerel gerçek-DOM önizlemesinde 390×844 ve 1920×889 ölçülerinde test edildi; yatay taşma yok. Mobil header kırpılması düzeltilip logo, arama, bakiye, cüzdan, profil ve bildirim alanlarının tamamı görünür hale getirildi.
+- Yeni yerel prototipte ana sayfa, Casino, Spor, Promosyonlar ve VIP aynı tasarım sistemiyle hazırlandı.
+- Masaüstü görsel doğrulama: 1920×1080; mobil görsel doğrulama: 390×844.
+- Responsive taşma testi: 320×700 ve 1024×768 ölçülerinde beş sayfanın tamamında yatay taşma `0`.
+- Rota testi: ana sayfa, Casino, Spor, Promosyonlar ve VIP geçişleri çalışıyor; tarayıcı konsolunda hata veya uyarı yok.
+- Yerel prototipte gerçek bakiye, kullanıcı verisi, lisans veya kullanıcı sayısı iddiası kullanılmadı.
 
 ## Açık testler
 
 - v0.2.0 sabit test CSS URL’sinin yeni hash’e geçmesi.
-- Ana sayfa, Casino, Spor, Promosyonlar, VIP ve Çark rota turu.
-- 320/375/390/768/1024/1440/1920 genişliklerinde taşma ve katman kontrolü.
+- Gerçek test domaininde ana sayfa, Casino, Spor, Promosyonlar, VIP ve Çark rota turu (yeni prototip henüz yayınlanmadı).
+- Gerçek test domaininde 320/375/390/768/1024/1440/1920 genişliklerinde taşma ve katman kontrolü.
 - Console/network ve canlı CSS hash değişmezliği.
 
 ## Açık hatalar ve engeller
@@ -41,9 +46,10 @@ Son güncelleme: 2026-11-11 18:35 Europe/Istanbul
 
 ## Sonraki çalışma grubu
 
-1. v0.2.0 gerçek site testlerini ve önce/sonra kanıtlarını tamamla.
-2. Birinci grup bütünleşik paket: global tasarım sistemi, header, sidebar, footer, ana sayfa ve mobil navigasyon.
-3. Casino/Spor hero panelleri ile oyun kataloğu görsel modüllerini yerelde geliştir.
+1. Yerel prototip ile mevcut test DOM’unun bileşen eşlemesini çıkar.
+2. Güvenli CSS katmanını header, navigasyon, yüzeyler ve kart sistemi olarak bağımsız paketlere ayır.
+3. Veri/şablon hatalarını (VIP oran uyuşmazlığı, tekrar eden içerik, promosyon tarih hatası) görsel paketten ayrı tut.
+4. v0.2.0 cache engelini ayrıca çöz; görsel kalite doğrulanmadan yeni paketi test domainine gönderme.
 
 ## Devam komutları
 
