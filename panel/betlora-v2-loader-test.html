@@ -1,0 +1,21 @@
+<script>
+(function () {
+  "use strict";
+  var HOSTNAME = "test.betlora.com";
+  var LOADER_ID = "betlora-v2-integration-loader";
+  var LOADER_URL = "https://cdn.jsdelivr.net/gh/Marsel222/my-cdn@integration-v0.1.0/dist/v0.1.0/betlora-v2-loader.js";
+  var LOADER_INTEGRITY = "__LOADER_INTEGRITY__";
+
+  if (window.location.hostname !== HOSTNAME) return;
+  if (document.getElementById(LOADER_ID)) return;
+
+  var script = document.createElement("script");
+  script.id = LOADER_ID;
+  script.src = LOADER_URL;
+  script.async = true;
+  script.crossOrigin = "anonymous";
+  script.integrity = LOADER_INTEGRITY;
+  script.setAttribute("data-betlora-v2-version", "0.1.0");
+  document.head.appendChild(script);
+})();
+</script>

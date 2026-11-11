@@ -1,0 +1,35 @@
+{
+  "version": "0.1.0",
+  "releaseRef": "integration-v0.1.0",
+  "releaseDate": "2026-11-11",
+  "environment": "test",
+  "allowedHostname": "test.betlora.com",
+  "status": "candidate",
+  "files": [
+    {
+      "name": "betlora-v2-loader.js",
+      "bytes": 2803,
+      "sha256": "359c691a2ea1d28bda9b0ee7f61d821eed5e2cf355ff939dbc59243bca5e630b",
+      "integrity": "sha384-Qbh2JnwGt7EYeI387ErcRQh7nL3drX2AN2WuZuy/9hrjf/iJuK3GFsT/Ud4PePul",
+      "url": "https://cdn.jsdelivr.net/gh/Marsel222/my-cdn@integration-v0.1.0/dist/v0.1.0/betlora-v2-loader.js"
+    },
+    {
+      "name": "betlora-v2-probe.css",
+      "bytes": 1565,
+      "sha256": "a18404c8014d23bbd2cd78674e37164552cf2f8902ec1842fcd627fb98a19d52",
+      "integrity": "sha384-reb/d20G8XxZX3th0r7NmIEHdBpi5vaY+l7FrmoCmHQ9l/Q1ao4YfqWkPtZIBOwZ",
+      "url": "https://cdn.jsdelivr.net/gh/Marsel222/my-cdn@integration-v0.1.0/dist/v0.1.0/betlora-v2-probe.css"
+    },
+    {
+      "name": "betlora-v2-probe.js",
+      "bytes": 4045,
+      "sha256": "cd02e67df83efca36e899d6cf6c8e74c6997142d610b853d56775696b3d364e3",
+      "integrity": "sha384-mVuRWXDmiqnE0ff2TclgJnzPMMf9EETC8zaOogkL7/dYhbqjoMPjLPDhrRROsMqN",
+      "url": "https://cdn.jsdelivr.net/gh/Marsel222/my-cdn@integration-v0.1.0/dist/v0.1.0/betlora-v2-probe.js"
+    }
+  ],
+  "rollback": {
+    "panelRecord": "betlora-v2-loader-test",
+    "action": "Disable the standalone test loader record"
+  }
+}
