@@ -45,8 +45,8 @@ body.dark-mode #header .wallet-menu .current-wallet {
   min-height: 40px;
   padding: 3px 3px 3px 10px;
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
-  border: 1px solid var(--bv2-border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025)) !important;
+  border: 1px solid var(--bv2-border) !important;
   border-radius: 12px;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
 }
@@ -125,6 +125,30 @@ body.dark-mode #header :where(.user-only-icon, .current-notifications):hover {
     padding-left: 7px;
   }
 
+  body.dark-mode #header .header-buttons {
+    min-width: 0;
+    gap: 6px;
+  }
+
+  body.dark-mode #header .wallet-menu {
+    flex: 1 1 174px;
+    width: auto;
+    min-width: 0;
+    max-width: 182px;
+  }
+
+  body.dark-mode #header .wallet-menu .current-wallet {
+    width: 100%;
+  }
+
+  body.dark-mode #header .header-minified-buttons {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 4px;
+    width: auto;
+  }
+
   body.dark-mode #header .wallet-menu .wallet-button {
     min-height: 30px;
     padding-inline: 9px;
@@ -132,8 +156,8 @@ body.dark-mode #header :where(.user-only-icon, .current-notifications):hover {
   }
 
   body.dark-mode #header :where(.user-only-icon, .current-notifications) {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 10px;
   }
 
@@ -203,6 +227,14 @@ body.dark-mode #header :where(.user-only-icon, .current-notifications):hover {
 
   body.dark-mode #header .wallet-menu .money {
     font-size: 12px;
+  }
+
+  body.dark-mode #header .wallet-menu {
+    max-width: 160px;
+  }
+
+  body.dark-mode #header .wallet-menu .down {
+    display: none;
   }
 
   body.dark-mode .sticky-menu .menu-item .text {
