@@ -15,11 +15,11 @@ Date: 2026-11-11 (Europe/Istanbul)
 | Singleton mounting | Verified | Repeated evaluation and 20 simulated route changes produced one probe. |
 | Removal | Verified | `unmount()` removed the probe and route hooks in tests. |
 | MutationObserver absence | Verified | Static and runtime contract tests. |
-| Non-blocking UI | Verified in code | CSS uses `pointer-events: none`; live visual check awaits panel activation. |
+| Non-blocking UI | Verified live | CSS uses `pointer-events: none`; the desktop indicator did not cover navigation. |
 | jsDelivr MIME/CORS | Verified | Candidate JavaScript and CSS return the correct MIME, CORS `*`, CORP cross-origin, and `nosniff`. |
 | Candidate CDN URLs | Verified | All three immutable tag URLs return 200 and match the release SHA-256 values byte-for-byte. |
-| Actual test-domain CSP | Not verified | Anonymous HTTP requests receive a Cloudflare challenge CSP, not the authenticated application policy. |
-| Live Next.js route test | Not verified | Requires the standalone panel loader to be enabled after approval. |
+| Actual test-domain CSP | Verified | Authenticated browser execution loaded and ran the tagged loader, CSS, and JavaScript without CSP rejection. |
+| Live Next.js route test | Partially verified | Home, promotions, VIP, and sports passed singleton checks. Casino failed the lifecycle check and later displayed the platform's client-side error screen. |
 | Full script 2501 local backup | Verified | Private, lossless gzip/Base64 backup restores to 60,927 characters / 61,239 UTF-8 bytes and matches the panel source SHA-256 `5dfec8ddd21882e832a456596cdaeebc3a0c6a0c43baef8c5d7f42419353e1f0`. It remains outside the public repository. |
 
 ## Observed cache behavior
@@ -35,3 +35,7 @@ Date: 2026-11-11 (Europe/Istanbul)
 Do not enable the panel loader until the branch and `integration-v0.1.0` tag are
 published, every candidate URL returns 200 with the expected MIME/CORS headers,
 and their bytes match `releases/v0.1.0.json`.
+
+The approved live validation was performed under panel record `3443`. See
+`docs/live-loader-validation-v0.1.0.md`. Redesign work remains blocked until the
+general panel record is deactivated and the casino/mobile checks pass.
