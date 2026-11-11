@@ -20,7 +20,7 @@ Date: 2026-11-11 (Europe/Istanbul)
 | Candidate CDN URLs | Verified | All three immutable tag URLs return 200 and match the release SHA-256 values byte-for-byte. |
 | Actual test-domain CSP | Not verified | Anonymous HTTP requests receive a Cloudflare challenge CSP, not the authenticated application policy. |
 | Live Next.js route test | Not verified | Requires the standalone panel loader to be enabled after approval. |
-| Full script 2501 local backup | Partially verified | Content inspected; exact local export was stopped by browser safety control. |
+| Full script 2501 local backup | Verified | Private, lossless gzip/Base64 backup restores to 60,927 characters / 61,239 UTF-8 bytes and matches the panel source SHA-256 `5dfec8ddd21882e832a456596cdaeebc3a0c6a0c43baef8c5d7f42419353e1f0`. It remains outside the public repository. |
 
 ## Observed cache behavior
 
