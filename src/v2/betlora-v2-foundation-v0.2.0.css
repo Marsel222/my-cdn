@@ -1,0 +1,84 @@
+/* BETLORA V2 FOUNDATION v0.2.0 — test domain only */
+:root {
+  --bv2-brand: #81ee99;
+  --bv2-brand-strong: #52d875;
+  --bv2-bg: #070807;
+  --bv2-surface: #0d0f0e;
+  --bv2-surface-raised: #121513;
+  --bv2-text: #f2fbf3;
+  --bv2-text-secondary: #b7c2b9;
+  --bv2-text-muted: #93a096;
+  --bv2-border: rgba(255, 255, 255, 0.1);
+  --bv2-focus: #81ee99;
+  --bv2-radius-sm: 10px;
+  --bv2-radius-md: 14px;
+  --bv2-radius-lg: 18px;
+  --bv2-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+  --bv2-motion: 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+body.dark-mode {
+  color: var(--bv2-text) !important;
+  font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.dark-mode #header {
+  background: rgba(7, 8, 7, 0.94) !important;
+  border-bottom: 1px solid var(--bv2-border) !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18) !important;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+body.dark-mode .ph6q__title {
+  color: var(--bv2-text) !important;
+  font-size: clamp(1.75rem, 1.35rem + 1.1vw, 2.5rem) !important;
+  font-weight: 750 !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.025em !important;
+  text-wrap: balance;
+}
+
+body.dark-mode .ph6q__subtitle {
+  max-width: 68ch;
+  color: var(--bv2-text-secondary) !important;
+  font-size: clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem) !important;
+  line-height: 1.55 !important;
+}
+
+body.dark-mode :where(#header, #responsive-menu, #general-container, #main, #footer)
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--bv2-focus) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 2px var(--bv2-bg) !important;
+}
+
+body.dark-mode ::selection {
+  background: rgba(129, 238, 153, 0.28);
+  color: #ffffff;
+}
+
+@media (max-width: 767.98px) {
+  body.dark-mode #header {
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  body.dark-mode .ph6q__title {
+    letter-spacing: -0.018em !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.dark-mode :where(#header, #responsive-menu, #general-container, #main, #footer) *,
+  body.dark-mode :where(#header, #responsive-menu, #general-container, #main, #footer) *::before,
+  body.dark-mode :where(#header, #responsive-menu, #general-container, #main, #footer) *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

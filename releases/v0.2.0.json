@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "environment": "test-only",
+  "hostname": "test.betlora.com",
+  "artifact": "src/v2/betlora-v2-test.css",
+  "change_fragment": "src/v2/betlora-v2-foundation-v0.2.0.css",
+  "baseline_sha256": "5a1c8e58014c9aa58bbee1c7303b5c42609f8a50933095b7dc7adef1135189d2",
+  "candidate_sha256": "997185742715ecf9df0a7d167c3f5f1661c5ff501bb0b11cf7d58fbb14c1254e",
+  "scope": [
+    "design-tokens",
+    "shared-header",
+    "page-header-contrast",
+    "keyboard-focus",
+    "reduced-motion"
+  ],
+  "forbidden_targets": [
+    "49.css",
+    "script-2501",
+    "script-3443",
+    "production-data"
+  ],
+  "rollback": "docs/v2/rollback-v0.2.0.md"
+}
