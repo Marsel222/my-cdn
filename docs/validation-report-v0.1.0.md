@@ -16,8 +16,8 @@ Date: 2026-11-11 (Europe/Istanbul)
 | Removal | Verified | `unmount()` removed the probe and route hooks in tests. |
 | MutationObserver absence | Verified | Static and runtime contract tests. |
 | Non-blocking UI | Verified in code | CSS uses `pointer-events: none`; live visual check awaits panel activation. |
-| jsDelivr MIME/CORS | Partially verified | Existing repository JS returns JavaScript MIME, CORS `*`, and CORP cross-origin. Candidate tag is not published yet. |
-| Candidate CDN URLs | Not verified | Git push is blocked because this workstation has no non-interactive GitHub credential. |
+| jsDelivr MIME/CORS | Verified | Candidate JavaScript and CSS return the correct MIME, CORS `*`, CORP cross-origin, and `nosniff`. |
+| Candidate CDN URLs | Verified | All three immutable tag URLs return 200 and match the release SHA-256 values byte-for-byte. |
 | Actual test-domain CSP | Not verified | Anonymous HTTP requests receive a Cloudflare challenge CSP, not the authenticated application policy. |
 | Live Next.js route test | Not verified | Requires the standalone panel loader to be enabled after approval. |
 | Full script 2501 local backup | Partially verified | Content inspected; exact local export was stopped by browser safety control. |
@@ -25,7 +25,8 @@ Date: 2026-11-11 (Europe/Istanbul)
 ## Observed cache behavior
 
 - `49-test.css` and `49-test.json`: `max-age=604800`.
-- jsDelivr repository asset: `max-age=604800`, `s-maxage=43200`.
+- Tagged jsDelivr release assets: `max-age=31536000`,
+  `s-maxage=31536000`, `immutable`.
 - Immutable release tags and SRI are therefore required; released files must
   never be overwritten.
 
