@@ -141,6 +141,10 @@ body.dark-mode #header :where(.user-only-icon, .current-notifications):hover {
     width: 100%;
   }
 
+  body.dark-mode #header .wallet-menu .current-wallet .balance > .icon {
+    display: none !important;
+  }
+
   body.dark-mode #header .header-minified-buttons {
     display: flex;
     align-items: center;
