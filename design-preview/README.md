@@ -29,3 +29,11 @@ Mevcut bildirim CSS yedeği ve sürüm manifesti üzerinden başla. Panel kayıt
 - Sweet Bonanza aramasında iki sonuç, oyunu favorilere ekleyince bir kayıt, Pasif promosyonlarda boş durum, Tümü filtresinde 14 kart ve Hoş Geldin Bonusu detayında koşul listesi.
 - Mobil menüden VIP Kulübü açıldı, menü kapandı ve 13 seviye gösterildi.
 - Test adresi, bu oturumda normal tarayıcı erişiminde Cloudflare güvenlik doğrulaması ekranında kaldı.
+
+## Gamdom ve Stake referansları
+
+- [Gamdom](https://gamdom.com/) ana sayfasında Casino ve Spor girişleri, oyun araması ve ayrı katalog rafları görüldü. Betlora önizlemesinde mevcut iki ürün için kendi görsellerimizle kompakt girişler ve hemen altında oyun araması var.
+- [Stake](https://stake.com/tr) ürün girişlerini, katalog alanlarını ve yardım bağlantılarını ayrı gruplarda sunuyor. Betlora'da ürün, etkinlik, hesap ve destek bağlantıları mevcut içeriklerine göre düzenlendi.
+- Panel için başlangıç hedefi %70 panel, %20 doğrulanmış Test Domaini V2 CSS/JSON ve %10 zorunlu entegrasyon. Ana sayfa sıralaması, görseller, kategori ve sağlayıcılar önce mevcut panel bileşenleriyle eşlenir. V2 katmanına kart ölçüsü, tipografi, odak ve responsive düzen girer. Kaynak şablonunda erişilemeyen yapılar ve Spor iframe'i ancak gerekli olduğunda sağlayıcıya gider.
+- Açık Loki Chrome sekmelerinde test ana sayfası `49-test.css`, canlı ana sayfa `49.css` yükledi. Bu bulgu CSS varyantına aittir. Panel kayıtlarının kapsamı, mevcut değer ve geri dönüş yedeği ilk yazmadan önce kayıt bazında doğrulanır.
+- Yenilenen ana sayfa 320, 390, 768 ve 1440 px genişliklerde yatay taşma göstermedi. Ana sayfadan Sweet Bonanza ve Pragmatic Play filtreleri iki sonuç döndürdü. Mobil Spor kartı doğru yerel rotayı açtı.

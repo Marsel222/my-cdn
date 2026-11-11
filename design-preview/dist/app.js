@@ -94,12 +94,14 @@ function promotionCard(promo, featured = false) {
 }
 
 function home() {
-  return `<section class="hero"><div class="hero-image"></div><div class="hero-copy">
-      <h1>Casino. Spor. <br><em>Betlora.</em></h1>
-      <div class="hero-actions">${button("#casino","Casino")}${button("#sports","Spor","outline")}</div>
-    </div><div class="hero-side">${link("#promo/111-freespin-deneme-bonusu","111 Freespin Deneme Bonusu")}</div></section>
+  return `<section class="hero" aria-label="Casino ve Spor">
+    <h1 class="sr-only">Betlora</h1>
+    <a class="hero-product hero-casino" href="#casino"><div><h2>Casino</h2><span>Casino lobisini aç ${icon("arrow")}</span></div></a>
+    <a class="hero-product hero-sports" href="#sports"><div><h2>Spor</h2><span>Spor lobisini aç ${icon("arrow")}</span></div></a>
+    </section>
+    ${gameSearch("","","home")}
     <div class="quick-links">
-      ${[["live","Canlı Casino","live"],["lottery","Piyango","trophy"],["wheel","Çark Çevir","wheel"],["vip","VIP Kulübü","vip"],["profile/wallet","Cüzdan","wallet"]].map(([key,label,glyph])=>`<a href="#${key}">${icon(glyph)}<span>${label}</span>${icon("right")}</a>`).join("")}
+      ${[["live","Canlı Casino","live"],["promos","Promosyonlar","promo"],["lottery","Piyango","trophy"],["wheel","Çark Çevir","wheel"],["vip","VIP Kulübü","vip"]].map(([key,label,glyph])=>`<a href="#${key}">${icon(glyph)}<span>${label}</span>${icon("right")}</a>`).join("")}
     </div>
     <section class="shelf">${titleRow("Popüler Slot Oyunları","#casino","Tümünü gör")}<div class="games home-games">${data.games.slice(0,6).map(gameCard).join("")}</div></section>
     <section class="shelf">${titleRow("Canlı Casino","#live","Tümünü gör")}<div class="live-strip">${data.live.map(item=>artCard(catalog+"live/"+item.id+".jpg",item.title,"#live/"+item.id)).join("")}</div></section>
@@ -110,8 +112,8 @@ function home() {
     <section class="shelf">${titleRow("Sağlayıcılar","#providers","Tümünü gör")}${providerGrid(data.providers.slice(0,6))}</section>`;
 }
 
-function gameSearch(query, provider) {
-  return `<form id="game-search" class="filters" role="search">
+function gameSearch(query, provider, context = "catalog") {
+  return `<form id="game-search" class="filters ${context === "home" ? "home-search" : ""}" role="search">
     <label class="search-field">${icon("search")}<input id="query" name="query" placeholder="Oyun ara" aria-label="Oyun ara" value="${esc(query)}"></label>
     <label><span class="sr-only">Sağlayıcı</span><select name="provider"><option value="">Tüm sağlayıcılar</option>${[...new Set(data.games.map(game=>game.provider).filter(Boolean))].map(item=>`<option ${provider===item?"selected":""}>${item}</option>`).join("")}</select></label><button class="button small" type="submit">Ara</button>
     </form>`;
@@ -296,7 +298,7 @@ document.addEventListener("submit", event => {
   if (values.get("query").trim()) params.set("q",values.get("query").trim());
   if (values.get("provider")) params.set("p",values.get("provider"));
   const current = currentRoute().route;
-  const route = form.id === "provider-search" ? "providers" : current;
+  const route = form.id === "provider-search" ? "providers" : current === "home" ? "search" : current;
   const query = params.size ? "?" + params : "";
   location.hash = route + query;
 });
