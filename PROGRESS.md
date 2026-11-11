@@ -23,6 +23,7 @@ Son güncelleme: 2026-11-11 18:35 Europe/Istanbul
 - Bildirim kutusu responsive paketi: masaüstü 1920×889, tablet 1024×768, mobil 390×844; yatay taşma yok.
 - Kapat ve “Bir daha gösterme” davranışları çalışıyor; bildirim izni kullanıcı tıklaması olmadan istenmiyor.
 - v0.2.0 panel kaydı “Yenile” sonrası GitHub adayıyla birebir eşleşiyor.
+- v0.3.0 kabuk modülü yerel gerçek-DOM önizlemesinde 390×844 ve 1920×889 ölçülerinde test edildi; yatay taşma yok. Mobil header kırpılması düzeltilip logo, arama, bakiye, cüzdan, profil ve bildirim alanlarının tamamı görünür hale getirildi.
 
 ## Açık testler
 
