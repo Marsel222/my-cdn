@@ -1,0 +1,211 @@
+/* BETLORA V2 SHELL v0.3.0 — local preview, not yet integrated */
+
+body.dark-mode #header .middle-header-container {
+  min-height: 60px;
+  padding-inline: clamp(12px, 1.4vw, 24px);
+}
+
+@media (min-width: 992px) {
+  body.dark-mode #header .categories {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  body.dark-mode #header .categories .category {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid transparent;
+    border-radius: var(--bv2-radius-sm);
+    color: var(--bv2-text-secondary) !important;
+    transition: color var(--bv2-motion), background-color var(--bv2-motion), border-color var(--bv2-motion), transform var(--bv2-motion);
+  }
+
+  body.dark-mode #header .categories .category:hover {
+    color: var(--bv2-text) !important;
+    background: rgba(129, 238, 153, 0.08);
+    border-color: rgba(129, 238, 153, 0.18);
+    transform: translateY(-1px);
+  }
+
+  body.dark-mode #header .logo img {
+    width: auto;
+    max-height: 42px;
+    filter: drop-shadow(0 0 18px rgba(129, 238, 153, 0.14));
+  }
+
+  body.dark-mode #header .header-buttons {
+    gap: 10px;
+  }
+}
+
+body.dark-mode #header .wallet-menu .current-wallet {
+  min-height: 40px;
+  padding: 3px 3px 3px 10px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
+  border: 1px solid var(--bv2-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+}
+
+body.dark-mode #header .wallet-menu .money {
+  color: var(--bv2-text) !important;
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+}
+
+body.dark-mode #header .wallet-menu .wallet-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding-inline: 12px;
+  color: #071009 !important;
+  font-weight: 750;
+  background: linear-gradient(135deg, var(--bv2-brand), var(--bv2-brand-strong)) !important;
+  border-radius: 9px;
+  box-shadow: 0 8px 18px rgba(82, 216, 117, 0.18);
+}
+
+body.dark-mode #header .wallet-menu .wallet-button:hover {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
+}
+
+body.dark-mode #header :where(.user-only-icon, .current-notifications) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  color: var(--bv2-text) !important;
+  transition: background-color var(--bv2-motion), border-color var(--bv2-motion), transform var(--bv2-motion);
+}
+
+body.dark-mode #header :where(.user-only-icon, .current-notifications):hover {
+  background: rgba(255, 255, 255, 0.055);
+  border-color: var(--bv2-border);
+  transform: translateY(-1px);
+}
+
+@media (min-width: 992px) {
+  body.dark-mode #responsive-menu {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(129, 238, 153, 0.055), transparent 28%),
+      linear-gradient(180deg, #0d100e 0%, #080908 100%) !important;
+    border-right: 1px solid rgba(129, 238, 153, 0.1) !important;
+    box-shadow: 14px 0 34px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@media (max-width: 991.98px) {
+  body.dark-mode #header .middle-header-container {
+    padding-inline: 12px;
+  }
+
+  body.dark-mode #header .responsive-logo,
+  body.dark-mode #header .responsive-logo a,
+  body.dark-mode #header .responsive-logo img {
+    width: 40px;
+    min-width: 40px;
+  }
+
+  body.dark-mode #header .responsive-logo img {
+    object-fit: contain;
+    filter: drop-shadow(0 0 12px rgba(129, 238, 153, 0.18));
+  }
+
+  body.dark-mode #header .wallet-menu .current-wallet {
+    min-height: 36px;
+    padding-left: 7px;
+  }
+
+  body.dark-mode #header .wallet-menu .wallet-button {
+    min-height: 30px;
+    padding-inline: 9px;
+    font-size: 12px;
+  }
+
+  body.dark-mode #header :where(.user-only-icon, .current-notifications) {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  body.dark-mode .sticky-menu {
+    padding: 0 4px calc(4px + env(safe-area-inset-bottom, 0px));
+  }
+
+  body.dark-mode .sticky-menu .menu-items {
+    overflow: visible;
+    background: rgba(13, 15, 14, 0.94) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 22px;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+  }
+
+  body.dark-mode .sticky-menu .menu-item {
+    min-width: 0;
+    color: var(--bv2-text-muted) !important;
+    transition: color var(--bv2-motion), transform var(--bv2-motion);
+  }
+
+  body.dark-mode .sticky-menu .menu-item .text {
+    color: var(--bv2-text-muted) !important;
+    font-weight: 650;
+  }
+
+  body.dark-mode .sticky-menu .menu-item .icon {
+    color: var(--bv2-text-secondary) !important;
+  }
+
+  body.dark-mode .sticky-menu .menu-item:hover,
+  body.dark-mode .sticky-menu .menu-item:active {
+    color: var(--bv2-brand) !important;
+    transform: translateY(-1px);
+  }
+
+  body.dark-mode .sticky-menu .menu-item:hover :where(.text, .icon),
+  body.dark-mode .sticky-menu .menu-item:active :where(.text, .icon) {
+    color: inherit !important;
+  }
+
+  body.dark-mode .sticky-menu .menu-item.wallet .logo {
+    border: 1px solid rgba(129, 238, 153, 0.32);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(129, 238, 153, 0.12), rgba(7, 8, 7, 0.96) 68%);
+    box-shadow: 0 0 0 5px rgba(7, 8, 7, 0.82), 0 0 26px rgba(129, 238, 153, 0.18);
+  }
+
+  body.dark-mode .sticky-menu .menu-item.wallet .text {
+    color: var(--bv2-text) !important;
+  }
+}
+
+@media (max-width: 374.98px) {
+  body.dark-mode #header .middle-header-container {
+    padding-inline: 8px;
+  }
+
+  body.dark-mode #header .responsive-logo,
+  body.dark-mode #header .responsive-logo a,
+  body.dark-mode #header .responsive-logo img {
+    width: 34px;
+    min-width: 34px;
+  }
+
+  body.dark-mode #header .wallet-menu .money {
+    font-size: 12px;
+  }
+
+  body.dark-mode .sticky-menu .menu-item .text {
+    font-size: 10px;
+  }
+}

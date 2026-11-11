@@ -8,6 +8,7 @@ Son güncelleme: 2026-11-11 18:35 Europe/Istanbul
 - Test CSS üzerinde doğrulanmış düzenleme: bildirim kutusu responsive paketi, SHA-256 `5a1c8e58014c9aa58bbee1c7303b5c42609f8a50933095b7dc7adef1135189d2`.
 - Hazırlanan ve panel sunucusunda kalıcılığı doğrulanan sürüm: `v0.2.0`, aday SHA-256 `997185742715ecf9df0a7d167c3f5f1661c5ff501bb0b11cf7d58fbb14c1254e`.
 - `v0.2.0` kaynak CDN’de yeni sorgu anahtarıyla mevcut; test sitesinin kullandığı sabit sürümlü URL henüz eski içeriği döndürdüğü için gerçek site doğrulaması bekliyor.
+- Hazırlanan fakat yayınlanmayan sonraki modül: `src/v2/modules/10-shell-v0.3.0.css` (header, desktop sidebar yüzeyi ve mobil alt navigasyon).
 
 ## Tamamlanan modüller
 
@@ -34,6 +35,7 @@ Son güncelleme: 2026-11-11 18:35 Europe/Istanbul
 
 - Panelde ilk büyük editör yapıştırması görünürde değişmiş fakat sunucuya kalıcı yazılmamıştı. Çözüm: sunucudan yeniden yükleyip yalnız sürüm farkını eklemek ve “Yenile” sonrası birebir doğrulamak.
 - CDN kaynak dosyası güncel olsa da test sitesinin kullandığı sabit sorgulu URL 11–12 dakika eski içeriği tutabiliyor.
+- v0.2.0 sabit sorgulu test CSS URL’si 14 dakikalık doğrulama penceresinde güncellenmedi; cache-busting kaynak isteği güncelken gerçek sayfa hâlâ eski hash’i yükledi. Paneldeki ortak `Cache` işlemi test izolasyonu doğrulanmadan kullanılmayacak.
 - Önceki v0.1.0 Casino rota yaşam döngüsü hatası nedeniyle 3443 pasif kalacak.
 
 ## Sonraki çalışma grubu
